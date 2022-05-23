@@ -5,13 +5,13 @@ import software.sigma.internship.user.Student;
 import java.util.List;
 
 public interface StudentDao {
-    List<Student> findAll();
+    List<Student> readAll();
 
     Student read(Long id);
 
-    Student create(Student student);
+    Student createStudent(Student student);
 
-    Student update(Long id, Student student);
+    Student updateStudent(Long id, Student student);
 
-    void delete(Long id);
+    void deleteStudent(long id);
 }

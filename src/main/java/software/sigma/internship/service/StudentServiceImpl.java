@@ -19,7 +19,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> readAll() {
-        return studentDao.findAll();
+        return studentDao.readAll();
     }
 
     @Override
@@ -28,17 +28,17 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student create(Student student) {
-        return studentDao.create(student);
+    public Student createStudent(Student student) {
+        return studentDao.createStudent(student);
     }
 
     @Override
-    public Student update(Long id, Student student) {
-        return studentDao.update(id, student);
+    public Student updateStudent(Long id, Student student) {
+        return studentDao.updateStudent(id, student);
     }
 
     @Override
-    public void delete(Long id) {
-        studentDao.delete(id);
+    public void deleteStudent(long id) {
+        studentDao.deleteStudent(id);
     }
 }
