@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: '/university/'
+
+spring:
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/university'
+    username: 'natanius'
+    password: '12345'
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect=org.hibernate.dialect.PostgreSQLDialect
+  flyway.baseline-on-migrate: true

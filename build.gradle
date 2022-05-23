@@ -1,0 +1,47 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.0'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id "org.flywaydb.flyway" version "8.5.11"
+
+}
+
+group = 'software.sigma'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = "11"
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.jetbrains:annotations:23.0.0'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.jdbi:jdbi3-sqlobject:3.28.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.postgresql:postgresql'
+	implementation 'javax.validation:validation-api'
+	implementation "org.flywaydb:flyway-core"
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+flyway{
+	url = "jdbc:postgresql://localhost:5432/university"
+	user = "natanius"
+	password = "12345"
+}
+targetCompatibility = JavaVersion.VERSION_11
