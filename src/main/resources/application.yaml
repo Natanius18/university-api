@@ -1,0 +1,10 @@
+server:
+  servlet:
+    context-path: '/university/v1/'
+
+spring:
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/university'
+    username: 'natanius'
+    password: '12345'
+    driver-class-name: org.postgresql.Driver

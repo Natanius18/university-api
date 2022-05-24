@@ -1,6 +1,7 @@
 package software.sigma.internship.user;
 
 import lombok.Data;
+import software.sigma.internship.user.Position;
 
 @Data
 public class Teacher {

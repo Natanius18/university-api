@@ -1,22 +1,26 @@
 package software.sigma.internship.dao;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.jdbi.v3.core.Jdbi;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
+import software.sigma.internship.dao.repo.StudentRepository;
 import software.sigma.internship.user.Student;
 
 import java.util.List;
 
-@Repository
+@Component
 public class StudentDaoImpl implements StudentDao {
+
+    private final StudentRepository studentRepository;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public StudentDaoImpl(Jdbi jdbi) {
+        this.studentRepository = jdbi.onDemand(StudentRepository.class);
+    }
 
     @Override
     public List<Student> readAll() {
-        Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("from student", Student.class).getResultList();
+        return studentRepository.selectAll();
     }
 //TODO
     @Override
