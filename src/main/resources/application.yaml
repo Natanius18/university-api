@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: '/university/v1/'
+    context-path: '/university/'
 
 spring:
   datasource:

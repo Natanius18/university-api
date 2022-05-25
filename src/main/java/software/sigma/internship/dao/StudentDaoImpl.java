@@ -19,27 +19,29 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
-    public List<Student> readAll() {
+    public List<Student> findAll() {
         return studentRepository.selectAll();
     }
-//TODO
+
     @Override
     public Student read(Long id) {
-        return null;
+        return studentRepository.selectById(id);
     }
 
     @Override
-    public Student createStudent(Student student) {
-        return null;
+    public Student create(Student student) {
+        studentRepository.insert(student);
+        return studentRepository.findByName(student.getFirstName(), student.getLastName());
     }
 
     @Override
-    public Student updateStudent(Long id, Student student) {
-        return null;
+    public Student update(Long id, Student student) {
+        studentRepository.update(id, student);
+        return studentRepository.selectById(id);
     }
 
     @Override
-    public void deleteStudent(long id) {
-
+    public void delete(Long id) {
+        studentRepository.delete(id);
     }
 }
