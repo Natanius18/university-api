@@ -2,6 +2,8 @@ plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id "org.flywaydb.flyway" version "8.5.11"
+
 }
 
 group = 'software.sigma'
@@ -24,14 +26,19 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-/*	implementation 'org.hibernate:hibernate-core:6.0.1.Final'*/
 	implementation 'org.jdbi:jdbi3-sqlobject:3.28.0'
-	/*implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.7.0'*/
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.postgresql:postgresql:42.2.10'
+	implementation 'org.postgresql:postgresql'
 	implementation 'javax.validation:validation-api'
+	implementation "org.flywaydb:flyway-core"
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+flyway{
+	url = "jdbc:postgresql://localhost:5432/university"
+	user = "natanius"
+	password = "12345"
 }
