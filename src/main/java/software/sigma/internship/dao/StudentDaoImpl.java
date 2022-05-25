@@ -1,41 +1,47 @@
 package software.sigma.internship.dao;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.jdbi.v3.core.Jdbi;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
+import software.sigma.internship.dao.repo.StudentRepository;
 import software.sigma.internship.user.Student;
 
 import java.util.List;
 
-@Repository
+@Component
 public class StudentDaoImpl implements StudentDao {
+
+    private final StudentRepository studentRepository;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public StudentDaoImpl(Jdbi jdbi) {
+        this.studentRepository = jdbi.onDemand(StudentRepository.class);
+    }
 
     @Override
-    public List<Student> readAll() {
-        Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("from student", Student.class).getResultList();
+    public List<Student> findAll() {
+        return studentRepository.selectAll();
     }
-//TODO
+
     @Override
     public Student read(Long id) {
-        return null;
+        return studentRepository.selectById(id);
     }
 
     @Override
-    public Student createStudent(Student student) {
-        return null;
+    public Student create(Student student) {
+        studentRepository.insert(student);
+        return studentRepository.findByName(student.getFirstName(), student.getLastName());
     }
 
     @Override
-    public Student updateStudent(Long id, Student student) {
-        return null;
+    public Student update(Long id, Student student) {
+        studentRepository.update(id, student);
+        return studentRepository.selectById(id);
     }
 
     @Override
-    public void deleteStudent(long id) {
-
+    public void delete(Long id) {
+        studentRepository.delete(id);
     }
 }
