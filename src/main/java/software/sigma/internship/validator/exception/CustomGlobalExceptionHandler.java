@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler({UserNotFoundException.class, TestNotFoundException.class})
     protected ResponseEntity<Object> handleConflict(
             RuntimeException ex) {
         Map<String, Object> body = new LinkedHashMap<>();

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.entity.Test;
 import software.sigma.internship.repo.TestRepository;
-import software.sigma.internship.validator.exception.UserNotFoundException;
+import software.sigma.internship.validator.exception.TestNotFoundException;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Test findById(Long id) {
-        return testRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        return testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
 
     }
 

@@ -28,6 +28,12 @@ public class Teacher extends Person {
     @JsonManagedReference
     private List<Test> tests;
 
+    public Teacher(Long id, String firstName, String lastName, Position position, List<Test> tests) {
+        super(id, firstName, lastName);
+        this.position = position;
+        this.tests = tests;
+    }
+
     public enum Position {
         HEAD_TEACHER,
         DOCENT,

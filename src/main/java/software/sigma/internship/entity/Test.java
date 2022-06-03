@@ -1,6 +1,7 @@
 package software.sigma.internship.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonDeserialize(using = TestDeserializer.class)
 public class Test {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

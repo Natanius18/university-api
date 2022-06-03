@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import software.sigma.internship.entity.Test;
+import software.sigma.internship.service.QuestionService;
 import software.sigma.internship.service.TestService;
 
 import java.util.List;
@@ -18,7 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping(path = "/v1/tests")
 public class TestController {
-    private TestService testService;
+    private final TestService testService;
+    private final QuestionService questionService;
 
     @GetMapping
     public List<Test> fetchList(){
