@@ -2,8 +2,9 @@ package software.sigma.internship.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import software.sigma.internship.service.dao.TeacherDao;
 import software.sigma.internship.entity.Teacher;
+import software.sigma.internship.repo.TeacherRepository;
+import software.sigma.internship.validator.exception.UserNotFoundException;
 
 import java.util.List;
 
@@ -11,25 +12,26 @@ import java.util.List;
 @AllArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
 
-    private TeacherDao teacherDao;
+    private TeacherRepository teacherRepository;
 
     @Override
     public List<Teacher> findAll() {
-        return teacherDao.findAll();
+        return teacherRepository.findAll();
     }
 
     @Override
     public Teacher findById(Long id) {
-        return teacherDao.findById(id);
+        return teacherRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+
     }
 
     @Override
     public Teacher save(Teacher teacher) {
-        return teacherDao.save(teacher);
+        return teacherRepository.save(teacher);
     }
 
     @Override
     public void deleteById(Long id) {
-        teacherDao.deleteById(id);
+        teacherRepository.deleteById(id);
     }
 }
