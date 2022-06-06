@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import software.sigma.internship.entity.Student;
+import software.sigma.internship.dto.StudentDto;
 import software.sigma.internship.service.StudentService;
 
 import javax.validation.Valid;
@@ -22,22 +22,22 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-    public List<Student> fetchList() {
+    public List<StudentDto> fetchList() {
         return studentService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Student fetch(@PathVariable Long id) {
+    public StudentDto fetch(@PathVariable Long id) {
         return studentService.findById(id);
     }
 
     @PostMapping
-    public Student save(@Valid @RequestBody Student student) {
+    public StudentDto save(@Valid @RequestBody StudentDto student) {
         return studentService.save(student);
     }
 
     @PutMapping
-    public Student update(@Valid @RequestBody Student student) {
+    public StudentDto update(@Valid @RequestBody StudentDto student) {
         return studentService.save(student);
     }
 
