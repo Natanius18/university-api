@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import software.sigma.internship.dto.TeacherDto;
-import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.service.TeacherService;
 
 import javax.validation.Valid;
@@ -22,24 +21,24 @@ public class TeacherController {
     private TeacherService teacherService;
 
     @PostMapping
-    public Teacher save(@Valid @RequestBody TeacherDto teacher){
-        return teacherService.save(teacher.toEntity());
+    public TeacherDto save(@Valid @RequestBody TeacherDto teacher){
+        return teacherService.save(teacher);
     }
 
     @GetMapping
-    public List<Teacher> fetchList(){
+    public List<TeacherDto> fetchList(){
         return teacherService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Teacher fetch(@PathVariable Long id){
+    public TeacherDto fetch(@PathVariable Long id){
         return teacherService.findById(id);
     }
 
 
     @PutMapping
-    public Teacher update(@RequestBody TeacherDto teacher){
-        return teacherService.save(teacher.toEntity());
+    public TeacherDto update(@RequestBody TeacherDto teacher){
+        return teacherService.save(teacher);
     }
 
     @DeleteMapping("/{id}")
