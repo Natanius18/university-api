@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.service.TeacherService;
 
@@ -21,8 +22,8 @@ public class TeacherController {
     private TeacherService teacherService;
 
     @PostMapping
-    public Teacher save(@Valid @RequestBody Teacher teacher){
-        return teacherService.save(teacher);
+    public Teacher save(@Valid @RequestBody TeacherDto teacher){
+        return teacherService.save(teacher.toEntity());
     }
 
     @GetMapping
@@ -37,8 +38,8 @@ public class TeacherController {
 
 
     @PutMapping
-    public Teacher update(@RequestBody Teacher teacher){
-        return teacherService.save(teacher);
+    public Teacher update(@RequestBody TeacherDto teacher){
+        return teacherService.save(teacher.toEntity());
     }
 
     @DeleteMapping("/{id}")
