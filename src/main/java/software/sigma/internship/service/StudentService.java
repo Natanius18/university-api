@@ -1,15 +1,15 @@
 package software.sigma.internship.service;
 
-import software.sigma.internship.entity.Student;
+import software.sigma.internship.dto.StudentDto;
 
 import java.util.List;
 
 public interface StudentService {
-    List<Student> findAll();
+    List<StudentDto> findAll();
 
-    Student findById(Long id);
+    StudentDto findById(Long id);
 
-    Student save(Student student);
+    StudentDto save(StudentDto student);
 
     void deleteById(Long id);
 }
