@@ -5,12 +5,10 @@ import software.sigma.internship.entity.Teacher;
 
 import java.util.List;
 
-
 @Data
-public class TeacherDto {
+public class TestDto {
     private Long id;
-    private String firstName;
-    private String lastName;
-    private Teacher.Position position;
-    private List<TestDto> tests;
+    private String name;
+    private Teacher teacher;
+    private List<QuestionDto> questions;
 }

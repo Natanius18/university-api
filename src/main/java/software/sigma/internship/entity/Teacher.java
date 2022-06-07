@@ -1,6 +1,5 @@
 package software.sigma.internship.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -25,14 +24,7 @@ import java.util.List;
 public class Teacher extends Person {
     private Position position;
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Test> tests;
-
-    public Teacher(Long id, String firstName, String lastName, Position position, List<Test> tests) {
-        super(id, firstName, lastName);
-        this.position = position;
-        this.tests = tests;
-    }
 
     public enum Position {
         HEAD_TEACHER,

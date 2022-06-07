@@ -1,15 +1,18 @@
 package software.sigma.internship.service;
 
-import software.sigma.internship.entity.Test;
+import software.sigma.internship.dto.QuestionDto;
+import software.sigma.internship.dto.TestDto;
 
 import java.util.List;
 
 public interface TestService {
-    List<Test> findAll();
+    List<TestDto> findAll();
 
-    Test findById(Long id);
+    TestDto findById(Long id);
 
-    Test save(Test test);
+    QuestionDto findQuestion(Long id, Long qId);
+
+    TestDto save(TestDto test);
 
     void deleteById(Long id);
 }

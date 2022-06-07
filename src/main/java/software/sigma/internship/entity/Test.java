@@ -1,7 +1,5 @@
 package software.sigma.internship.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonDeserialize(using = TestDeserializer.class)
+//@JsonDeserialize(using = TestDeserializer.class)
 public class Test {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +26,6 @@ public class Test {
     private String name;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "teacher_id")
-    @JsonBackReference
     private Teacher teacher;
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
     private List<Question> questions;

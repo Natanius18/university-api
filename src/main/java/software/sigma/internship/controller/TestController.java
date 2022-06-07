@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import software.sigma.internship.entity.Test;
+import software.sigma.internship.dto.QuestionDto;
+import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.service.TestService;
 
 import java.util.List;
@@ -21,22 +22,27 @@ public class TestController {
     private final TestService testService;
 
     @GetMapping
-    public List<Test> fetchList(){
+    public List<TestDto> fetchList(){
         return testService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Test fetch(@PathVariable Long id){
+    public TestDto fetch(@PathVariable Long id){
         return testService.findById(id);
     }
 
+    @GetMapping("/{testId}/{qId}")
+    public QuestionDto fetch(@PathVariable Long testId, @PathVariable Long qId){
+        return testService.findQuestion(testId, qId);
+    }
+
     @PostMapping
-    public Test save(@RequestBody Test test){
+    public TestDto save(@RequestBody TestDto test){
         return testService.save(test);
     }
 
     @PutMapping
-    public Test update(@RequestBody Test test){
+    public TestDto update(@RequestBody TestDto test){
         return testService.save(test);
     }
 
