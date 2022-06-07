@@ -23,7 +23,7 @@ import java.util.List;
 @DiscriminatorValue("Teacher")
 public class Teacher extends Person {
     private Position position;
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.MERGE)
     private List<Test> tests;
 
     public enum Position {

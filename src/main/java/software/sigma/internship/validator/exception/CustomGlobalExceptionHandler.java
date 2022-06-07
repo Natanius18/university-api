@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({UserNotFoundException.class, TestNotFoundException.class})
-    protected ResponseEntity<Object> handleConflict(
-            RuntimeException ex) {
+    @ExceptionHandler({UserNotFoundException.class, TestNotFoundException.class,
+                        AnswerNotFoundException.class, QuestionNotFoundException.class})
+    protected ResponseEntity<Object> handleConflict(RuntimeException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", HttpStatus.NOT_FOUND.value());

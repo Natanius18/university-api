@@ -1,7 +1,6 @@
 package software.sigma.internship.dto;
 
 import lombok.Data;
-import software.sigma.internship.entity.Answer;
 import software.sigma.internship.entity.Test;
 
 import java.util.List;
@@ -12,5 +11,5 @@ public class QuestionDto {
     private Test test;
     private int type;
     private String text;
-    private List<Answer> answers;
+    private List<AnswerDto> answers;
 }

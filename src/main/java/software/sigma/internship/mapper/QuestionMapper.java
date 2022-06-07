@@ -1,19 +1,24 @@
-package software.sigma.internship.dto;
+package software.sigma.internship.mapper;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.entity.Question;
 
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class QuestionMapper {
+    AnswerMapper answerMapper;
 
     public Question toEntity(QuestionDto dto) {
         Question entity = new Question();
         entity.setId(dto.getId());
-        entity.setTest(null);
+        entity.setTest(dto.getTest());
+        entity.setText(dto.getText());
         entity.setType(dto.getType());
-        entity.setAnswers(dto.getAnswers());              //TODO can be a problem here
+        entity.setAnswers(null);
         return entity;
     }
 
@@ -21,11 +26,14 @@ public class QuestionMapper {
         QuestionDto dto = new QuestionDto();
         dto.setId(entity.getId());
         dto.setTest(null);
-        dto.setAnswers(entity.getAnswers().stream()
-                .peek(answer -> answer.setQuestion(null))
-                .collect(Collectors.toList()));
-        dto.setText(entity.getText());
         dto.setType(entity.getType());
+        dto.setText(entity.getText());
+        dto.setAnswers(entity.getAnswers().stream()
+                .map(answer -> {
+                    answer.setQuestion(null);
+                    return answerMapper.toDto(answer);
+                })
+                .collect(Collectors.toList()));
         return dto;
     }
 }

@@ -1,8 +1,9 @@
-package software.sigma.internship.dto;
+package software.sigma.internship.mapper;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import software.sigma.internship.entity.Question;
+import software.sigma.internship.dto.QuestionDto;
+import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.entity.Test;
 
 import java.util.List;
@@ -18,8 +19,7 @@ public class TestMapper {
         entity.setId(dto.getId());
         entity.setName(dto.getName());
         entity.setTeacher(dto.getTeacher());
-        List<Question> questions = dto.getQuestions().stream().map(questionMapper::toEntity).collect(Collectors.toList());
-        entity.setQuestions(questions);
+        entity.setQuestions(null);
         return entity;
     }
 

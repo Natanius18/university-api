@@ -1,6 +1,7 @@
-package software.sigma.internship.dto;
+package software.sigma.internship.mapper;
 
 import org.springframework.stereotype.Service;
+import software.sigma.internship.dto.StudentDto;
 import software.sigma.internship.entity.Student;
 @Service
 public class StudentMapper {

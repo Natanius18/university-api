@@ -1,7 +1,9 @@
-package software.sigma.internship.dto;
+package software.sigma.internship.mapper;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import software.sigma.internship.dto.TeacherDto;
+import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.entity.Test;
 

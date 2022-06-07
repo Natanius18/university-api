@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.dto.TestDto;
-import software.sigma.internship.dto.TestMapper;
+import software.sigma.internship.entity.Question;
 import software.sigma.internship.entity.Test;
+import software.sigma.internship.mapper.QuestionMapper;
+import software.sigma.internship.mapper.TestMapper;
 import software.sigma.internship.repo.TestRepository;
 import software.sigma.internship.validator.exception.TestNotFoundException;
 
@@ -15,17 +17,20 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class TestServiceImpl implements TestService {
-    private TestRepository testRepository;
+    private final TestRepository testRepository;
     private final TestMapper testMapper;
+    private final QuestionMapper questionMapper;
+    private final QuestionService questionService;
 
     @Override
     public List<TestDto> findAll() {
         List<Test> tests = testRepository.findAll();
-        return tests.stream().map(entity -> {
-            TestDto testDto = testMapper.toDto(entity);
-            testDto.setQuestions(null);
-            return testDto;
-        }).collect(Collectors.toList());
+        return tests.stream()
+                .map(entity -> {
+                    TestDto testDto = testMapper.toDto(entity);
+                    testDto.setQuestions(null);
+                    return testDto;
+                }).collect(Collectors.toList());
     }
 
     @Override
@@ -34,7 +39,10 @@ public class TestServiceImpl implements TestService {
         TestDto testDto = testMapper.toDto(test);
         List<QuestionDto> questions = testDto.getQuestions()
                 .stream()
-                .peek(question -> question.setAnswers(null))
+                .map(question -> {
+                    question.setAnswers(null);
+                    return question;
+                })
                 .collect(Collectors.toList());
         testDto.setQuestions(questions);
         return testDto;
@@ -42,20 +50,26 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public QuestionDto findQuestion(Long id, Long qId) {
-        Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        TestDto testDto = testMapper.toDto(test);
-        return testDto.getQuestions()
-                .stream()
-                .filter(questionDto -> questionDto.getId().equals(qId))
-                .findFirst()
-                .orElseThrow(() -> new TestNotFoundException(qId));
+        if (testRepository.existsById(id)){
+            return questionService.findById(qId);
+        }
+        throw new TestNotFoundException(id);
     }
+
 
     @Override
     public TestDto save(TestDto test) {
-        testRepository.save(testMapper.toEntity(test));
-        return testMapper.toDto(testRepository.findById(test.getId())
-                .orElseThrow(() -> new TestNotFoundException(test.getId())));
+        Test newTest = testRepository.save(testMapper.toEntity(test));  //сначала сохраняем тест, чтоб получить его id
+        List<Question> questions = test.getQuestions()
+                .stream()
+                .map(questionDto -> {
+                    questionDto.setTest(newTest);
+                    return questionMapper.toEntity(questionService.save(questionDto));
+                })
+                .collect(Collectors.toList());
+        newTest.setQuestions(questions);
+        testRepository.save(newTest);
+        return testMapper.toDto(newTest);
     }
 
     @Override
