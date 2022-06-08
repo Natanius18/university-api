@@ -28,6 +28,6 @@ public class Test {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
-    @OneToMany(mappedBy = "test", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
     private List<Question> questions;
 }

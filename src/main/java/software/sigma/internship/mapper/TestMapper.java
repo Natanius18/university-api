@@ -21,9 +21,10 @@ public class TestMapper {
         entity.setTeacher(dto.getTeacher());
         List<Question> questions = dto.getQuestions()
                 .stream()
-                .map(question -> {
+                .map(questionDto -> {
+                    Question question = questionMapper.toEntity(questionDto);
                     question.setTest(entity);
-                    return questionMapper.toEntity(question);
+                    return question;
                 }).collect(Collectors.toList());
         entity.setQuestions(questions);
         return entity;

@@ -1,4 +1,4 @@
-package software.sigma.internship.service;
+package software.sigma.internship.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,6 +6,7 @@ import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.entity.Question;
 import software.sigma.internship.mapper.QuestionMapper;
 import software.sigma.internship.repo.QuestionRepository;
+import software.sigma.internship.service.QuestionService;
 import software.sigma.internship.validator.exception.QuestionNotFoundException;
 
 import java.util.List;

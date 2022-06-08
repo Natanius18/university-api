@@ -1,13 +1,14 @@
-package software.sigma.internship.service;
+package software.sigma.internship.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.entity.Test;
-import software.sigma.internship.mapper.QuestionMapper;
 import software.sigma.internship.mapper.TestMapper;
 import software.sigma.internship.repo.TestRepository;
+import software.sigma.internship.service.QuestionService;
+import software.sigma.internship.service.TestService;
 import software.sigma.internship.validator.exception.TestNotFoundException;
 
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final TestMapper testMapper;
-    private final QuestionMapper questionMapper;
     private final QuestionService questionService;
 
     @Override

@@ -17,14 +17,14 @@ public class QuestionMapper {
     public Question toEntity(QuestionDto dto) {
         Question entity = new Question();
         entity.setId(dto.getId());
-        entity.setTest(dto.getTest());
         entity.setText(dto.getText());
         entity.setType(dto.getType());
         List<Answer> answers = dto.getAnswers()
                 .stream()
                 .map(answerDto -> {
-                    answerDto.setQuestion(entity);
-                    return answerMapper.toEntity(answerDto);
+                    Answer answer = answerMapper.toEntity(answerDto);
+                    answer.setQuestion(entity);
+                    return answer;
                 }).collect(Collectors.toList());
         entity.setAnswers(answers);
         return entity;
@@ -33,7 +33,6 @@ public class QuestionMapper {
     public QuestionDto toDto(Question entity) {
         QuestionDto dto = new QuestionDto();
         dto.setId(entity.getId());
-        dto.setTest(null);
         dto.setType(entity.getType());
         dto.setText(entity.getText());
         dto.setAnswers(entity.getAnswers()
