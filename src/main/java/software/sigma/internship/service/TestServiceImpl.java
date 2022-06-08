@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.dto.TestDto;
-import software.sigma.internship.entity.Question;
 import software.sigma.internship.entity.Test;
 import software.sigma.internship.mapper.QuestionMapper;
 import software.sigma.internship.mapper.TestMapper;
@@ -59,16 +58,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public TestDto save(TestDto test) {
-        Test newTest = testRepository.save(testMapper.toEntity(test));  //сначала сохраняем тест, чтоб получить его id
-        List<Question> questions = test.getQuestions()
-                .stream()
-                .map(questionDto -> {
-                    questionDto.setTest(newTest);
-                    return questionMapper.toEntity(questionService.save(questionDto));
-                })
-                .collect(Collectors.toList());
-        newTest.setQuestions(questions);
-        testRepository.save(newTest);
+        Test newTest = testRepository.save(testMapper.toEntity(test));
         return testMapper.toDto(newTest);
     }
 

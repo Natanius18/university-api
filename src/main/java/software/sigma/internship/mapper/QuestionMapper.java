@@ -3,8 +3,10 @@ package software.sigma.internship.mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.QuestionDto;
+import software.sigma.internship.entity.Answer;
 import software.sigma.internship.entity.Question;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,7 +20,13 @@ public class QuestionMapper {
         entity.setTest(dto.getTest());
         entity.setText(dto.getText());
         entity.setType(dto.getType());
-        entity.setAnswers(null);
+        List<Answer> answers = dto.getAnswers()
+                .stream()
+                .map(answerDto -> {
+                    answerDto.setQuestion(entity);
+                    return answerMapper.toEntity(answerDto);
+                }).collect(Collectors.toList());
+        entity.setAnswers(answers);
         return entity;
     }
 
@@ -28,11 +36,9 @@ public class QuestionMapper {
         dto.setTest(null);
         dto.setType(entity.getType());
         dto.setText(entity.getText());
-        dto.setAnswers(entity.getAnswers().stream()
-                .map(answer -> {
-                    answer.setQuestion(null);
-                    return answerMapper.toDto(answer);
-                })
+        dto.setAnswers(entity.getAnswers()
+                .stream()
+                .map(answerMapper::toDto)
                 .collect(Collectors.toList()));
         return dto;
     }

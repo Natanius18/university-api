@@ -18,7 +18,7 @@ public class AnswerMapper {
     public AnswerDto toDto(Answer entity) {
         AnswerDto dto = new AnswerDto();
         dto.setId(entity.getId());
-        dto.setQuestion(entity.getQuestion());
+        dto.setQuestion(null);
         dto.setCorrect(entity.isCorrect());
         dto.setOption(entity.getOption());
         return dto;

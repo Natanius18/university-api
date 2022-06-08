@@ -14,13 +14,14 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
-    AnswerRepository answerRepository;
-    AnswerMapper answerMapper;
+    private  final AnswerRepository answerRepository;
+    private  final AnswerMapper answerMapper;
+
     @Override
     public List<AnswerDto> findAll() {
         List<Answer> tests = answerRepository.findAll();
         return tests.stream()
-                .map(entity -> answerMapper.toDto(entity))
+                .map(answerMapper::toDto)
                 .collect(Collectors.toList());
     }
 

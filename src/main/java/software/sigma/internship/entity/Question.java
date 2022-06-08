@@ -29,6 +29,6 @@ public class Question {
     private Test test;
     private int type;
     private String text;
-    @OneToMany(mappedBy = "question", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
     private List<Answer> answers;
 }
