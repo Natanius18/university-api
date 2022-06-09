@@ -3,8 +3,10 @@ package software.sigma.internship.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.QuestionDto;
+import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.entity.Test;
+import software.sigma.internship.mapper.TeacherMapper;
 import software.sigma.internship.mapper.TestMapper;
 import software.sigma.internship.repo.TestRepository;
 import software.sigma.internship.service.QuestionService;
@@ -19,11 +21,23 @@ import java.util.stream.Collectors;
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final TestMapper testMapper;
+    private final TeacherMapper teacherMapper;
     private final QuestionService questionService;
 
     @Override
     public List<TestDto> findAll() {
         List<Test> tests = testRepository.findAll();
+        return tests.stream()
+                .map(entity -> {
+                    TestDto testDto = testMapper.toDto(entity);
+                    testDto.setQuestions(null);
+                    return testDto;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TestDto> findTestsByTeacher(TeacherDto teacher) {
+        List<Test> tests = testRepository.findTestsByTeacher(teacherMapper.toEntity(teacher));
         return tests.stream()
                 .map(entity -> {
                     TestDto testDto = testMapper.toDto(entity);

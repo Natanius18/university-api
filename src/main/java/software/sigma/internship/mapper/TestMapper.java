@@ -35,7 +35,7 @@ public class TestMapper {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         entity.getTeacher().setTests(null);
-        dto.setTeacher(entity.getTeacher());
+        dto.setTeacher(null);
         dto.setQuestions(entity.getQuestions()
                 .stream()
                 .map(questionMapper::toDto)

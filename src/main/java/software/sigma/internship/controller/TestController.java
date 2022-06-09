@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import software.sigma.internship.dto.QuestionDto;
+import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.service.TestService;
 
@@ -21,9 +22,15 @@ import java.util.List;
 public class TestController {
     private final TestService testService;
 
-    @GetMapping
+    @GetMapping(path = "/all")
     public List<TestDto> fetchList(){
         return testService.findAll();
+    }
+
+
+    @GetMapping
+    public List<TestDto> fetchTestsByTeacher(@RequestBody TeacherDto teacher){
+        return testService.findTestsByTeacher(teacher);
     }
 
     @GetMapping("/{id}")
