@@ -1,11 +1,13 @@
-package software.sigma.internship.dto;
+package software.sigma.internship.mapper;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.entity.Teacher;
 
 @Service
+@AllArgsConstructor
 public class TeacherMapper {
-
     public Teacher toEntity(TeacherDto dto) {
         Teacher entity = new Teacher();
         entity.setId(dto.getId());

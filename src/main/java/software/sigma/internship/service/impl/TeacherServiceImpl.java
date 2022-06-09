@@ -1,11 +1,12 @@
-package software.sigma.internship.service;
+package software.sigma.internship.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.TeacherDto;
-import software.sigma.internship.dto.TeacherMapper;
+import software.sigma.internship.mapper.TeacherMapper;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.repo.TeacherRepository;
+import software.sigma.internship.service.TeacherService;
 import software.sigma.internship.validator.exception.UserNotFoundException;
 
 import javax.validation.Valid;

@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping(path = "/v1/teachers")
 public class TeacherController {
-    private TeacherService teacherService;
+    private final TeacherService teacherService;
 
     @PostMapping
     public TeacherDto save(@Valid @RequestBody TeacherDto teacher){
