@@ -11,25 +11,35 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@Table
 @NoArgsConstructor
 @AllArgsConstructor
-public class Answer {
+public class Response {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "question_id")
-    private Question question;
-    private boolean isCorrect;
-    private String option;
+    private int numberOfTry;
 
-    @ManyToMany(mappedBy = "answers")
-    private List<Response> responses;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "test_id")
+    private Test test;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "response_to_answer",
+            joinColumns = @JoinColumn(name = "response_id"),
+            inverseJoinColumns = @JoinColumn(name = "answer_id"))
+    private List<Answer> answers;
 }

@@ -20,4 +20,8 @@ import javax.persistence.Entity;
 public class Student extends Person {
     @ValidCourse
     private Integer course;
+
+//    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+//    private List<Response> responses;
 }
+
