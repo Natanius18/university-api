@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
-    private  final QuestionRepository questionRepository;
-    private  final ModelMapper questionMapper;
+    private final QuestionRepository questionRepository;
+    private final ModelMapper questionMapper;
 
     @Override
     public List<QuestionDto> findAll() {

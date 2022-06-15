@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
-    private final ModelMapper testMapper;
-    private final ModelMapper teacherMapper;
+    private final ModelMapper mapper;
     private final QuestionService questionService;
 
     @Override
@@ -29,7 +28,7 @@ public class TestServiceImpl implements TestService {
         List<Test> tests = testRepository.findAll();
         return tests.stream()
                 .map(entity -> {
-                    TestDto testDto = testMapper.map(entity, TestDto.class);
+                    TestDto testDto = mapper.map(entity, TestDto.class);
                     testDto.setQuestions(null);
                     testDto.getTeacher().setTests(null);
                     return testDto;
@@ -38,10 +37,10 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public List<TestDto> findTestsByTeacher(TeacherDto teacher) {
-        List<Test> tests = testRepository.findTestsByTeacher(teacherMapper.map(teacher, Teacher.class));
+        List<Test> tests = testRepository.findTestsByTeacher(mapper.map(teacher, Teacher.class));
         return tests.stream()
                 .map(entity -> {
-                    TestDto testDto = testMapper.map(entity, TestDto.class);
+                    TestDto testDto = mapper.map(entity, TestDto.class);
                     testDto.setQuestions(null);
                     testDto.setTeacher(null);
                     return testDto;
@@ -51,7 +50,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public TestDto findById(Long id) {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        TestDto testDto = testMapper.map(test, TestDto.class);
+        TestDto testDto = mapper.map(test, TestDto.class);
         List<QuestionDto> questions = testDto.getQuestions()
                 .stream()
                 .map(question -> {
@@ -77,8 +76,8 @@ public class TestServiceImpl implements TestService {
     public TestDto save(TestDto testDto) {
         Long id = testDto.getId();
         if (id == null || testRepository.existsById(id)) {
-            Test newTest = testRepository.save(testMapper.map(testDto, Test.class));
-            return testMapper.map(newTest, TestDto.class);
+            Test newTest = testRepository.save(mapper.map(testDto, Test.class));
+            return mapper.map(newTest, TestDto.class);
         }
         throw new TestNotFoundException(id);
     }

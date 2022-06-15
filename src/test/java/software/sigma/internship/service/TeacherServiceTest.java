@@ -35,6 +35,8 @@ public class TeacherServiceTest {
     private TeacherDto dtoOfNewTeacherToSave;
     private TeacherDto newSavedTeacherDto;
     private Teacher entityOfNewTeacherToSave;
+    private TeacherDto teacherToUpdateDto;
+    private Teacher entityOfTeacherToUpdate;
 
     private final String FIRST_NAME1 = "Ivan";
     private final String LAST_NAME1 = "Ivanov";
@@ -82,6 +84,11 @@ public class TeacherServiceTest {
         assertThat(entityOfNewTeacherToSave.getId()).isNull();
         assertThat(returned.getId()).isEqualTo(2L);
         assertThat(returned).isEqualTo(teacherMapper.map(newSavedTeacherEntity, TeacherDto.class));
+    }
+
+    @Test
+    public void updateExistingTeacherShouldReturnUpdatedTeacher() {
+        //TODO
     }
 
     private Teacher createTeacher(Long id, Teacher.Position position, String firstName, String lastName) {
