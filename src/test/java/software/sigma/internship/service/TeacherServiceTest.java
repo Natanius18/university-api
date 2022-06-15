@@ -29,53 +29,41 @@ public class TeacherServiceTest {
     @InjectMocks
     private TeacherServiceImpl teacherService;
 
-    private final Teacher teacher = new Teacher();
-    private final TeacherDto teacher1Dto = new TeacherDto();
-    private final Teacher newSavedTeacher = new Teacher();
-    private final TeacherDto teacherDto = new TeacherDto();
-    private final TeacherDto teacherEntityToDto = new TeacherDto();
-    private final Teacher teacherDtoToEntity = new Teacher();
+    private Teacher existingTeacherEntity;
+    private TeacherDto dtoOfExistingTeacher;
+    private Teacher newSavedTeacherEntity;
+    private TeacherDto dtoOfNewTeacherToSave;
+    private TeacherDto newSavedTeacherDto;
+    private Teacher entityOfNewTeacherToSave;
+
+    private final String FIRST_NAME1 = "Ivan";
+    private final String LAST_NAME1 = "Ivanov";
+    private final String FIRST_NAME2 = "Alex";
+    private final String LAST_NAME2 = "Petrov";
 
     @Before
     public void setup() {
-        teacher.setPosition(Teacher.Position.DOCENT);
-        teacher.setId(1L);
-        teacher.setFirstName("Ivan");
-        teacher.setLastName("Ivanov");
+        existingTeacherEntity = createTeacher(1L, Teacher.Position.DOCENT, FIRST_NAME1, LAST_NAME1);
 
-        teacher1Dto.setPosition(Teacher.Position.DOCENT);
-        teacher1Dto.setId(1L);
-        teacher1Dto.setFirstName("Ivan");
-        teacher1Dto.setLastName("Ivanov");
+        dtoOfExistingTeacher = createTeacherDto(1L, Teacher.Position.DOCENT, FIRST_NAME1, LAST_NAME1);
 
-        teacherDto.setPosition(Teacher.Position.PROFESSOR);
-        teacherDto.setFirstName("Alex");
-        teacherDto.setLastName("Petrov");
+        dtoOfNewTeacherToSave = createTeacherDto(null, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
 
-        teacherDtoToEntity.setPosition(Teacher.Position.PROFESSOR);
-        teacherDtoToEntity.setFirstName("Alex");
-        teacherDtoToEntity.setLastName("Petrov");
+        entityOfNewTeacherToSave = createTeacher(null, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
 
-        newSavedTeacher.setPosition(Teacher.Position.PROFESSOR);
-        newSavedTeacher.setId(2L);
-        newSavedTeacher.setFirstName("Alex");
-        newSavedTeacher.setLastName("Petrov");
+        newSavedTeacherEntity = createTeacher(2L, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
 
-        teacherEntityToDto.setPosition(Teacher.Position.PROFESSOR);
-        teacherEntityToDto.setId(2L);
-        teacherEntityToDto.setFirstName("Alex");
-        teacherEntityToDto.setLastName("Petrov");
-
+        newSavedTeacherDto = createTeacherDto(2L, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
     }
 
     @Test
     public void findByIdShouldTeacherObject() {
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
-        when(teacherMapper.map(teacher, TeacherDto.class)).thenReturn(teacher1Dto);
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(existingTeacherEntity));
+        when(teacherMapper.map(existingTeacherEntity, TeacherDto.class)).thenReturn(dtoOfExistingTeacher);
 
-        TeacherDto savedTeacher = teacherService.findById(teacher.getId());
+        TeacherDto savedTeacher = teacherService.findById(existingTeacherEntity.getId());
 
-        assertThat(savedTeacher).isEqualTo(teacherMapper.map(teacher, TeacherDto.class));
+        assertThat(savedTeacher).isEqualTo(teacherMapper.map(existingTeacherEntity, TeacherDto.class));
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -85,19 +73,32 @@ public class TeacherServiceTest {
 
     @Test
     public void saveNewTeacherShouldReturnThatTeacherWithNewId(){
-        when(teacherMapper.map(teacherDto, Teacher.class)).thenReturn(teacherDtoToEntity);
-        when(teacherRepository.save(teacherDtoToEntity)).thenReturn(newSavedTeacher);
-        when(teacherMapper.map(newSavedTeacher, TeacherDto.class)).thenReturn(teacherEntityToDto);
+        when(teacherMapper.map(dtoOfNewTeacherToSave, Teacher.class)).thenReturn(entityOfNewTeacherToSave);
+        when(teacherRepository.save(entityOfNewTeacherToSave)).thenReturn(newSavedTeacherEntity);
+        when(teacherMapper.map(newSavedTeacherEntity, TeacherDto.class)).thenReturn(newSavedTeacherDto);
 
-        TeacherDto returned = teacherService.save(teacherDto);
+        TeacherDto returned = teacherService.save(dtoOfNewTeacherToSave);
 
-        assertThat(teacherDtoToEntity.getId()).isNull();
+        assertThat(entityOfNewTeacherToSave.getId()).isNull();
         assertThat(returned.getId()).isEqualTo(2L);
-        assertThat(returned).isEqualTo(teacherMapper.map(newSavedTeacher, TeacherDto.class));
+        assertThat(returned).isEqualTo(teacherMapper.map(newSavedTeacherEntity, TeacherDto.class));
     }
 
-//    @Test
-//    public void updateExistingTeacherShouldReturnUpdatedTeacher(){
-//        //TODO
-//    }
+    private Teacher createTeacher(Long id, Teacher.Position position, String firstName, String lastName) {
+        Teacher teacher = new Teacher();
+        teacher.setPosition(position);
+        teacher.setId(id);
+        teacher.setFirstName(firstName);
+        teacher.setLastName(lastName);
+        return teacher;
+    }
+
+    private TeacherDto createTeacherDto(Long id, Teacher.Position position, String firstName, String lastName) {
+        TeacherDto teacher = new TeacherDto();
+        teacher.setPosition(position);
+        teacher.setId(id);
+        teacher.setFirstName(firstName);
+        teacher.setLastName(lastName);
+        return teacher;
+    }
 }
