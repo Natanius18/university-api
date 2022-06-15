@@ -1,7 +1,6 @@
 package software.sigma.internship.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @DiscriminatorValue("Teacher")
 public class Teacher extends Person {
     private Position position;

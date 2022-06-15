@@ -1,9 +1,9 @@
 package software.sigma.internship.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.StudentDto;
-import software.sigma.internship.mapper.StudentMapper;
 import software.sigma.internship.entity.Student;
 import software.sigma.internship.repo.StudentRepository;
 import software.sigma.internship.service.StudentService;
@@ -17,25 +17,28 @@ import java.util.stream.Collectors;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
-    private final StudentMapper studentMapper;
+    private final ModelMapper studentMapper;
 
     @Override
     public List<StudentDto> findAll() {
         List<Student> students = studentRepository.findAll();
-        return students.stream().map(studentMapper::toDto).collect(Collectors.toList());
+        return students.stream().map(student -> studentMapper.map(student, StudentDto.class)).collect(Collectors.toList());
     }
 
     @Override
     public StudentDto findById(Long id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        return studentMapper.toDto(student);
+        return studentMapper.map(student, StudentDto.class);
     }
 
     @Override
-    public StudentDto save(StudentDto student) {
-        studentRepository.save(studentMapper.toEntity(student));
-        return studentMapper.toDto(studentRepository.findById(student.getId())
-                .orElseThrow(() -> new UserNotFoundException(student.getId())));
+    public StudentDto save(StudentDto studentDto) {
+        Long id = studentDto.getId();
+        if (id == null || studentRepository.existsById(id)) {
+            Student student = studentRepository.save(studentMapper.map(studentDto, Student.class));
+            return studentMapper.map(student, StudentDto.class);
+        }
+        throw new UserNotFoundException(id);
     }
 
     @Override

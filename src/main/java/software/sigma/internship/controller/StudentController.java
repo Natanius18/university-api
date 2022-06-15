@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import software.sigma.internship.dto.StudentDto;
 import software.sigma.internship.service.StudentService;
@@ -31,13 +30,8 @@ public class StudentController {
         return studentService.findById(id);
     }
 
-    @PostMapping
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
     public StudentDto save(@Valid @RequestBody StudentDto student) {
-        return studentService.save(student);
-    }
-
-    @PutMapping
-    public StudentDto update(@Valid @RequestBody StudentDto student) {
         return studentService.save(student);
     }
 
