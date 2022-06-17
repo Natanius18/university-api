@@ -7,8 +7,9 @@ import java.util.List;
 @Data
 public class ResponseDto {
     private Long id;
-    private Long studentId;
+    private StudentDto student;
     private int numberOfTry;
-    private Long testId;
+    private TestDto test;
     private List<AnswerDto> answers;
+    private float result;
 }

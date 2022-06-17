@@ -42,4 +42,6 @@ public class Response {
             joinColumns = @JoinColumn(name = "response_id"),
             inverseJoinColumns = @JoinColumn(name = "answer_id"))
     private List<Answer> answers;
+
+    private float result;
 }
