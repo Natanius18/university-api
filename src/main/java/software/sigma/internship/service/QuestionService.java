@@ -12,4 +12,6 @@ public interface QuestionService {
     QuestionDto save(QuestionDto questionDto);
 
     void deleteById(Long id);
+
+    void deleteQuestionByIdIn(List<Long> idList);
 }
