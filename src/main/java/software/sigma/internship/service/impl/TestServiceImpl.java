@@ -72,31 +72,32 @@ public class TestServiceImpl implements TestService {
     @Transactional
     public TestDto save(TestDto testDto) {
         Long testId = testDto.getId();
-        if (testId != null && testRepository.findById(testId).isEmpty()) {
-            throw new TestNotFoundException(testId);
-        } else {
-            Test entity = mapper.map(testDto, Test.class);
-            List<Question> questions = mapQuestions(testDto, entity);
-            entity.setQuestions(questions);
-            deleteQuestionsThatAreNoLongerBelongToTheTest(testId, questions);
-            Test newTest = testRepository.save(entity);
-            return mapper.map(newTest, TestDto.class);
+        Optional<Test> existingTest = Optional.empty();
+        if (testId != null) {
+            existingTest = testRepository.findById(testId);
+            if (existingTest.isEmpty()) {
+                throw new TestNotFoundException(testId);
+            }
         }
+        Test entity = mapper.map(testDto, Test.class);
+        List<Question> questions = mapQuestions(testDto, entity);
+        entity.setQuestions(questions);
+        deleteQuestionsThatAreNoLongerBelongToTheTest(existingTest, questions);
+        Test newTest = testRepository.save(entity);
+        return mapper.map(newTest, TestDto.class);
     }
+
 
     @Override
     public void deleteById(Long id) {
         testRepository.deleteById(id);
     }
 
-    private void deleteQuestionsThatAreNoLongerBelongToTheTest(Long testId, List<Question> newQuestions) {
-        if (testId != null) {
-            Optional<Test> existingTest = testRepository.findById(testId);
-            if (existingTest.isPresent()) {
-                List<Long> idsOfNewQuestions = getIdsOfQuestions(newQuestions);
-                List<Long> idsOfOldQuestions = getIdsOfQuestions(existingTest.get().getQuestions());
-                questionService.deleteQuestionByIdIn(getIdsToDelete(idsOfNewQuestions, idsOfOldQuestions));
-            }
+    private void deleteQuestionsThatAreNoLongerBelongToTheTest(Optional<Test> existingTest, List<Question> newQuestions) {
+        if (existingTest.isPresent()) {
+            List<Long> idsOfNewQuestions = getIdsOfQuestions(newQuestions);
+            List<Long> idsOfOldQuestions = getIdsOfQuestions(existingTest.get().getQuestions());
+            questionService.deleteQuestionByIdIn(getIdsToDelete(idsOfNewQuestions, idsOfOldQuestions));
         }
     }
 
