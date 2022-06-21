@@ -15,7 +15,6 @@ import software.sigma.internship.repo.AnswerRepository;
 import software.sigma.internship.repo.ResponseRepository;
 import software.sigma.internship.repo.TestRepository;
 import software.sigma.internship.service.ResponseService;
-import software.sigma.internship.test.passing.ScoreCounter;
 import software.sigma.internship.validator.exception.AnswerNotFoundException;
 import software.sigma.internship.validator.exception.TestNotFoundException;
 
@@ -29,7 +28,6 @@ public class ResponseServiceImpl implements ResponseService {
     private final AnswerRepository answerRepository;
     private final TestRepository testRepository;
     private final ModelMapper mapper;
-    private final ScoreCounter scoreCounter;
 
     @Override
     public List<ResponseDto> findAll() {
@@ -82,8 +80,7 @@ public class ResponseServiceImpl implements ResponseService {
                 .collect(Collectors.toList());
         response.setAnswers(answerDtos);
 
-        float testResult = scoreCounter.countResult(response);
-        response.setResult(testResult);
+        response.setResult(10); // the logic of counting will be here
 
         Response newResponse = responseRepository.save(mapper.map(response, Response.class));
         ResponseDto responseDto = mapper.map(newResponse, ResponseDto.class);
