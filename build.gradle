@@ -33,6 +33,7 @@ dependencies {
 	implementation 'org.postgresql:postgresql'
 	implementation "org.flywaydb:flyway-core"
 	implementation 'org.modelmapper:modelmapper:3.1.0'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
 }
 
