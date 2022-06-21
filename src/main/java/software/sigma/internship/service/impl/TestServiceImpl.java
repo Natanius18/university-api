@@ -18,6 +18,7 @@ import software.sigma.internship.validator.exception.TestNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,41 +71,62 @@ public class TestServiceImpl implements TestService {
     @Override
     @Transactional
     public TestDto save(TestDto testDto) {
-        Long id = testDto.getId();
-        if (id == null || testRepository.existsById(id)) {
+        Long testId = testDto.getId();
+        if (testId != null && testRepository.findById(testId).isEmpty()) {
+            throw new TestNotFoundException(testId);
+        } else {
             Test entity = mapper.map(testDto, Test.class);
-            List<Question> questions = testDto.getQuestions()
-                    .stream()
-                    .map(question -> {
-                        Question entityQuestion = mapper.map(question, Question.class);
-                        entityQuestion.setTest(entity);
-                        List<Answer> answers = question.getAnswers().stream()
-                                .map(answer -> {
-                                    Answer entityAnswer = mapper.map(answer, Answer.class);
-                                    entityAnswer.setQuestion(entityQuestion);
-                                    return entityAnswer;
-                                }).collect(Collectors.toList());
-                        entityQuestion.setAnswers(answers);
-                        return entityQuestion;
-                    }).collect(Collectors.toList());
+            List<Question> questions = mapQuestions(testDto, entity);
             entity.setQuestions(questions);
-
-            if (id != null && testRepository.existsById(id)) {
-
-                List<Long> idsOfNewQuestions = questions.stream().map(Question::getId).collect(Collectors.toList());
-                List<Long> idsOfOldQuestions = testRepository.findById(id).get().getQuestions().stream().map(Question::getId).collect(Collectors.toList());
-
-                questionService.deleteQuestionByIdIn(getIdsToDelete(idsOfNewQuestions, idsOfOldQuestions));
-            }
+            deleteQuestionsThatAreNoLongerBelongToTheTest(testId, questions);
             Test newTest = testRepository.save(entity);
             return mapper.map(newTest, TestDto.class);
         }
-        throw new TestNotFoundException(id);
     }
 
     @Override
     public void deleteById(Long id) {
         testRepository.deleteById(id);
+    }
+
+    private void deleteQuestionsThatAreNoLongerBelongToTheTest(Long testId, List<Question> newQuestions) {
+        if (testId != null) {
+            Optional<Test> existingTest = testRepository.findById(testId);
+            if (existingTest.isPresent()) {
+                List<Long> idsOfNewQuestions = getIdsOfQuestions(newQuestions);
+                List<Long> idsOfOldQuestions = getIdsOfQuestions(existingTest.get().getQuestions());
+                questionService.deleteQuestionByIdIn(getIdsToDelete(idsOfNewQuestions, idsOfOldQuestions));
+            }
+        }
+    }
+
+    private List<Long> getIdsOfQuestions(List<Question> questions) {
+        return questions
+                .stream()
+                .map(Question::getId)
+                .collect(Collectors.toList());
+    }
+
+
+    private List<Question> mapQuestions(TestDto testDto, Test entity) {
+        return testDto.getQuestions()
+                .stream()
+                .map(question -> {
+                    Question entityQuestion = mapper.map(question, Question.class);
+                    entityQuestion.setTest(entity);
+                    List<Answer> answers = mapAnswers(question, entityQuestion);
+                    entityQuestion.setAnswers(answers);
+                    return entityQuestion;
+                }).collect(Collectors.toList());
+    }
+
+    private List<Answer> mapAnswers(QuestionDto question, Question entityQuestion) {
+        return question.getAnswers().stream()
+                .map(answer -> {
+                    Answer entityAnswer = mapper.map(answer, Answer.class);
+                    entityAnswer.setQuestion(entityQuestion);
+                    return entityAnswer;
+                }).collect(Collectors.toList());
     }
 
 
