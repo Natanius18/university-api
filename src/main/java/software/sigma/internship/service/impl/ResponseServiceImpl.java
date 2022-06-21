@@ -15,6 +15,7 @@ import software.sigma.internship.repo.AnswerRepository;
 import software.sigma.internship.repo.ResponseRepository;
 import software.sigma.internship.repo.TestRepository;
 import software.sigma.internship.service.ResponseService;
+import software.sigma.internship.test.passing.ScoreCounter;
 import software.sigma.internship.validator.exception.AnswerNotFoundException;
 import software.sigma.internship.validator.exception.TestNotFoundException;
 
@@ -28,6 +29,7 @@ public class ResponseServiceImpl implements ResponseService {
     private final AnswerRepository answerRepository;
     private final TestRepository testRepository;
     private final ModelMapper mapper;
+    private final ScoreCounter scoreCounter;
 
     @Override
     public List<ResponseDto> findAll() {
@@ -65,12 +67,29 @@ public class ResponseServiceImpl implements ResponseService {
         Test test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
         response.setTest(mapper.map(test, TestDto.class));
 
-        int numberOfLastTry = responseRepository
-                .getFirstByStudentIdOrderByNumberOfTryDesc(response.getStudent().getId()).orElse(new Response())
-                .getNumberOfTry();
+        response.setNumberOfTry(getNumberOfNewTry(response));
+        response.setAnswers(getAnswerDtoList(response));
 
-        response.setNumberOfTry(numberOfLastTry + 1);
-        List<AnswerDto> answerDtos = response.getAnswers()
+        response.setResult(scoreCounter.countResult(response));
+
+        Response newResponse = responseRepository.save(mapper.map(response, Response.class));
+        return mapToReturnResponseDto(newResponse);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        responseRepository.deleteById(id);
+    }
+
+    private ResponseDto mapToReturnResponseDto(Response newResponse) {
+        ResponseDto responseDto = mapper.map(newResponse, ResponseDto.class);
+        responseDto.setTest(null);
+        responseDto.setAnswers(null);
+        return responseDto;
+    }
+
+    private List<AnswerDto> getAnswerDtoList(ResponseDto response) {
+        return response.getAnswers()
                 .stream()
                 .map(answerDto -> {
                     Answer answer = answerRepository.findById(answerDto.getId())
@@ -78,20 +97,11 @@ public class ResponseServiceImpl implements ResponseService {
                     return mapper.map(answer, AnswerDto.class);
                 })
                 .collect(Collectors.toList());
-        response.setAnswers(answerDtos);
-
-        response.setResult(10); // the logic of counting will be here
-
-        Response newResponse = responseRepository.save(mapper.map(response, Response.class));
-        ResponseDto responseDto = mapper.map(newResponse, ResponseDto.class);
-
-        responseDto.setTest(null);
-        responseDto.setAnswers(null);
-        return responseDto;
     }
 
-    @Override
-    public void deleteById(Long id) {
-        responseRepository.deleteById(id);
+    private int getNumberOfNewTry(ResponseDto response) {
+        return responseRepository
+                .getFirstByStudentIdOrderByNumberOfTryDesc(response.getStudent().getId()).orElse(new Response())
+                .getNumberOfTry() + 1;
     }
 }
