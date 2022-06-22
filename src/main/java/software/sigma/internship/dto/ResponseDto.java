@@ -1,14 +1,15 @@
 package software.sigma.internship.dto;
 
 import lombok.Data;
-import software.sigma.internship.enums.CountStrategy;
 
 import java.util.List;
 
 @Data
-public class QuestionDto {
+public class ResponseDto {
     private Long id;
-    private CountStrategy type;
-    private String text;
+    private StudentDto student;
+    private int numberOfTry;
+    private TestDto test;
     private List<AnswerDto> answers;
+    private float result;
 }
