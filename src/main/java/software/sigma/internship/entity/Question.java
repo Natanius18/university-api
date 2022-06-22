@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import software.sigma.internship.enums.CountStrategy;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ public class Question {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "test_id")
     private Test test;
-    private int type;
+    private CountStrategy type;
     private String text;
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers;
