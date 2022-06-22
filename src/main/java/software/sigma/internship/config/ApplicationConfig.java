@@ -10,7 +10,8 @@ import software.sigma.internship.test.passing.SeveralCorrectAnswersStrategy;
 
 import java.util.Map;
 
-import static software.sigma.internship.enums.CountStrategy.*;
+import static software.sigma.internship.enums.CountStrategy.ONE_CORRECT_ANSWER;
+import static software.sigma.internship.enums.CountStrategy.SEVERAL_CORRECT_ANSWERS;
 
 @Configuration
 public class ApplicationConfig {

@@ -4,17 +4,19 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.sigma.internship.dto.AnswerDto;
 import software.sigma.internship.dto.QuestionDto;
-import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.entity.Answer;
 import software.sigma.internship.entity.Question;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.entity.Test;
+import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.repo.TestRepository;
 import software.sigma.internship.service.QuestionService;
 import software.sigma.internship.service.TestService;
 import software.sigma.internship.validator.exception.TestNotFoundException;
+import software.sigma.internship.validator.exception.UserNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
+    private final TeacherRepository teacherRepository;
     private final ModelMapper mapper;
     private final QuestionService questionService;
 
@@ -40,8 +43,9 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<TestDto> findTestsByTeacher(TeacherDto teacher) {
-        List<Test> tests = testRepository.findTestsByTeacher(mapper.map(teacher, Teacher.class));
+    public List<TestDto> findTestsByTeacher(Long teacherId) {
+        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
+        List<Test> tests = testRepository.findTestsByTeacher(teacher);
         return tests.stream()
                 .map(entity -> {
                     TestDto testDto = mapper.map(entity, TestDto.class);
@@ -56,7 +60,30 @@ public class TestServiceImpl implements TestService {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
         TestDto testDto = mapper.map(test, TestDto.class);
         test.getTeacher().setTests(null);
+        List<QuestionDto> questions = test.getQuestions()
+                .stream()
+                .map(this::mapQuestion)
+                .collect(Collectors.toList());
+        testDto.setQuestions(questions);
         return testDto;
+    }
+
+    private QuestionDto mapQuestion(Question question) {
+        List<AnswerDto> answers = hideIsCorrect(question);
+        QuestionDto questionDto = mapper.map(question, QuestionDto.class);
+        questionDto.setAnswers(answers);
+        return questionDto;
+    }
+
+    private List<AnswerDto> hideIsCorrect(Question question) {
+        return question.getAnswers()
+                .stream()
+                .map(answer -> {
+                    AnswerDto answerDto = mapper.map(answer, AnswerDto.class);
+                    answerDto.setIsCorrect(null);
+                    return answerDto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

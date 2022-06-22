@@ -10,7 +10,7 @@ public class OneCorrectAnswerStrategy implements CounterStrategy {
     public float count(QuestionDto questionDto, List<AnswerDto> answersInResponse) {
         AnswerDto rightAnswer = questionDto.getAnswers()
                 .stream()
-                .filter(AnswerDto::isCorrect)
+                .filter(AnswerDto::getIsCorrect)
                 .findFirst()
                 .orElseThrow();
         return (answersInResponse.contains(rightAnswer) ?  1 : 0);

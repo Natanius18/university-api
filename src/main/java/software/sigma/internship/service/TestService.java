@@ -1,7 +1,6 @@
 package software.sigma.internship.service;
 
 import software.sigma.internship.dto.QuestionDto;
-import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.dto.TestDto;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 public interface TestService {
     List<TestDto> findAll();
 
-    List<TestDto> findTestsByTeacher(TeacherDto teacher);
+    List<TestDto> findTestsByTeacher(Long teacherId);
 
     TestDto findById(Long id);
 

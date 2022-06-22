@@ -27,7 +27,7 @@ public class Answer {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "question_id")
     private Question question;
-    private boolean isCorrect;
+    private Boolean isCorrect;
     private String option;
 
     @ManyToMany(mappedBy = "answers")

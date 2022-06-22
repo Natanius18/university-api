@@ -11,8 +11,8 @@ public class SeveralCorrectAnswersStrategy implements CounterStrategy {
         float score = 0;
         List<AnswerDto> rightAnswers = questionDto.getAnswers();
         for (AnswerDto answer : rightAnswers) {
-            if (answer.isCorrect() && response.contains(answer) ||
-                    !answer.isCorrect() && !response.contains(answer)) {
+            if (Boolean.TRUE.equals(answer.getIsCorrect() && response.contains(answer)) ||
+                    Boolean.TRUE.equals(!answer.getIsCorrect() && !response.contains(answer))) {
                 score++;
             }
         }
