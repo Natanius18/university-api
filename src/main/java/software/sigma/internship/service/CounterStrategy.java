@@ -1,4 +1,4 @@
-package software.sigma.internship.test.passing;
+package software.sigma.internship.service;
 
 import software.sigma.internship.dto.AnswerDto;
 import software.sigma.internship.dto.QuestionDto;

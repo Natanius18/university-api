@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import software.sigma.internship.dto.ResponseDto;
 import software.sigma.internship.dto.StudentDto;
+import software.sigma.internship.service.ResponseService;
 import software.sigma.internship.service.StudentService;
 
 import javax.validation.Valid;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequestMapping(path = "/v1/students")
 public class StudentController {
     private final StudentService studentService;
+    private ResponseService responseService;
 
     @GetMapping
     public List<StudentDto> fetchList() {
@@ -28,6 +31,11 @@ public class StudentController {
     @GetMapping("/{id}")
     public StudentDto fetch(@PathVariable Long id) {
         return studentService.findById(id);
+    }
+
+    @GetMapping("/{id}/responses")
+    public List<ResponseDto> fetchResponsesByStudent(@PathVariable Long id){
+        return responseService.findByStudent(id);
     }
 
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})

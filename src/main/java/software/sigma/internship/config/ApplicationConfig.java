@@ -4,7 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.sigma.internship.enums.CountStrategy;
-import software.sigma.internship.test.passing.CounterStrategy;
+import software.sigma.internship.service.CounterStrategy;
 import software.sigma.internship.test.passing.OneCorrectAnswerStrategy;
 import software.sigma.internship.test.passing.SeveralCorrectAnswersStrategy;
 

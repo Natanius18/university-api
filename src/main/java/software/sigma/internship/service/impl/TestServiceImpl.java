@@ -56,44 +56,50 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public TestDto findById(Long id) {
+    public TestDto findByIdForStudent(Long id) {
+        Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
+        TestDto testDto = mapper.map(test, TestDto.class);
+        test.getTeacher().setTests(null);
+        List<QuestionDto> questions = getQuestionsWithHiddenCorrectAnswers(test);
+        testDto.setQuestions(questions);
+        return testDto;
+    }
+
+    @Override
+    public TestDto findByIdForTeacher(Long id) {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
         TestDto testDto = mapper.map(test, TestDto.class);
         test.getTeacher().setTests(null);
         List<QuestionDto> questions = test.getQuestions()
                 .stream()
-                .map(this::mapQuestion)
+                .map(question -> mapper.map(question, QuestionDto.class))
                 .collect(Collectors.toList());
         testDto.setQuestions(questions);
         return testDto;
     }
 
-    private QuestionDto mapQuestion(Question question) {
-        List<AnswerDto> answers = hideIsCorrect(question);
-        QuestionDto questionDto = mapper.map(question, QuestionDto.class);
-        questionDto.setAnswers(answers);
-        return questionDto;
-    }
-
-    private List<AnswerDto> hideIsCorrect(Question question) {
-        return question.getAnswers()
+    private List<QuestionDto> getQuestionsWithHiddenCorrectAnswers(Test test) {
+        return test.getQuestions()
                 .stream()
-                .map(answer -> {
-                    AnswerDto answerDto = mapper.map(answer, AnswerDto.class);
-                    answerDto.setIsCorrect(null);
-                    return answerDto;
+                .map(question -> {
+                    List<AnswerDto> answers = hideCorrectFieldInAnswersOfQuestion(question);
+                    QuestionDto questionDto = mapper.map(question, QuestionDto.class);
+                    questionDto.setAnswers(answers);
+                    return questionDto;
                 })
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public QuestionDto findQuestion(Long id, Long qId) {
-        if (testRepository.existsById(id)) {
-            return questionService.findById(qId);
-        }
-        throw new TestNotFoundException(id);
+    private List<AnswerDto> hideCorrectFieldInAnswersOfQuestion(Question question) {
+        return question.getAnswers()
+                .stream()
+                .map(answer -> {
+                    AnswerDto answerDto = mapper.map(answer, AnswerDto.class);
+                    answerDto.setCorrect(null);
+                    return answerDto;
+                })
+                .collect(Collectors.toList());
     }
-
 
     @Override
     @Transactional
@@ -134,7 +140,6 @@ public class TestServiceImpl implements TestService {
                 .map(Question::getId)
                 .collect(Collectors.toList());
     }
-
 
     private List<Question> mapQuestions(TestDto testDto, Test entity) {
         return testDto.getQuestions()

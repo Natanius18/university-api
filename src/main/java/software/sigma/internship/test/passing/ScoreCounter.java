@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.dto.ResponseDto;
 import software.sigma.internship.enums.CountStrategy;
+import software.sigma.internship.service.CounterStrategy;
 
 import java.util.List;
 import java.util.Map;

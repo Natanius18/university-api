@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.service.TestService;
 
@@ -35,39 +34,30 @@ public class TestController {
         return testService.findAll();
     }
 
-
-    @ApiOperation(value = "Get all tests from a specific teacher")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Found the tests")
-    })
-    @GetMapping(path = "byTeacher/{teacherId}")
-    public List<TestDto> fetchTestsByTeacher(
-            @ApiParam(value = "id of the teacher whose tests we want to get")
-            @PathVariable Long teacherId) {
-        return testService.findTestsByTeacher(teacherId);
-    }
-
-
-    @ApiOperation(value = "Get a test by id", response = TestDto.class, produces = "application/json")
+    @ApiOperation(value = "Get a test by id for students with hidden field 'correct'", response = TestDto.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Found the test by id")
     })
     @GetMapping("/{id}")
-    public TestDto fetch(@ApiParam(value = "id of the test we want to get")
+    public TestDto fetchForStudent(@ApiParam(value = "id of the test we want to get")
                          @PathVariable Long id) {
-        return testService.findById(id);
+        return testService.findByIdForStudent(id);
     }
 
-
-    @GetMapping("/{testId}/{qId}")
-    public QuestionDto fetch(@PathVariable Long testId, @PathVariable Long qId) {
-        return testService.findQuestion(testId, qId);
+    @ApiOperation(value = "Get a test by id for teachers to let them see whole test and change it", response = TestDto.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Found the test by id"),
+            @ApiResponse(code = 404, message = "The test doesn't exist")
+    })
+    @GetMapping("/{id}/full")
+    public TestDto fetchForTeacher(@ApiParam(value = "id of the test we want to get")
+                         @PathVariable Long id) {
+        return testService.findByIdForTeacher(id);
     }
 
     @ApiOperation(value = "Save or update test")
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
-    public TestDto save(
-            @ApiParam(value = "Object of the test to be saved or updated")
+    public TestDto save(@ApiParam(value = "Object of the test to be saved or updated")
             @RequestBody TestDto test) {
         return testService.save(test);
     }

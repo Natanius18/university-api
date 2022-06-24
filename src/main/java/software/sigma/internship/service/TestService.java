@@ -1,6 +1,5 @@
 package software.sigma.internship.service;
 
-import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.dto.TestDto;
 
 import java.util.List;
@@ -10,9 +9,9 @@ public interface TestService {
 
     List<TestDto> findTestsByTeacher(Long teacherId);
 
-    TestDto findById(Long id);
+    TestDto findByIdForStudent(Long id);
 
-    QuestionDto findQuestion(Long id, Long qId);
+    TestDto findByIdForTeacher(Long id);
 
     TestDto save(TestDto test);
 
