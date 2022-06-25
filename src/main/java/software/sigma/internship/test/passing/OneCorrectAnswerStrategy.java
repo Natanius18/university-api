@@ -14,6 +14,6 @@ public class OneCorrectAnswerStrategy implements CounterStrategy {
                 .filter(AnswerDto::getCorrect)
                 .findFirst()
                 .orElseThrow();
-        return (answersInResponse.contains(rightAnswer) ?  1 : 0);
+        return (answersInResponse.contains(rightAnswer) ? 1 : 0);
     }
 }

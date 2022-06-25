@@ -162,7 +162,6 @@ public class TestServiceImpl implements TestService {
                 }).collect(Collectors.toList());
     }
 
-
     public List<Long> getIdsToDelete(List<Long> idsOfNewQuestions, List<Long> idsOfOldQuestions) {
         List<Long> result = new ArrayList<>(idsOfNewQuestions);
         result.addAll(idsOfOldQuestions);

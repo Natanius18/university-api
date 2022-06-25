@@ -34,31 +34,36 @@ public class TestController {
         return testService.findAll();
     }
 
-    @ApiOperation(value = "Get a test by id for students with hidden field 'correct'", response = TestDto.class, produces = "application/json")
+    @ApiOperation(value = "Get a test by id for students with hidden field 'correct'", response = TestDto.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Found the test by id")
+            @ApiResponse(code = 200, message = "Found the test by id"),
+            @ApiResponse(code = 404, message = "The test doesn't exist")
     })
     @GetMapping("/{id}")
     public TestDto fetchForStudent(@ApiParam(value = "id of the test we want to get")
-                         @PathVariable Long id) {
+                                   @PathVariable Long id) {
         return testService.findByIdForStudent(id);
     }
 
-    @ApiOperation(value = "Get a test by id for teachers to let them see whole test and change it", response = TestDto.class, produces = "application/json")
+    @ApiOperation(value = "Get a test by id for teachers to let them see the whole test and change it", response = TestDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Found the test by id"),
             @ApiResponse(code = 404, message = "The test doesn't exist")
     })
     @GetMapping("/{id}/full")
     public TestDto fetchForTeacher(@ApiParam(value = "id of the test we want to get")
-                         @PathVariable Long id) {
+                                   @PathVariable Long id) {
         return testService.findByIdForTeacher(id);
     }
 
     @ApiOperation(value = "Save or update test")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Test was successfully saved or updated"),
+            @ApiResponse(code = 404, message = "The test doesn't exist")
+    })
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
     public TestDto save(@ApiParam(value = "Object of the test to be saved or updated")
-            @RequestBody TestDto test) {
+                        @RequestBody TestDto test) {
         return testService.save(test);
     }
 

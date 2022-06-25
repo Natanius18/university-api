@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({UserNotFoundException.class, TestNotFoundException.class,
-                        AnswerNotFoundException.class, QuestionNotFoundException.class})
+            AnswerNotFoundException.class, QuestionNotFoundException.class})
     protected ResponseEntity<Object> handleConflict(RuntimeException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());

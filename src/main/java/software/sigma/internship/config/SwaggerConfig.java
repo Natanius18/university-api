@@ -19,16 +19,16 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage ("software.sigma.internship"))
+                .apis(RequestHandlerSelectors.basePackage("software.sigma.internship"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title ("RESTful API for universities")
+                .title("RESTful API for universities")
                 .contact(new Contact("Natan Chachko", "", "natan.chachko@stud.onu.edu.ua"))
-                .description ("This API allows teachers to create tests and students to pass these tests")
+                .description("This API allows teachers to create tests and students to pass these tests")
                 .version("1.0")
                 .build();
     }
