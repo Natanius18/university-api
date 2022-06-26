@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,9 +28,10 @@ public class Answer {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "question_id")
     private Question question;
-    private Boolean isCorrect;
+    @Column(name = "is_correct")
+    private Boolean correct;
     private String option;
 
-    @ManyToMany(mappedBy = "answers")
+    @ManyToMany(mappedBy = "answers", cascade = CascadeType.ALL)
     private List<Response> responses;
 }

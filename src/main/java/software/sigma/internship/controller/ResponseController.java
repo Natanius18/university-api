@@ -32,10 +32,7 @@ public class ResponseController {
     }
 
     @ApiOperation(value = "Save a response", response = ResponseDto.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Teacher was successfully saved or updated"),
-            @ApiResponse(code = 404, message = "The teacher doesn't exist")
-    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Response was successfully saved")})
     @PostMapping
     public ResponseDto save(@ApiParam(value = "Object of the response to be saved")
                             @RequestBody ResponseDto response) {
