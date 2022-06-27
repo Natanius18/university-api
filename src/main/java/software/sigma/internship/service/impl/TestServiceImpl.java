@@ -45,7 +45,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public List<TestDto> findTestsByTeacher(Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
-        List<Test> tests = testRepository.findTestsByTeacher(teacher);
+        List<Test> tests = teacher.getTests();
         return tests.stream()
                 .map(entity -> {
                     TestDto testDto = mapper.map(entity, TestDto.class);
