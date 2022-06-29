@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
-    private  final AnswerRepository answerRepository;
-    private  final ModelMapper answerMapper;
+    private final AnswerRepository answerRepository;
+    private final ModelMapper answerMapper;
 
     @Override
     public List<AnswerDto> findAll() {

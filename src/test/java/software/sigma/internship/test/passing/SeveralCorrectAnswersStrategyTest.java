@@ -61,6 +61,12 @@ public class SeveralCorrectAnswersStrategyTest {
     }
 
     @Test
+    public void countShouldAlsoReturn075(){
+        response = List.of(answer1, answer2, answer3);
+        assertThat(strategy.count(questionDto, response)).isEqualTo(0.75f);
+    }
+
+    @Test
     public void countShouldReturn05(){
         response = List.of(answer1, answer3);
         assertThat(strategy.count(questionDto, response)).isEqualTo(0.5f);
