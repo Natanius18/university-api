@@ -44,7 +44,7 @@ public class ResponseServiceImpl implements ResponseService {
     @Override
     public List<ResponseDto> findByStudent(Long studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new UserNotFoundException(studentId));
-        List<Response> responses = student.getResponses();
+        List<Response> responses = responseRepository.findAllByStudent(student);
         return getResponseDtoList(responses);
     }
 
