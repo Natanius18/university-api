@@ -25,6 +25,9 @@ public class StudentRepositoryTest {
 
     private final Student student = new Student();
 
+    private final String FIRST_NAME = "Natan";
+    private final String LAST_NAME = "Chachko";
+
     @Test
     public void givenStudentRepository_whenSaveAndRetrieveEntity_thenOK() {
         Student savedStudent = saveNewStudent();
@@ -72,8 +75,8 @@ public class StudentRepositoryTest {
 
     private Student saveNewStudent() {
         student.setCourse(1);
-        student.setFirstName("Natan"); //fixme constant
-        student.setLastName("Chachko");
+        student.setFirstName(FIRST_NAME);
+        student.setLastName(LAST_NAME);
         student.setResponses(new ArrayList<>());
 
         return studentRepository.save(student);
