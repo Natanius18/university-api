@@ -1,8 +1,11 @@
 package software.sigma.internship.config;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.sigma.internship.dto.TestDto;
+import software.sigma.internship.entity.Test;
 import software.sigma.internship.enums.CountStrategy;
 import software.sigma.internship.service.CounterStrategy;
 import software.sigma.internship.test.passing.OneCorrectAnswerStrategy;
@@ -18,7 +21,14 @@ public class ApplicationConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<Test, TestDto>() {
+            @Override
+            protected void configure() {
+                skip(destination.getQuestions());
+            }
+        });
+        return modelMapper;
     }
 
     @Bean
