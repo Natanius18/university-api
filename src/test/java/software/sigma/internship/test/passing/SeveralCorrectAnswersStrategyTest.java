@@ -49,37 +49,37 @@ public class SeveralCorrectAnswersStrategyTest {
     }
 
     @Test
-    public void countShouldReturn1(){
+    public void count_whenAllAnswersAreCorrect(){
         response = List.of(answer1, answer2, answer5);
         assertThat(strategy.count(questionDto, response)).isEqualTo(1);
     }
 
     @Test
-    public void countShouldReturn075(){
+    public void count_when1outOf2CorrectAnswersAreInResponse(){
         response = List.of(answer1);
         assertThat(strategy.count(questionDto, response)).isEqualTo(0.75f);
     }
 
     @Test
-    public void countShouldAlsoReturn075(){
+    public void count_when3AnswersOutOf2CorrectAreInResponse(){
         response = List.of(answer1, answer2, answer3);
         assertThat(strategy.count(questionDto, response)).isEqualTo(0.75f);
     }
 
     @Test
-    public void countShouldReturn05(){
+    public void count_when1CorrectAnd1IncorrectAnswersOutOf2CorrectAreInResponse(){
         response = List.of(answer1, answer3);
         assertThat(strategy.count(questionDto, response)).isEqualTo(0.5f);
     }
 
     @Test
-    public void countShouldReturn025(){
+    public void count_when1IncorrectAnswerOutOf2CorrectAreInResponse(){
         response = List.of(answer3);
         assertThat(strategy.count(questionDto, response)).isEqualTo(0.25f);
     }
 
     @Test
-    public void countShouldReturnZero(){
+    public void count_when2IncorrectAnswersOutOf2CorrectAreInResponse(){
         response = List.of(answer3, answer4);
         assertThat(strategy.count(questionDto, response)).isZero();
     }
