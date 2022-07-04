@@ -85,12 +85,8 @@ public class TeacherServiceTest {
     @Test(expected = UserNotFoundException.class)
     public void updateNonExistentTeacherShouldThrowException() {
         TeacherDto teacherToUpdateDto = createTeacherDto(2L, Teacher.Position.DOCENT, FIRST_NAME2, LAST_NAME2);
-        Teacher entityOfTeacherToUpdate = createTeacher(2L, Teacher.Position.DOCENT, FIRST_NAME2, LAST_NAME2);
 
         when(teacherRepository.existsById(2L)).thenReturn(false);
-        when(teacherMapper.map(teacherToUpdateDto, Teacher.class)).thenReturn(entityOfTeacherToUpdate);
-        when(teacherRepository.save(entityOfTeacherToUpdate)).thenReturn(entityOfTeacherToUpdate);
-        when(teacherMapper.map(entityOfTeacherToUpdate, TeacherDto.class)).thenReturn(teacherToUpdateDto);
 
         assertThat(teacherService.save(teacherToUpdateDto)).isEqualTo(teacherToUpdateDto);
     }
