@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -41,6 +44,8 @@ public class Response {
     @JoinTable(name = "response_to_answer",
             joinColumns = @JoinColumn(name = "response_id"),
             inverseJoinColumns = @JoinColumn(name = "answer_id"))
+    @Fetch(FetchMode.SELECT)
+    @BatchSize(size = 50)
     private List<Answer> answers;
 
     private float result;

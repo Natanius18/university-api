@@ -21,6 +21,7 @@ import java.util.List;
 @DiscriminatorValue("Teacher")
 public class Teacher extends Person {
     private Position position;
+
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
     private List<Test> tests;
 
