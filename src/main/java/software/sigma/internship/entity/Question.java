@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import software.sigma.internship.enums.CountStrategy;
 
 import javax.persistence.CascadeType;
@@ -31,5 +34,7 @@ public class Question {
     private CountStrategy type;
     private String text;
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @BatchSize(size = 20)
     private List<Answer> answers;
 }
