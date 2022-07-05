@@ -35,11 +35,8 @@ public class TestServiceImpl implements TestService {
     public List<TestDto> findAll() {
         List<Test> tests = testRepository.findAll();
         return tests.stream()
-                .map(entity -> {
-                    TestDto testDto = mapper.map(entity, TestDto.class);
-                    testDto.setQuestions(null);
-                    return testDto;
-                }).collect(Collectors.toList());
+                .map(entity -> mapper.map(entity, TestDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -49,7 +46,6 @@ public class TestServiceImpl implements TestService {
         return tests.stream()
                 .map(entity -> {
                     TestDto testDto = mapper.map(entity, TestDto.class);
-                    testDto.setQuestions(null);
                     testDto.setTeacher(null);
                     return testDto;
                 }).collect(Collectors.toList());
