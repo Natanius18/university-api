@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import software.sigma.internship.dto.TestDto;
+import software.sigma.internship.enums.Permission;
 import software.sigma.internship.service.TestService;
 
+import java.util.Collection;
 import java.util.List;
 
 @Api(value = "Test controller")
@@ -34,26 +38,23 @@ public class TestController {
         return testService.findAll();
     }
 
-    @ApiOperation(value = "Get a test by id for students with hidden field 'correct'", response = TestDto.class)
+    @ApiOperation(value = "Get a test by id (for students with hidden field 'correct' and for teachers to let them see the whole test and change it)",
+            response = TestDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Found the test by id"),
             @ApiResponse(code = 404, message = "The test doesn't exist")
     })
     @GetMapping("/{id}")
-    public TestDto fetchForStudent(@ApiParam(value = "id of the test we want to get")
+    public TestDto fetch(@ApiParam(value = "id of the test we want to get")
                                    @PathVariable Long id) {
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getAuthorities();
+        if (authorities.contains(Permission.READ_FULL.getAuthority())) {
+            return testService.findByIdForTeacher(id);
+        }
         return testService.findByIdForStudent(id);
-    }
-
-    @ApiOperation(value = "Get a test by id for teachers to let them see the whole test and change it", response = TestDto.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Found the test by id"),
-            @ApiResponse(code = 404, message = "The test doesn't exist")
-    })
-    @GetMapping("/{id}/full")
-    public TestDto fetchForTeacher(@ApiParam(value = "id of the test we want to get")
-                                   @PathVariable Long id) {
-        return testService.findByIdForTeacher(id);
     }
 
     @ApiOperation(value = "Save or update test")
