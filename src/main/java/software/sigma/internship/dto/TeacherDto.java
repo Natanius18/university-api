@@ -1,19 +1,18 @@
 package software.sigma.internship.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import software.sigma.internship.entity.Teacher;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TeacherDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
+public class TeacherDto extends PersonDto {
     private Teacher.Position position;
 }

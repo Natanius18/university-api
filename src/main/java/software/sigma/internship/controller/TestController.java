@@ -47,7 +47,7 @@ public class TestController {
     })
     @GetMapping("/{id}")
     public TestDto fetch(@ApiParam(value = "id of the test we want to get")
-                                   @PathVariable Long id) {
+                         @PathVariable Long id) {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder
                 .getContext()
                 .getAuthentication()

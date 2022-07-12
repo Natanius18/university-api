@@ -36,24 +36,28 @@ public class SecurityUser implements UserDetails {
         return userName;
     }
 
+    private boolean isActive(){
+        return isActive;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
-        return isActive;
+        return isActive();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isActive;
+        return isActive();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isActive;
+        return isActive();
     }
 
     @Override
     public boolean isEnabled() {
-        return isActive;
+        return isActive();
     }
 
     public static UserDetails fromPerson(Person person) {
