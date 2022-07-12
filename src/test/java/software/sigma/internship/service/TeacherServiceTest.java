@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.repo.TeacherRepository;
@@ -15,6 +16,7 @@ import software.sigma.internship.validator.exception.UserNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -24,6 +26,9 @@ public class TeacherServiceTest {
 
     @Mock
     private ModelMapper teacherMapper;
+
+    @Mock
+    private BCryptPasswordEncoder encoder;
 
     @InjectMocks
     private TeacherServiceImpl teacherService;
@@ -75,6 +80,7 @@ public class TeacherServiceTest {
         Teacher entityOfTeacherToUpdate = createTeacher(2L, Teacher.Position.DOCENT, FIRST_NAME2, LAST_NAME2);
 
         when(teacherRepository.existsById(2L)).thenReturn(true);
+        when(encoder.encode(any())).thenReturn("password");
         when(teacherMapper.map(teacherToUpdateDto, Teacher.class)).thenReturn(entityOfTeacherToUpdate);
         when(teacherRepository.save(entityOfTeacherToUpdate)).thenReturn(entityOfTeacherToUpdate);
         when(teacherMapper.map(entityOfTeacherToUpdate, TeacherDto.class)).thenReturn(teacherToUpdateDto);
@@ -106,6 +112,8 @@ public class TeacherServiceTest {
         teacher.setId(id);
         teacher.setFirstName(firstName);
         teacher.setLastName(lastName);
+        teacher.setEmail("teacher@gmail.com");
+        teacher.setPassword("password");
         return teacher;
     }
 }
