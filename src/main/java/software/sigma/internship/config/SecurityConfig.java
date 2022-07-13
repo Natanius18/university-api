@@ -21,7 +21,7 @@ import software.sigma.internship.security.JwtConfigurer;
 @AllArgsConstructor
 public class SecurityConfig {
 
-    private final int encoderStrength = 12;
+    private static final int ENCODER_STRENGTH = 12;
     private final JwtConfigurer jwtConfigurer;
     private final AuthenticationConfiguration authenticationConfiguration;
 
@@ -59,7 +59,7 @@ public class SecurityConfig {
 
     @Bean
     protected PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(encoderStrength);
+        return new BCryptPasswordEncoder(ENCODER_STRENGTH);
     }
 
 }
