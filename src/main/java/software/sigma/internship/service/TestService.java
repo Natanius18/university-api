@@ -13,6 +13,8 @@ public interface TestService {
 
     TestDto findByIdForTeacher(Long id);
 
+    TestDto findById(Long id);
+
     TestDto save(TestDto test);
 
     void deleteById(Long id);

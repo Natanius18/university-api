@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,26 +35,16 @@ public class TestController {
         return testService.findAll();
     }
 
-    @ApiOperation(value = "Get a test by id for students with hidden field 'correct'", response = TestDto.class)
+    @ApiOperation(value = "Get a test by id (for students with hidden field 'correct' and for teachers to let them see the whole test and change it)",
+            response = TestDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Found the test by id"),
             @ApiResponse(code = 404, message = "The test doesn't exist")
     })
     @GetMapping("/{id}")
-    public TestDto fetchForStudent(@ApiParam(value = "id of the test we want to get")
+    public TestDto fetch(@ApiParam(value = "id of the test we want to get")
                                    @PathVariable Long id) {
-        return testService.findByIdForStudent(id);
-    }
-
-    @ApiOperation(value = "Get a test by id for teachers to let them see the whole test and change it", response = TestDto.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Found the test by id"),
-            @ApiResponse(code = 404, message = "The test doesn't exist")
-    })
-    @GetMapping("/{id}/full")
-    public TestDto fetchForTeacher(@ApiParam(value = "id of the test we want to get")
-                                   @PathVariable Long id) {
-        return testService.findByIdForTeacher(id);
+        return testService.findById(id);
     }
 
     @ApiOperation(value = "Save or update test")
@@ -62,6 +53,7 @@ public class TestController {
             @ApiResponse(code = 404, message = "The test doesn't exist")
     })
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
+    @PreAuthorize("hasAuthority('writeTest')")
     public TestDto save(@ApiParam(value = "Object of the test to be saved or updated")
                         @RequestBody TestDto test) {
         return testService.save(test);
@@ -69,6 +61,7 @@ public class TestController {
 
     @ApiOperation(value = "Delete a test by id")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('writeTest')")
     public void delete(@ApiParam(value = "id of the test we want to delete")
                        @PathVariable Long id) {
         testService.deleteById(id);
