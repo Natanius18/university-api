@@ -39,11 +39,8 @@ To get teacher's or student's privileges, you need to send a request to the admi
 4. Configure your datasource properties to create a connection:
  + Host: localhost
  + Port: 5432
- + User: natanius
- + Password: 12345
- + Database: university    
-You can also change these properties to use your own user, but don't forget to 
-change also properties in [application.yaml](https://github.com/Natanius18/internship/blob/main/src/main/resources/application.yaml).
+ + Set your username and password (don't forget to change also properties in [application.yaml](https://github.com/Natanius18/internship/blob/main/src/main/resources/application.yaml)).
+ + Database: university
 
 5. Run the project.
 
