@@ -7,8 +7,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import software.sigma.internship.dto.TestDto;
-import software.sigma.internship.enums.Permission;
 import software.sigma.internship.service.TestService;
 
-import java.util.Collection;
 import java.util.List;
 
 @Api(value = "Test controller")
@@ -48,14 +44,7 @@ public class TestController {
     @GetMapping("/{id}")
     public TestDto fetch(@ApiParam(value = "id of the test we want to get")
                                    @PathVariable Long id) {
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getAuthorities();
-        if (authorities.contains(Permission.READ_FULL.getAuthority())) {
-            return testService.findByIdForTeacher(id);
-        }
-        return testService.findByIdForStudent(id);
+        return testService.findById(id);
     }
 
     @ApiOperation(value = "Save or update test")
