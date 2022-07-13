@@ -1,11 +1,11 @@
 # API for universities
-# Table of Contents
+## Table of Contents
 * [Project purpose](#purpose)
 * [Project structure](#structure)
 * [For developer](#developer-start)
 * [Author](#author)
 
-# <a name="purpose"></a>Project purpose
+## <a name="purpose"></a>Project purpose
 Creation of the platform where teachers can create tests and students can pass them.
 <hr>
 Without being authenticated you can register and login.
@@ -14,7 +14,7 @@ Thus, any registered person gets access to the system, but not to all its functi
 To get teacher's or student's privileges, you need to send a request to the administrator, who can confirm your role.
 <hr>
 
-# <a name="structure"></a>Project Structure
+## <a name="structure"></a>Project Structure
 * Java 11
 * hibernate-core 5.6.9.Final
 * org.flywaydb.flyway 8.5.11
@@ -28,7 +28,7 @@ To get teacher's or student's privileges, you need to send a request to the admi
 * spring-security-core, spring-security-config, spring-security-web 5.7.1
 <hr>
 
-# <a name="developer-start"></a>For developer
+## <a name="developer-start"></a>For developer
 
 1. Open the project in your IDE.
 
@@ -52,7 +52,7 @@ change also properties in [application.yaml](https://github.com/Natanius18/inter
 7. For authorization, you must add a new header, where Authorization is a key, 
 and you should pass a JVT token, which you will receive after registration (using method [POST](http://localhost:8080/university/swagger-ui/index.html#/student-controller/saveUsingPOST_1)) and [logging in](http://localhost:8080/university/swagger-ui/index.html#/authentication-controller/authenticateUsingPOST).
 
-# <a name="author"></a>Author
+## <a name="author"></a>Author
 
 Natan Chachko: https://github.com/Natanius18
 
