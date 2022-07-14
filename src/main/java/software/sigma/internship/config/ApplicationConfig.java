@@ -4,7 +4,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.sigma.internship.dto.PersonDto;
+import software.sigma.internship.dto.StudentDto;
+import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.dto.TestDto;
+import software.sigma.internship.entity.Student;
+import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.entity.Test;
 import software.sigma.internship.enums.CountStrategy;
 import software.sigma.internship.service.CounterStrategy;
@@ -25,9 +30,44 @@ public class ApplicationConfig {
         modelMapper.addMappings(new PropertyMap<Test, TestDto>() {
             @Override
             protected void configure() {
-                skip(destination.getQuestions());
+                skip(destination.getTeacher().getRole());
+                skip(destination.getTeacher().getPassword());
+                skip(destination.getTeacher().getStatus());
             }
         });
+
+        modelMapper.addMappings(new PropertyMap<Student, StudentDto>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPassword());
+                skip(destination.getStatus());
+                skip(destination.getRole());
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<Teacher, TeacherDto>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPassword());
+                skip(destination.getStatus());
+                skip(destination.getRole());
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<Student, PersonDto>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPassword());
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<Teacher, PersonDto>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPassword());
+            }
+        });
+
         return modelMapper;
     }
 

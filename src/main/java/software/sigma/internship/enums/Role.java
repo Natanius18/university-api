@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 @Getter
 @AllArgsConstructor
 public enum Role {
-    USER(null),
+    ADMIN(Set.of(Permission.APPROVE_PROFILE)),
     STUDENT(Set.of(Permission.READ)),
-    TEACHER(Set.of(Permission.READ_FULL, Permission.WRITE));
+    TEACHER(Set.of(Permission.READ_FULL, Permission.WRITE)),
+    USER(Set.of());
 
     private final Set<Permission> permissions;
-
 
     public Set<SimpleGrantedAuthority> getAuthorities() {
         return getPermissions().stream()

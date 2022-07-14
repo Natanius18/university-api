@@ -3,6 +3,7 @@ package software.sigma.internship.config;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -20,9 +21,9 @@ import software.sigma.internship.security.JwtConfigurer;
 @AllArgsConstructor
 public class SecurityConfig {
 
+    private static final int ENCODER_STRENGTH = 12;
     private final JwtConfigurer jwtConfigurer;
     private final AuthenticationConfiguration authenticationConfiguration;
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -39,7 +40,10 @@ public class SecurityConfig {
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/configuration/ui").permitAll()
-
+                .antMatchers(HttpMethod.POST,"/v1/students").permitAll()
+                .antMatchers(HttpMethod.PUT,"/v1/students").permitAll()
+                .antMatchers(HttpMethod.POST,"/v1/teachers").permitAll()
+                .antMatchers(HttpMethod.PUT,"/v1/teachers").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -48,14 +52,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception
-    {
+    public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     protected PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+        return new BCryptPasswordEncoder(ENCODER_STRENGTH);
     }
 
 }

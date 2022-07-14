@@ -9,7 +9,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 public enum Permission {
     READ("students:read"),
     READ_FULL("teachers:read"),
-    WRITE("writeTest");
+    WRITE("writeTest"),
+    APPROVE_PROFILE("admin:approve-profile");
 
     private final String permission;
 

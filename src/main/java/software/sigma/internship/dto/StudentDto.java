@@ -1,15 +1,16 @@
 package software.sigma.internship.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import software.sigma.internship.validator.ValidCourse;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class StudentDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    @ValidCourse
+public class StudentDto extends PersonDto {
     private Integer course;
 }

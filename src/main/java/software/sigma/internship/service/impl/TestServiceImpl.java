@@ -128,6 +128,9 @@ public class TestServiceImpl implements TestService {
         List<Question> questions = mapQuestions(testDto, entity);
         entity.setQuestions(questions);
         deleteQuestionsThatAreNoLongerBelongToTheTest(existingTest, questions);
+        Long teacherId = testDto.getTeacher().getId();
+        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
+        entity.setTeacher(teacher);
         Test newTest = testRepository.save(entity);
         return mapper.map(newTest, TestDto.class);
     }

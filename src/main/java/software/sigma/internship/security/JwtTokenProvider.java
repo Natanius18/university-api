@@ -36,7 +36,7 @@ public class JwtTokenProvider {
         this.userDetailsService = userDetailsService;
     }
 
-    public String createToken(String username, String role){
+    public String createToken(String username, String role) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("role", role);
         Date now = new Date();
@@ -50,7 +50,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public  boolean validateToken(String token){
+    public boolean validateToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
@@ -68,7 +68,7 @@ public class JwtTokenProvider {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String resolveToken(HttpServletRequest request){
+    public String resolveToken(HttpServletRequest request) {
         return request.getHeader(authorizationHeader);
     }
 

@@ -13,6 +13,8 @@ import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.enums.CountStrategy;
+import software.sigma.internship.enums.Role;
+import software.sigma.internship.enums.Status;
 import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.service.impl.TestServiceImpl;
 
@@ -107,6 +109,10 @@ public class TestServiceImplTest {
         teacher.setPosition(Teacher.Position.DOCENT);
         teacher.setFirstName(FIRST_NAME);
         teacher.setLastName(LAST_NAME);
+        teacher.setEmail("teacher@gmail.com");
+        teacher.setPassword("password");
+        teacher.setStatus(Status.ACTIVE);
+        teacher.setRole(Role.TEACHER);
         return teacherRepository.save(teacher);
     }
 }
