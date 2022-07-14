@@ -47,15 +47,8 @@ public class TestController {
     })
     @GetMapping("/{id}")
     public TestDto fetch(@ApiParam(value = "id of the test we want to get")
-                         @PathVariable Long id) {
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getAuthorities();
-        if (authorities.contains(Permission.READ_FULL.getAuthority())) {
-            return testService.findByIdForTeacher(id);
-        }
-        return testService.findByIdForStudent(id);
+                                   @PathVariable Long id) {
+        return testService.findById(id);
     }
 
     @ApiOperation(value = "Save or update test")

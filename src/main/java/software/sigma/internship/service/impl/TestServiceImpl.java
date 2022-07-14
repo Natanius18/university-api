@@ -2,6 +2,8 @@ package software.sigma.internship.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.sigma.internship.dto.AnswerDto;
@@ -11,6 +13,7 @@ import software.sigma.internship.entity.Answer;
 import software.sigma.internship.entity.Question;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.entity.Test;
+import software.sigma.internship.enums.Permission;
 import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.repo.TestRepository;
 import software.sigma.internship.service.QuestionService;
@@ -19,6 +22,7 @@ import software.sigma.internship.validator.exception.TestNotFoundException;
 import software.sigma.internship.validator.exception.UserNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,6 +76,18 @@ public class TestServiceImpl implements TestService {
                 .collect(Collectors.toList());
         testDto.setQuestions(questions);
         return testDto;
+    }
+
+    @Override
+    public TestDto findById(Long id) {
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getAuthorities();
+        if (authorities.contains(Permission.READ_FULL.getAuthority())) {
+            return findByIdForTeacher(id);
+        }
+        return findByIdForStudent(id);
     }
 
     private List<QuestionDto> getQuestionsWithHiddenCorrectAnswers(Test test) {
