@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "/v1/admin_panel", produces = "application/json")
+@RequestMapping(path = "/v1/admin-panel", produces = "application/json")
 public class ApproveController {
     private final PersonService personService;
 
@@ -27,7 +27,7 @@ public class ApproveController {
             @ApiResponse(code = 404, message = "The person doesn't exist")
     })
     @PutMapping
-    @PreAuthorize("hasAuthority('admin:approve-profile')")
+    @PreAuthorize("hasAuthority('admin:approveProfile')")
     public PersonDto approve(@ApiParam(value = "Object of the student to be saved or updated")
                            @Valid @RequestBody PersonDto person) {
         return personService.approve(person.getEmail(), person.getRole());

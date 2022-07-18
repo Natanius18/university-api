@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.AnswerDto;
 import software.sigma.internship.dto.ResponseDto;
 import software.sigma.internship.dto.TestDto;
+import software.sigma.internship.dto.TestStatisticsDto;
 import software.sigma.internship.entity.Answer;
 import software.sigma.internship.entity.Response;
 import software.sigma.internship.entity.Student;
@@ -15,6 +16,7 @@ import software.sigma.internship.repo.ResponseRepository;
 import software.sigma.internship.repo.StudentRepository;
 import software.sigma.internship.repo.TestRepository;
 import software.sigma.internship.service.ResponseService;
+import software.sigma.internship.service.TestStatisticsService;
 import software.sigma.internship.test.passing.ScoreCounter;
 import software.sigma.internship.validator.exception.AnswerNotFoundException;
 import software.sigma.internship.validator.exception.TestNotFoundException;
@@ -29,6 +31,7 @@ public class ResponseServiceImpl implements ResponseService {
     private final ResponseRepository responseRepository;
     private final AnswerRepository answerRepository;
     private final StudentRepository studentRepository;
+    private final TestStatisticsService testStatisticsService;
     private final TestRepository testRepository;
     private final ModelMapper mapper;
     private final ScoreCounter scoreCounter;
@@ -76,6 +79,9 @@ public class ResponseServiceImpl implements ResponseService {
         response.setAnswers(getAnswerDtoList(response));
 
         response.setResult(scoreCounter.countResult(response));
+
+        TestStatisticsDto testStatisticsDto = mapper.map(response, TestStatisticsDto.class);
+        testStatisticsService.save(testStatisticsDto);
 
         Response newResponse = responseRepository.save(mapper.map(response, Response.class));
         return mapToReturnResponseDto(newResponse);
