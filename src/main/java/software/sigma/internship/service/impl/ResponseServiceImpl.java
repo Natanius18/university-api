@@ -80,8 +80,7 @@ public class ResponseServiceImpl implements ResponseService {
 
         response.setResult(scoreCounter.countResult(response));
 
-        TestStatisticsDto testStatisticsDto = mapper.map(response, TestStatisticsDto.class);
-        testStatisticsService.save(testStatisticsDto);
+        testStatisticsService.save(mapper.map(response, TestStatisticsDto.class));
 
         Response newResponse = responseRepository.save(mapper.map(response, Response.class));
         return mapToReturnResponseDto(newResponse);

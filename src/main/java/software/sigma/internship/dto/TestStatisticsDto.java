@@ -13,5 +13,6 @@ public class TestStatisticsDto {
     private int numberOfTry;
     private float result;
     private float averageResult;
+    private float averageNumberOfTry;
     private Date date;
 }

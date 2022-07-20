@@ -12,7 +12,7 @@ import software.sigma.internship.service.TestStatisticsService;
 import java.util.List;
 import java.util.Map;
 
-import static software.sigma.internship.mongo.filters.core.RestFullAPI.collectRestApiParams;
+import static software.sigma.internship.mongo.filters.core.FilterCollector.collectRestApiParams;
 
 
 @RestController
@@ -32,7 +32,7 @@ public class TestStatisticsController {
                                         String pageSize,
                                         @ApiParam(value = "number of the page", example = "2")
                                         String page,
-                                        @ApiParam(value = "shows average mark for each test if true", example = "true")
+                                        @ApiParam(value = "shows average result or average number of attempts", example = "result")
                                         String average,
                                         @ApiParam(value = "select fields to show", example = "testName,result")
                                         String select) {
