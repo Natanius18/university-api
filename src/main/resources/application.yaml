@@ -16,6 +16,15 @@ spring:
     properties:
       hibernate:
         dialect=org.hibernate.dialect.PostgreSQLDialect
+  data:
+    mongodb:
+      authentication-database: admin
+      username: docker
+      password: mongopw
+      database: test_history
+      port: 27017
+      host: localhost
+
   flyway.baseline-on-migrate: true
 
 jwt:

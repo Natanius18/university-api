@@ -5,9 +5,11 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.sigma.internship.dto.PersonDto;
+import software.sigma.internship.dto.ResponseDto;
 import software.sigma.internship.dto.StudentDto;
 import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.dto.TestDto;
+import software.sigma.internship.dto.TestStatisticsDto;
 import software.sigma.internship.entity.Student;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.entity.Test;
@@ -65,6 +67,13 @@ public class ApplicationConfig {
             @Override
             protected void configure() {
                 skip(destination.getPassword());
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<ResponseDto, TestStatisticsDto>() {
+            @Override
+            protected void configure() {
+                map().setTestName(source.getTest().getName());
             }
         });
 

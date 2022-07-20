@@ -1,9 +1,9 @@
 ALTER TABLE person
-    ADD COLUMN email    VARCHAR(255);
+    ADD COLUMN email    VARCHAR(255) UNIQUE NOT NULL ;
 ALTER TABLE person
-    ADD COLUMN password VARCHAR(255);
+    ADD COLUMN password VARCHAR(255) NOT NULL;
 ALTER TABLE person
-    ADD COLUMN status   VARCHAR(20);
+    ADD COLUMN status   VARCHAR(20) NOT NULL;
 
 UPDATE person
 SET email    = 'email',

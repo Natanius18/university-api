@@ -10,7 +10,7 @@ public enum Permission {
     READ("students:read"),
     READ_FULL("teachers:read"),
     WRITE("writeTest"),
-    APPROVE_PROFILE("admin:approve-profile");
+    APPROVE_PROFILE("admin:approveProfile");
 
     private final String permission;
 
