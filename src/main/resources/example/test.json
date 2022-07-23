@@ -1,0 +1,229 @@
+{
+  "name": "Very difficult math test",
+  "teacher": {
+    "id": 1
+  },
+  "questions": [
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "1+1=",
+      "answers": [
+        {
+          "option": "2",
+          "correct": true
+        },
+        {
+          "option": "3",
+          "correct": false
+        },
+        {
+          "option": "4",
+          "correct": false
+        },
+        {
+          "option": "1",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "2+2=",
+      "answers": [
+        {
+          "option": "4",
+          "correct": true
+        },
+        {
+          "option": "5",
+          "correct": false
+        },
+        {
+          "option": "2",
+          "correct": false
+        },
+        {
+          "option": "0",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "1+2=",
+      "answers": [
+        {
+          "option": "3",
+          "correct": true
+        },
+        {
+          "option": "2",
+          "correct": false
+        },
+        {
+          "option": "4",
+          "correct": false
+        },
+        {
+          "option": "1",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "2+3=",
+      "answers": [
+        {
+          "option": "5",
+          "correct": true
+        },
+        {
+          "option": "3",
+          "correct": false
+        },
+        {
+          "option": "4",
+          "correct": false
+        },
+        {
+          "option": "1",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "2+4=",
+      "answers": [
+        {
+          "option": "6",
+          "correct": true
+        },
+        {
+          "option": "5",
+          "correct": false
+        },
+        {
+          "option": "2",
+          "correct": false
+        },
+        {
+          "option": "0",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "1*1=",
+      "answers": [
+        {
+          "option": "1",
+          "correct": true
+        },
+        {
+          "option": "3",
+          "correct": false
+        },
+        {
+          "option": "4",
+          "correct": false
+        },
+        {
+          "option": "2",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "1*2=",
+      "answers": [
+        {
+          "option": "2",
+          "correct": true
+        },
+        {
+          "option": "3",
+          "correct": false
+        },
+        {
+          "option": "4",
+          "correct": false
+        },
+        {
+          "option": "6",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "2*3=",
+      "answers": [
+        {
+          "option": "6",
+          "correct": true
+        },
+        {
+          "option": "3",
+          "correct": false
+        },
+        {
+          "option": "4",
+          "correct": false
+        },
+        {
+          "option": "2",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "SEVERAL_CORRECT_ANSWERS",
+      "text": "Choose all even numbers",
+      "answers": [
+        {
+          "option": "62",
+          "correct": true
+        },
+        {
+          "option": "958",
+          "correct": true
+        },
+        {
+          "option": "1",
+          "correct": false
+        },
+        {
+          "option": "163",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "SEVERAL_CORRECT_ANSWERS",
+      "text": "Choose all odd numbers",
+      "answers": [
+        {
+          "option": "569",
+          "correct": true
+        },
+        {
+          "option": "17",
+          "correct": true
+        },
+        {
+          "option": "24",
+          "correct": false
+        },
+        {
+          "option": "128",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}
+
