@@ -10,8 +10,6 @@
 ## <a name="purpose"></a>Project purpose and description
 Creation of the platform where teachers can create tests and students can pass them.
 
----
-
 ![DB diagram](src/main/resources/img/DB_diagram.png?raw=true)
 ###### <div align="center">Diagram of the database</div>
 * Each teacher has several tests.
@@ -26,9 +24,9 @@ Creation of the platform where teachers can create tests and students can pass t
 On the back-end the all chosen answers are being found by their ids and are being compared with the set
 of correct answers for the test (for better understanding of the response format see the [examples below](#examples)).Depending on the type of each question, two strategies are used for counting the result.
 - 1st type questions: If a student's response is correct, he gets one point. If not, no points are given.
-    - 2nd type questions:
-        - There is a scale: maximum points == amount of options of answer.
-        - The student gets one point if he chooses the correct answer and doesn't choose the wrong one.
+- 2nd type questions:
+    - There is a scale: maximum points == amount of options of answer.
+    - The student gets one point if he chooses the correct answer and doesn't choose the wrong one.
           For example, we have 4 possible options (ABCD) and 2 of them are correct (C and D).
           The student will get one point for choosing C, one for choosing D, one for not choosing A and one for not choosing B. We will just compare the student's answers on the 2nd-type-question with the correct combination of answers to this question from table Answer.
 
@@ -47,7 +45,6 @@ From this data, you can see the statistics: the amount of passing each test;
 the average number of attempts it takes to pass the test; average result for the test.
 You can also apply different filters to see only the required information.
 
-___
 ## <a name="structure"></a>Project Structure
 * Java 11
 * hibernate-core 5.6.9.Final
@@ -63,7 +60,7 @@ ___
 
 
 ## <a name="status"></a>Project Status
-##### In progress.
+#### In progress.
 - [X] Create DB structure
 - [X] Create controllers
 - [X] Write tests
@@ -71,7 +68,6 @@ ___
 - [X] Add security configuration
 - [X] Add history and statistics for responses
 - [ ] Implement sending emails
-
 
 
 ## <a name="developer-start"></a>For developer
