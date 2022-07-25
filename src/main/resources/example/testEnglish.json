@@ -1,0 +1,117 @@
+{
+  "name": "English test",
+  "teacher": {
+    "id": 1
+  },
+  "questions": [
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "He ___ football.",
+      "answers": [
+        {
+          "option": "don't play",
+          "correct": false
+        },
+        {
+          "option": "doesn't play",
+          "correct": true
+        },
+        {
+          "option": "doesn't plays",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "___ magazines?",
+      "answers": [
+        {
+          "option": "Do you read",
+          "correct": true
+        },
+        {
+          "option": "Read you",
+          "correct": false
+        },
+        {
+          "option": "You read",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "I ___ on Saturday night.",
+      "answers": [
+        {
+          "option": "go usually out",
+          "correct": false
+        },
+        {
+          "option": "go out usually",
+          "correct": false
+        },
+        {
+          "option": "usually go out",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "How many hours ___ at school every day?",
+      "answers": [
+        {
+          "option": "spend they",
+          "correct": false
+        },
+        {
+          "option": "they spend",
+          "correct": false
+        },
+        {
+          "option": "do they spend",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "-What kind of films ___? -She prefers funny films.",
+      "answers": [
+        {
+          "option": "does Tina like",
+          "correct": true
+        },
+        {
+          "option": "do Tina like",
+          "correct": false
+        },
+        {
+          "option": "Tina likes",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "ONE_CORRECT_ANSWER",
+      "text": "Tom and his cat ___ in front of the TV.",
+      "answers": [
+        {
+          "option": "doesn’t fall asleep",
+          "correct": false
+        },
+        {
+          "option": "never fall asleep",
+          "correct": true
+        },
+        {
+          "option": "always falls asleep",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}
+
