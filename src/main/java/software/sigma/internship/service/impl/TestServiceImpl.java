@@ -26,7 +26,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+/**
+ * Implementation of {@link TestService}.
+ *
+ * @author natanius
+ */
 @Service
 @AllArgsConstructor
 public class TestServiceImpl implements TestService {
@@ -35,6 +39,9 @@ public class TestServiceImpl implements TestService {
     private final ModelMapper mapper;
     private final QuestionService questionService;
 
+    /**
+     * @return list of all existing tests.
+     */
     @Override
     public List<TestDto> findAll() {
         List<Test> tests = testRepository.findAll();
@@ -43,6 +50,10 @@ public class TestServiceImpl implements TestService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param teacherId id of the teacher whose tests we want to get.
+     * @return all tests from a specific teacher.
+     */
     @Override
     public List<TestDto> findTestsByTeacher(Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
@@ -55,6 +66,10 @@ public class TestServiceImpl implements TestService {
                 }).collect(Collectors.toList());
     }
 
+    /**
+     * @param id id of the test we want to get.
+     * @return test by id with hidden field 'correct'.
+     */
     @Override
     public TestDto findByIdForStudent(Long id) {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
@@ -65,6 +80,10 @@ public class TestServiceImpl implements TestService {
         return testDto;
     }
 
+    /**
+     * @param id id of the test we want to get.
+     * @return test by id with all fields shown for teacher.
+     */
     @Override
     public TestDto findByIdForTeacher(Long id) {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
@@ -78,6 +97,10 @@ public class TestServiceImpl implements TestService {
         return testDto;
     }
 
+    /**
+     * @param id id of the test we want to get.
+     * @return test by id with all fields shown or hidden field 'correct' depending on authorities.
+     */
     @Override
     public TestDto findById(Long id) {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder
@@ -90,6 +113,10 @@ public class TestServiceImpl implements TestService {
         return findByIdForStudent(id);
     }
 
+    /**
+     * @param test the test we want to get.
+     * @return list of all questions in the test with all options of answers with hidden field 'correct'.
+     */
     private List<QuestionDto> getQuestionsWithHiddenCorrectAnswers(Test test) {
         return test.getQuestions()
                 .stream()
@@ -102,6 +129,10 @@ public class TestServiceImpl implements TestService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param question question, the correctness of answers to which we want to hide.
+     * @return the list of all options of answers with hidden field 'correct'.
+     */
     private List<AnswerDto> hideCorrectFieldInAnswersOfQuestion(Question question) {
         return question.getAnswers()
                 .stream()
@@ -113,6 +144,10 @@ public class TestServiceImpl implements TestService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param testDto test to be saved or updated.
+     * @return saved or updated test.
+     */
     @Override
     @Transactional
     public TestDto save(TestDto testDto) {
@@ -135,7 +170,10 @@ public class TestServiceImpl implements TestService {
         return mapper.map(newTest, TestDto.class);
     }
 
-
+    /**
+     * Deletes the whole test.
+     * @param id id of the test we want to delete.
+     */
     @Override
     public void deleteById(Long id) {
         testRepository.deleteById(id);
@@ -149,6 +187,11 @@ public class TestServiceImpl implements TestService {
         }
     }
 
+    /**
+     * Parse ids of questions from the given questions.
+     * @param questions questions to parse ids.
+     * @return list of ids of the given questions.
+     */
     private List<Long> getIdsOfQuestions(List<Question> questions) {
         return questions
                 .stream()
@@ -156,6 +199,12 @@ public class TestServiceImpl implements TestService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Sets correct relations between test, questions and answers.
+     * @param testDto DTO of the test.
+     * @param entity entity of the test.
+     * @return list of mapped questions.
+     */
     private List<Question> mapQuestions(TestDto testDto, Test entity) {
         return testDto.getQuestions()
                 .stream()
@@ -168,6 +217,12 @@ public class TestServiceImpl implements TestService {
                 }).collect(Collectors.toList());
     }
 
+    /**
+     * Sets correct relations between questions and answers.
+     * @param question DTO of the test.
+     * @param entityQuestion entity of the test.
+     * @return list of mapped answers.
+     */
     private List<Answer> mapAnswers(QuestionDto question, Question entityQuestion) {
         return question.getAnswers().stream()
                 .map(answer -> {
@@ -177,6 +232,12 @@ public class TestServiceImpl implements TestService {
                 }).collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param idsOfNewQuestions ids of the questions in updated test.
+     * @param idsOfOldQuestions ids of the questions in old test.
+     * @return list of ids of questions that are no longer present in the updated test.
+     */
     public List<Long> getIdsToDelete(List<Long> idsOfNewQuestions, List<Long> idsOfOldQuestions) {
         List<Long> result = new ArrayList<>(idsOfNewQuestions);
         result.addAll(idsOfOldQuestions);
