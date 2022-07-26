@@ -86,11 +86,6 @@ public class ResponseServiceImpl implements ResponseService {
         return mapToReturnResponseDto(newResponse);
     }
 
-    @Override
-    public void deleteById(Long id) {
-        responseRepository.deleteById(id);
-    }
-
     private ResponseDto mapToReturnResponseDto(Response newResponse) {
         ResponseDto responseDto = mapper.map(newResponse, ResponseDto.class);
         responseDto.setTest(null);
