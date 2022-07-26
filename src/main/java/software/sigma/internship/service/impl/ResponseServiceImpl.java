@@ -112,7 +112,7 @@ public class ResponseServiceImpl implements ResponseService {
 
     private int getNumberOfNewTry(ResponseDto response) {
         return responseRepository
-                .getFirstByStudentIdOrderByNumberOfTryDesc(response.getStudent().getId())
+                .getFirstByStudentIdAndTestOrderByNumberOfTryDesc(response.getStudent().getId(), mapper.map(response.getTest(), Test.class))
                 .orElse(new Response())
                 .getNumberOfTry() + 1;
     }
