@@ -10,6 +10,4 @@ public interface ResponseService {
     List<ResponseDto> findByStudent(Long id);
 
     ResponseDto save(ResponseDto response);
-
-    void deleteById(Long id);
 }

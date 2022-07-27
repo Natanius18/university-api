@@ -21,18 +21,6 @@ public interface TestService {
 
     /**
      * @param id id of the test we want to get.
-     * @return test by id with hidden field 'correct'.
-     */
-    TestDto findByIdForStudent(Long id);
-
-    /**
-     * @param id id of the test we want to get.
-     * @return test by id with all fields shown for teacher.
-     */
-    TestDto findByIdForTeacher(Long id);
-
-    /**
-     * @param id id of the test we want to get.
      * @return test by id.
      */
     TestDto findById(Long id);
