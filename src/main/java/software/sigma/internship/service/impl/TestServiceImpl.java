@@ -70,7 +70,6 @@ public class TestServiceImpl implements TestService {
      * @param id id of the test we want to get.
      * @return test by id with hidden field 'correct'.
      */
-    @Override
     public TestDto findByIdForStudent(Long id) {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
         TestDto testDto = mapper.map(test, TestDto.class);
@@ -84,7 +83,6 @@ public class TestServiceImpl implements TestService {
      * @param id id of the test we want to get.
      * @return test by id with all fields shown for teacher.
      */
-    @Override
     public TestDto findByIdForTeacher(Long id) {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
         TestDto testDto = mapper.map(test, TestDto.class);
