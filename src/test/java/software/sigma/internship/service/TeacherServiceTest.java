@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.repo.TeacherRepository;
@@ -16,7 +15,6 @@ import software.sigma.internship.validator.exception.UserNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,7 +26,7 @@ public class TeacherServiceTest {
     private ModelMapper teacherMapper;
 
     @Mock
-    private BCryptPasswordEncoder encoder;
+    private PersonService personService;
 
     @InjectMocks
     private TeacherServiceImpl teacherService;
@@ -57,7 +55,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void saveNewTeacherShouldReturnThatTeacherWithNewId(){
+    public void saveNewTeacherShouldReturnThatTeacherWithNewId() {
         TeacherDto dtoOfNewTeacherToSave = createTeacherDto(null, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
         Teacher entityOfNewTeacherToSave = createTeacher(null, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
         Teacher newSavedTeacherEntity = createTeacher(2L, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
@@ -80,7 +78,6 @@ public class TeacherServiceTest {
         Teacher entityOfTeacherToUpdate = createTeacher(2L, Teacher.Position.DOCENT, FIRST_NAME2, LAST_NAME2);
 
         when(teacherRepository.existsById(2L)).thenReturn(true);
-        when(encoder.encode(any())).thenReturn("password");
         when(teacherMapper.map(teacherToUpdateDto, Teacher.class)).thenReturn(entityOfTeacherToUpdate);
         when(teacherRepository.save(entityOfTeacherToUpdate)).thenReturn(entityOfTeacherToUpdate);
         when(teacherMapper.map(entityOfTeacherToUpdate, TeacherDto.class)).thenReturn(teacherToUpdateDto);

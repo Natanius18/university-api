@@ -19,6 +19,7 @@ import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.service.impl.TestServiceImpl;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -109,7 +110,7 @@ public class TestServiceImplTest {
         teacher.setPosition(Teacher.Position.DOCENT);
         teacher.setFirstName(FIRST_NAME);
         teacher.setLastName(LAST_NAME);
-        teacher.setEmail("teacher@gmail.com");
+        teacher.setEmail(UUID.randomUUID().toString());
         teacher.setPassword("password");
         teacher.setStatus(Status.ACTIVE);
         teacher.setRole(Role.TEACHER);
