@@ -7,6 +7,7 @@ import software.sigma.internship.enums.Role;
  * Interface for approving a role of a person.
  * @author natanius
  */
+
 public interface PersonService {
     /**
      * Set a role to the person by email.
@@ -15,4 +16,8 @@ public interface PersonService {
      * @return person with the new role assigned.
      */
     PersonDto approve(String email, Role role);
+
+    boolean verify(String verificationCode);
+
+    void preparePersonForSave(PersonDto personDto, Long id);
 }

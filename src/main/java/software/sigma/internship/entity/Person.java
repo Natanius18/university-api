@@ -34,6 +34,7 @@ public class Person {
     private String lastName;
     private String email;
     private String password;
+    private String verificationCode;
 
     @Enumerated(EnumType.STRING)
     private Role role;

@@ -30,3 +30,6 @@ spring:
 jwt:
   header: Authorization
   expires: 604800
+
+email:
+  server: localhost:8081

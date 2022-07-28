@@ -44,6 +44,7 @@ public class ApplicationConfig {
                 skip(destination.getPassword());
                 skip(destination.getStatus());
                 skip(destination.getRole());
+                skip(destination.getVerificationCode());
             }
         });
 
@@ -53,6 +54,7 @@ public class ApplicationConfig {
                 skip(destination.getPassword());
                 skip(destination.getStatus());
                 skip(destination.getRole());
+                skip(destination.getVerificationCode());
             }
         });
 

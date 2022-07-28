@@ -2,13 +2,12 @@ package software.sigma.internship.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.enums.Role;
-import software.sigma.internship.enums.Status;
 import software.sigma.internship.repo.TeacherRepository;
+import software.sigma.internship.service.PersonService;
 import software.sigma.internship.service.TeacherService;
 import software.sigma.internship.validator.exception.UserNotFoundException;
 
@@ -26,7 +25,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final ModelMapper teacherMapper;
-    private final BCryptPasswordEncoder encoder;
+    private final PersonService personService;
 
     /**
      * @return list of all teachers.
@@ -59,9 +58,7 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherDto save(@Valid TeacherDto teacherDto) {
         Long id = teacherDto.getId();
         if (id == null || teacherRepository.existsById(id)) {
-            teacherDto.setRole(Role.USER);
-            teacherDto.setStatus(Status.ACTIVE);
-            teacherDto.setPassword(encoder.encode(teacherDto.getPassword()));
+            personService.preparePersonForSave(teacherDto, id);
             Teacher teacher = teacherRepository.save(teacherMapper.map(teacherDto, Teacher.class));
             return teacherMapper.map(teacher, TeacherDto.class);
         }

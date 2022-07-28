@@ -2,13 +2,12 @@ package software.sigma.internship.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.StudentDto;
 import software.sigma.internship.entity.Student;
 import software.sigma.internship.enums.Role;
-import software.sigma.internship.enums.Status;
 import software.sigma.internship.repo.StudentRepository;
+import software.sigma.internship.service.PersonService;
 import software.sigma.internship.service.StudentService;
 import software.sigma.internship.validator.exception.UserNotFoundException;
 
@@ -25,7 +24,7 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
     private final ModelMapper studentMapper;
-    private final BCryptPasswordEncoder encoder;
+    private final PersonService personService;
 
     /**
      * @return list of all students.
@@ -55,9 +54,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentDto save(StudentDto studentDto) {
         Long id = studentDto.getId();
         if (id == null || studentRepository.existsById(id)) {
-            studentDto.setRole(Role.USER);
-            studentDto.setStatus(Status.ACTIVE);
-            studentDto.setPassword(encoder.encode(studentDto.getPassword()));
+            personService.preparePersonForSave(studentDto, id);
             Student student = studentRepository.save(studentMapper.map(studentDto, Student.class));
             return studentMapper.map(student, StudentDto.class);
         }
