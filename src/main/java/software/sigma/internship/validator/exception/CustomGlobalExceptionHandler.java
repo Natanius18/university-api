@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import software.sigma.internship.mongo.filters.exceptions.WrongQueryParam;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -21,14 +22,17 @@ import java.util.stream.Collectors;
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({UserNotFoundException.class, TestNotFoundException.class,
-            AnswerNotFoundException.class, QuestionNotFoundException.class})
+            AnswerNotFoundException.class, QuestionNotFoundException.class,
+            WrongQueryParam.class, UserExistsWithEmailException.class})
     protected ResponseEntity<Object> handleConflict(RuntimeException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
+        int status =
+                (ex instanceof WrongQueryParam || ex instanceof UserExistsWithEmailException) ?
+                        HttpStatus.BAD_REQUEST.value() : HttpStatus.NOT_FOUND.value();
         body.put("timestamp", new Date());
-        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("status", status);
         body.put("error", ex.getMessage());
-        return new ResponseEntity<>(body,
-                new HttpHeaders(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(body, new HttpHeaders(), status);
     }
 
 
