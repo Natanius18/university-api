@@ -44,8 +44,14 @@ public final class FilterApplier {
     private static void applyGroupOperation(List<AggregationOperation> operations, Map<String, String> restApiQueries) {
         if (restApiQueries.get(AVERAGE.getCode()) != null) {
             String averageField = restApiQueries.get(AVERAGE.getCode());
-            operations.add(Aggregation.group("testName").avg(averageField).as("average" +
-                    averageField.substring(0, 1).toUpperCase() + averageField.substring(1)));
+            if (averageField.equals("numberOfTry") || averageField.equals("result")) {
+                operations.add(Aggregation.group("testName")
+                        .avg("numberOfTry").as("averageNumberOfTry")
+                        .avg("result").as("averageResult"));
+            }
+            else {
+                throw new WrongQueryParam("Invalid query parameter for average field");
+            }
         }
     }
 
