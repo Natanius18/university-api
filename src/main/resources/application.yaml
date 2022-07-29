@@ -32,4 +32,4 @@ jwt:
   expires: 604800
 
 email:
-  server: localhost:8081
+  server: http://localhost:8081/emails/v1/send/confirmation?

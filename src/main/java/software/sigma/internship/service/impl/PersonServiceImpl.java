@@ -30,11 +30,13 @@ public class PersonServiceImpl implements PersonService {
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder;
     private final Random random = new Random();
+    private final RestTemplate restTemplate;
 
-    public PersonServiceImpl(PersonRepository personRepository, ModelMapper mapper, BCryptPasswordEncoder encoder) {
+    public PersonServiceImpl(PersonRepository personRepository, ModelMapper mapper, BCryptPasswordEncoder encoder, RestTemplate restTemplate) {
         this.personRepository = personRepository;
         this.mapper = mapper;
         this.encoder = encoder;
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -51,6 +53,12 @@ public class PersonServiceImpl implements PersonService {
         return mapper.map(personRepository.save(person), PersonDto.class);
     }
 
+    /**
+     * Verify email of the new user.
+     *
+     * @param verificationCode code which was sent by email to the user.
+     * @return true if the code is valid, false otherwise.
+     */
     @Override
     public boolean verify(String verificationCode) {
         Person user = personRepository.findByVerificationCode(verificationCode).orElse(null);
@@ -65,6 +73,12 @@ public class PersonServiceImpl implements PersonService {
         }
     }
 
+    /**
+     * All necessary setup for the new user before save it to the database.
+     *
+     * @param personDto DTO of the user to be saved or updated.
+     * @param id        id of the user to be saved (if null) or updated.
+     */
     @Override
     public void preparePersonForSave(PersonDto personDto, Long id) {
         String email = personDto.getEmail();
@@ -72,15 +86,7 @@ public class PersonServiceImpl implements PersonService {
             throw new UserExistsWithEmailException(email);
         }
         if (id == null) {
-            String verificationCode = String.valueOf(random.nextInt(90_000) + 10_000);
-            String uri = "http://" + emailServerRoot +"/emails/v1/send/confirmation?" +
-                    "receiver=" + email +
-                    "&firstName="+ personDto.getFirstName() +
-                    "&lastName=" + personDto.getLastName() +
-                    "&verificationCode=" + verificationCode;
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.getForEntity(uri, String.class);
-            personDto.setVerificationCode(verificationCode);
+            sendConfirmationEmail(personDto, email);
         }
         Role role = Role.USER;
         Status status = Status.INACTIVE;
@@ -94,5 +100,16 @@ public class PersonServiceImpl implements PersonService {
         personDto.setRole(role);
         personDto.setStatus(status);
         personDto.setPassword(encoder.encode(personDto.getPassword()));
+    }
+
+    private void sendConfirmationEmail(PersonDto personDto, String email) {
+        String verificationCode = String.valueOf(random.nextInt(90_000) + 10_000);
+        String uri = emailServerRoot +
+                "receiver=" + email +
+                "&firstName=" + personDto.getFirstName() +
+                "&lastName=" + personDto.getLastName() +
+                "&verificationCode=" + verificationCode;
+        restTemplate.getForEntity(uri, String.class);
+        personDto.setVerificationCode(verificationCode);
     }
 }
