@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import software.sigma.internship.validator.ValidCourse;
 
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -21,7 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 @DiscriminatorValue("Student")
 public class Student extends Person {
-    @ValidCourse
     private Integer course;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
