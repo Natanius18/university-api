@@ -1,5 +1,7 @@
 {
+  "course": 3,
   "firstName": "Natan",
   "lastName": "Chachko",
-  "course": 2
+  "email": "natan.chachko@stud.onu.edu.ua",
+  "password": "12345"
 }

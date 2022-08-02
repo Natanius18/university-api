@@ -2,6 +2,7 @@ package software.sigma.internship.controller;
 
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ public class TestStatisticsController {
     private final TestStatisticsService statisticsService;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('students:read', 'teachers:read')")
     public List<TestStatisticsDto> find(@ApiParam(hidden = true)
                                         @RequestParam Map<String, String> filters,
                                         @ApiParam(value = "field to order by", example = "testName")

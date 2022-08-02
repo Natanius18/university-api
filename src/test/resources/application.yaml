@@ -12,6 +12,3 @@ spring:
 jwt:
   header: Authorization
   expires: 604800
-
-email:
-  server: http://localhost:8081/emails/v1/send/confirmation?

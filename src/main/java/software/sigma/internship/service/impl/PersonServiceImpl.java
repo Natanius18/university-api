@@ -1,11 +1,10 @@
 package software.sigma.internship.service.impl;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import software.sigma.internship.dto.PersonDto;
 import software.sigma.internship.entity.Person;
 import software.sigma.internship.enums.Role;
@@ -14,6 +13,8 @@ import software.sigma.internship.repo.PersonRepository;
 import software.sigma.internship.service.PersonService;
 import software.sigma.internship.validator.exception.UserExistsWithEmailException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -24,19 +25,18 @@ import java.util.Random;
  */
 @Service
 public class PersonServiceImpl implements PersonService {
-    @Value("${email.server}")
-    private String emailServerRoot;
     private final PersonRepository personRepository;
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder;
     private final Random random = new Random();
-    private final RestTemplate restTemplate;
 
-    public PersonServiceImpl(PersonRepository personRepository, ModelMapper mapper, BCryptPasswordEncoder encoder, RestTemplate restTemplate) {
+    private final KafkaTemplate<String, Map<String, String>> kafkaTemplate;
+
+    public PersonServiceImpl(PersonRepository personRepository, ModelMapper mapper, BCryptPasswordEncoder encoder, KafkaTemplate<String, Map<String, String>> kafkaTemplate) {
         this.personRepository = personRepository;
         this.mapper = mapper;
         this.encoder = encoder;
-        this.restTemplate = restTemplate;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     /**
@@ -104,12 +104,11 @@ public class PersonServiceImpl implements PersonService {
 
     private void sendConfirmationEmail(PersonDto personDto, String email) {
         String verificationCode = String.valueOf(random.nextInt(90_000) + 10_000);
-        String uri = emailServerRoot +
-                "receiver=" + email +
-                "&firstName=" + personDto.getFirstName() +
-                "&lastName=" + personDto.getLastName() +
-                "&verificationCode=" + verificationCode;
-        restTemplate.getForEntity(uri, String.class);
+        Map<String, String> map = new HashMap<>();
+        map.put("secretPass", verificationCode);
+        map.put("name", personDto.getFirstName() + " " + personDto.getLastName());
+        map.put("receiver", email);
+        kafkaTemplate.send("messages", map);
         personDto.setVerificationCode(verificationCode);
     }
 }
