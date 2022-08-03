@@ -88,6 +88,11 @@ public class PersonServiceImpl implements PersonService {
         if (id == null) {
             sendConfirmationEmail(personDto, email);
         }
+        setRoleAndStatus(personDto, id);
+        personDto.setPassword(encoder.encode(personDto.getPassword()));
+    }
+
+    private void setRoleAndStatus(PersonDto personDto, Long id) {
         Role role = Role.USER;
         Status status = Status.INACTIVE;
         if (id != null) {
@@ -99,7 +104,6 @@ public class PersonServiceImpl implements PersonService {
         }
         personDto.setRole(role);
         personDto.setStatus(status);
-        personDto.setPassword(encoder.encode(personDto.getPassword()));
     }
 
     private void sendConfirmationEmail(PersonDto personDto, String email) {
