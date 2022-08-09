@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import software.sigma.internship.enums.Role;
 import software.sigma.internship.enums.Status;
+import software.sigma.internship.validator.ValidEmail;
 
 @Data
 @NoArgsConstructor
@@ -15,8 +16,10 @@ public class PersonDto {
     private Long id;
     private String firstName;
     private String lastName;
+    @ValidEmail
     private String email;
     private String password;
     private Role role;
     private Status status;
+    private String verificationCode;
 }

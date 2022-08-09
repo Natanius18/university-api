@@ -1,11 +1,12 @@
 package software.sigma.internship.service;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import software.sigma.internship.UniversityApplication;
 import software.sigma.internship.dto.AnswerDto;
 import software.sigma.internship.dto.QuestionDto;
@@ -23,9 +24,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = UniversityApplication.class)
-public class TestServiceImplTest {
+class TestServiceImplTest {
     @Autowired
     private TestServiceImpl testService;
 
@@ -38,8 +39,13 @@ public class TestServiceImplTest {
     private final String FIRST_NAME = "Ivan";
     private final String LAST_NAME = "Ivanov";
 
+    @AfterEach
+    public void clearDataBase(){
+        teacherRepository.deleteAll();
+    }
+
     @Test
-    public void save_whenSaveAndRetrieve_thenReturnDtoWithNewId(){
+    void save_whenSaveAndRetrieve_thenReturnDtoWithNewId(){
         Teacher teacher = createAndSaveTeacher();
         TeacherDto teacherDto = mapper.map(teacher, TeacherDto.class);
 
@@ -58,7 +64,7 @@ public class TestServiceImplTest {
     }
 
     @Test
-    public void save_whenUpdateAndRetrieve_thenReturnUpdatedTestWithSameId(){
+    void save_whenUpdateAndRetrieve_thenReturnUpdatedTestWithSameId(){
         Teacher teacher = createAndSaveTeacher();
         TeacherDto teacherDto = mapper.map(teacher, TeacherDto.class);
 

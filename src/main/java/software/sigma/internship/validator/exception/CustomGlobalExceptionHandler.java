@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import software.sigma.internship.mongo.filters.exceptions.WrongQueryParam;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -20,17 +21,29 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private static final String TIMESTAMP = "timestamp";
+    private static final String STATUS = "status";
+
     @ExceptionHandler({UserNotFoundException.class, TestNotFoundException.class,
             AnswerNotFoundException.class, QuestionNotFoundException.class})
-    protected ResponseEntity<Object> handleConflict(RuntimeException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", new Date());
-        body.put("status", HttpStatus.NOT_FOUND.value());
-        body.put("error", ex.getMessage());
-        return new ResponseEntity<>(body,
-                new HttpHeaders(), HttpStatus.NOT_FOUND);
+    protected ResponseEntity<Object> handleNotFoundException(RuntimeException ex) {
+        int status = HttpStatus.NOT_FOUND.value();
+        return getResponse(ex, status);
     }
 
+    @ExceptionHandler({WrongQueryParam.class, UserExistsWithEmailException.class})
+    protected ResponseEntity<Object> handleBadRequest(RuntimeException ex) {
+        int status = HttpStatus.BAD_REQUEST.value();
+        return getResponse(ex, status);
+    }
+
+    private static ResponseEntity<Object> getResponse(RuntimeException ex, int status) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put(TIMESTAMP, new Date());
+        body.put(STATUS, status);
+        body.put("error", ex.getMessage());
+        return new ResponseEntity<>(body, new HttpHeaders(), status);
+    }
 
     @Override
     @NonNull
@@ -39,8 +52,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                                                                HttpStatus status, @NonNull WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", new Date());
-        body.put("status", status.value());
+        body.put(TIMESTAMP, new Date());
+        body.put(STATUS, status.value());
 
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()

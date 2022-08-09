@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import software.sigma.internship.security.JwtConfigurer;
 
@@ -44,6 +43,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.PUT,"/v1/students").permitAll()
                 .antMatchers(HttpMethod.POST,"/v1/teachers").permitAll()
                 .antMatchers(HttpMethod.PUT,"/v1/teachers").permitAll()
+                .antMatchers(HttpMethod.GET,"/v1/confirm/verify").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -57,7 +57,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    protected PasswordEncoder passwordEncoder() {
+    protected BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(ENCODER_STRENGTH);
     }
 

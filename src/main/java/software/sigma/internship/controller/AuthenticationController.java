@@ -45,7 +45,7 @@ public class AuthenticationController {
             response.put("token", token);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Invalid email or password. Have you confirmed your email?", HttpStatus.FORBIDDEN);
         }
     }
 

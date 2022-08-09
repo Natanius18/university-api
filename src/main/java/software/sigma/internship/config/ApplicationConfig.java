@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import software.sigma.internship.dto.PersonDto;
 import software.sigma.internship.dto.ResponseDto;
 import software.sigma.internship.dto.StudentDto;
@@ -44,6 +45,7 @@ public class ApplicationConfig {
                 skip(destination.getPassword());
                 skip(destination.getStatus());
                 skip(destination.getRole());
+                skip(destination.getVerificationCode());
             }
         });
 
@@ -53,6 +55,7 @@ public class ApplicationConfig {
                 skip(destination.getPassword());
                 skip(destination.getStatus());
                 skip(destination.getRole());
+                skip(destination.getVerificationCode());
             }
         });
 
@@ -88,5 +91,10 @@ public class ApplicationConfig {
                 ONE_CORRECT_ANSWER, oneCorrect,
                 SEVERAL_CORRECT_ANSWERS, severalCorrect
         );
+    }
+
+    @Bean
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
     }
 }
