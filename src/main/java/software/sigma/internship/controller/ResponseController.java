@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ public class ResponseController {
             @ApiResponse(code = 404, message = "The response doesn't exist")
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('teachers:read')")
     public ResponseDto fetch(@ApiParam(value = "id of the response we want to get")
                              @PathVariable Long id) {
         return service.findById(id);

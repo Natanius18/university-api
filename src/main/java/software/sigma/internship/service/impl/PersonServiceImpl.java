@@ -26,15 +26,16 @@ import java.util.Random;
 @Service
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
-    private final ModelMapper mapper;
+    private final ModelMapper personMapper;
     private final BCryptPasswordEncoder encoder;
     private final Random random = new Random();
 
     private final KafkaTemplate<String, Map<String, String>> kafkaTemplate;
 
-    public PersonServiceImpl(PersonRepository personRepository, ModelMapper mapper, BCryptPasswordEncoder encoder, KafkaTemplate<String, Map<String, String>> kafkaTemplate) {
+    public PersonServiceImpl(PersonRepository personRepository, ModelMapper personMapper,
+                             BCryptPasswordEncoder encoder, KafkaTemplate<String, Map<String, String>> kafkaTemplate) {
         this.personRepository = personRepository;
-        this.mapper = mapper;
+        this.personMapper = personMapper;
         this.encoder = encoder;
         this.kafkaTemplate = kafkaTemplate;
     }
@@ -50,7 +51,7 @@ public class PersonServiceImpl implements PersonService {
     public PersonDto approve(String email, Role role) {
         Person person = personRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         person.setRole(role);
-        return mapper.map(personRepository.save(person), PersonDto.class);
+        return personMapper.map(personRepository.save(person), PersonDto.class);
     }
 
     /**

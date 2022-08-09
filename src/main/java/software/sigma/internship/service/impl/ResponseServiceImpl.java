@@ -33,15 +33,14 @@ public class ResponseServiceImpl implements ResponseService {
     private final StudentRepository studentRepository;
     private final TestStatisticsService testStatisticsService;
     private final TestRepository testRepository;
-    private final ModelMapper mapper;
+    private final ModelMapper responseToStatisticsMapper;
+    private final ModelMapper allResponsesMapper;
     private final ScoreCounter scoreCounter;
 
     @Override
     public ResponseDto findById(Long id) {
         Response response = responseRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        ResponseDto responseDto = mapper.map(response, ResponseDto.class);
-        responseDto.getTest().setQuestions(null);
-        return responseDto;
+        return responseToStatisticsMapper.map(response, ResponseDto.class);
     }
 
     @Override
@@ -53,41 +52,28 @@ public class ResponseServiceImpl implements ResponseService {
 
     private List<ResponseDto> getResponseDtoList(List<Response> responses) {
         return responses.stream()
-                .map(response -> {
-                    ResponseDto responseDto = mapper.map(response, ResponseDto.class);
-                    responseDto.getTest().setQuestions(null);
-                    responseDto.setStudent(null);
-                    responseDto.setAnswers(getAnswersWithHiddenCorrectField(responseDto));
-                    return responseDto;
-                }).collect(Collectors.toList());
-    }
-
-    private List<AnswerDto> getAnswersWithHiddenCorrectField(ResponseDto responseDto) {
-        return responseDto.getAnswers().stream().map(answer -> {
-            answer.setCorrect(null);
-            return answer;
-        }).collect(Collectors.toList());
+                .map(response -> allResponsesMapper.map(response, ResponseDto.class)).collect(Collectors.toList());
     }
 
     @Override
     public ResponseDto save(ResponseDto response) {
         Long testId = response.getTest().getId();
         Test test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
-        response.setTest(mapper.map(test, TestDto.class));
+        response.setTest(responseToStatisticsMapper.map(test, TestDto.class));
 
         response.setNumberOfTry(getNumberOfNewTry(response));
         response.setAnswers(getAnswerDtoList(response));
 
         response.setResult(scoreCounter.countResult(response));
 
-        testStatisticsService.save(mapper.map(response, TestStatisticsDto.class));
+        testStatisticsService.save(responseToStatisticsMapper.map(response, TestStatisticsDto.class));
 
-        Response newResponse = responseRepository.save(mapper.map(response, Response.class));
+        Response newResponse = responseRepository.save(responseToStatisticsMapper.map(response, Response.class));
         return mapToReturnResponseDto(newResponse);
     }
 
     private ResponseDto mapToReturnResponseDto(Response newResponse) {
-        ResponseDto responseDto = mapper.map(newResponse, ResponseDto.class);
+        ResponseDto responseDto = responseToStatisticsMapper.map(newResponse, ResponseDto.class);
         responseDto.setTest(null);
         responseDto.setAnswers(null);
         return responseDto;
@@ -100,14 +86,16 @@ public class ResponseServiceImpl implements ResponseService {
                     Long answerDtoId = answerDto.getId();
                     Answer answer = answerRepository.findById(answerDtoId)
                             .orElseThrow(() -> new AnswerNotFoundException(answerDtoId));
-                    return mapper.map(answer, AnswerDto.class);
+                    return responseToStatisticsMapper.map(answer, AnswerDto.class);
                 })
                 .collect(Collectors.toList());
     }
 
     private int getNumberOfNewTry(ResponseDto response) {
         return responseRepository
-                .getFirstByStudentIdAndTestOrderByNumberOfTryDesc(response.getStudent().getId(), mapper.map(response.getTest(), Test.class))
+                .getFirstByStudentIdAndTestOrderByNumberOfTryDesc(
+                        response.getStudent().getId(),
+                        responseToStatisticsMapper.map(response.getTest(), Test.class))
                 .orElse(new Response())
                 .getNumberOfTry() + 1;
     }
