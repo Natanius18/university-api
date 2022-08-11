@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import software.sigma.internship.UniversityApplication;
@@ -34,6 +35,7 @@ class TestServiceImplTest {
     private TeacherRepository teacherRepository;
 
     @Autowired
+    @Qualifier("teacherMapper")
     private ModelMapper mapper;
 
     private final String FIRST_NAME = "Ivan";

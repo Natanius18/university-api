@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import software.sigma.internship.dto.AnswerDto;
 import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.entity.Answer;
@@ -36,7 +35,9 @@ import java.util.stream.Collectors;
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final TeacherRepository teacherRepository;
-    private final ModelMapper mapper;
+    private final ModelMapper allTestsMapper;
+    private final ModelMapper testForTeacherMapper;
+    private final ModelMapper testForStudentMapper;
     private final QuestionService questionService;
 
     /**
@@ -46,7 +47,7 @@ public class TestServiceImpl implements TestService {
     public List<TestDto> findAll() {
         List<Test> tests = testRepository.findAll();
         return tests.stream()
-                .map(entity -> mapper.map(entity, TestDto.class))
+                .map(entity -> allTestsMapper.map(entity, TestDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +61,7 @@ public class TestServiceImpl implements TestService {
         List<Test> tests = teacher.getTests();
         return tests.stream()
                 .map(entity -> {
-                    TestDto testDto = mapper.map(entity, TestDto.class);
+                    TestDto testDto = allTestsMapper.map(entity, TestDto.class);
                     testDto.setTeacher(null);
                     return testDto;
                 }).collect(Collectors.toList());
@@ -72,11 +73,7 @@ public class TestServiceImpl implements TestService {
      */
     public TestDto findByIdForStudent(Long id) {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        TestDto testDto = mapper.map(test, TestDto.class);
-        test.getTeacher().setTests(null);
-        List<QuestionDto> questions = getQuestionsWithHiddenCorrectAnswers(test);
-        testDto.setQuestions(questions);
-        return testDto;
+        return testForStudentMapper.map(test, TestDto.class);
     }
 
     /**
@@ -85,14 +82,7 @@ public class TestServiceImpl implements TestService {
      */
     public TestDto findByIdForTeacher(Long id) {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        TestDto testDto = mapper.map(test, TestDto.class);
-        test.getTeacher().setTests(null);
-        List<QuestionDto> questions = test.getQuestions()
-                .stream()
-                .map(question -> mapper.map(question, QuestionDto.class))
-                .collect(Collectors.toList());
-        testDto.setQuestions(questions);
-        return testDto;
+        return testForTeacherMapper.map(test, TestDto.class);
     }
 
     /**
@@ -112,37 +102,6 @@ public class TestServiceImpl implements TestService {
     }
 
     /**
-     * @param test the test we want to get.
-     * @return list of all questions in the test with all options of answers with hidden field 'correct'.
-     */
-    private List<QuestionDto> getQuestionsWithHiddenCorrectAnswers(Test test) {
-        return test.getQuestions()
-                .stream()
-                .map(question -> {
-                    List<AnswerDto> answers = hideCorrectFieldInAnswersOfQuestion(question);
-                    QuestionDto questionDto = mapper.map(question, QuestionDto.class);
-                    questionDto.setAnswers(answers);
-                    return questionDto;
-                })
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * @param question question, the correctness of answers to which we want to hide.
-     * @return the list of all options of answers with hidden field 'correct'.
-     */
-    private List<AnswerDto> hideCorrectFieldInAnswersOfQuestion(Question question) {
-        return question.getAnswers()
-                .stream()
-                .map(answer -> {
-                    AnswerDto answerDto = mapper.map(answer, AnswerDto.class);
-                    answerDto.setCorrect(null);
-                    return answerDto;
-                })
-                .collect(Collectors.toList());
-    }
-
-    /**
      * @param testDto test to be saved or updated.
      * @return saved or updated test.
      */
@@ -157,7 +116,7 @@ public class TestServiceImpl implements TestService {
                 throw new TestNotFoundException(testId);
             }
         }
-        Test entity = mapper.map(testDto, Test.class);
+        Test entity = testForTeacherMapper.map(testDto, Test.class);
         List<Question> questions = mapQuestions(testDto, entity);
         entity.setQuestions(questions);
         deleteQuestionsThatAreNoLongerBelongToTheTest(existingTest, questions);
@@ -165,7 +124,7 @@ public class TestServiceImpl implements TestService {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
         entity.setTeacher(teacher);
         Test newTest = testRepository.save(entity);
-        return mapper.map(newTest, TestDto.class);
+        return testForTeacherMapper.map(newTest, TestDto.class);
     }
 
     /**
@@ -207,7 +166,7 @@ public class TestServiceImpl implements TestService {
         return testDto.getQuestions()
                 .stream()
                 .map(question -> {
-                    Question entityQuestion = mapper.map(question, Question.class);
+                    Question entityQuestion = testForTeacherMapper.map(question, Question.class);
                     entityQuestion.setTest(entity);
                     List<Answer> answers = mapAnswers(question, entityQuestion);
                     entityQuestion.setAnswers(answers);
@@ -224,7 +183,7 @@ public class TestServiceImpl implements TestService {
     private List<Answer> mapAnswers(QuestionDto question, Question entityQuestion) {
         return question.getAnswers().stream()
                 .map(answer -> {
-                    Answer entityAnswer = mapper.map(answer, Answer.class);
+                    Answer entityAnswer = testForTeacherMapper.map(answer, Answer.class);
                     entityAnswer.setQuestion(entityQuestion);
                     return entityAnswer;
                 }).collect(Collectors.toList());

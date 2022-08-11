@@ -23,15 +23,15 @@ import static software.sigma.internship.mongo.filters.core.FilterApplier.applyRe
 public class TestStatisticsServiceImpl implements TestStatisticsService {
 
     private final TestStatisticsRepository repository;
-    private final ModelMapper mapper;
+    private final ModelMapper responseToStatisticsMapper;
     private final MongoTemplate mongoTemplate;
 
 
     @Override
     public TestStatisticsDto save(TestStatisticsDto testStatisticsDto) {
-        TestStatistics testStatistics = mapper.map(testStatisticsDto, TestStatistics.class);
+        TestStatistics testStatistics = responseToStatisticsMapper.map(testStatisticsDto, TestStatistics.class);
         testStatistics.setDate(new Date());
-        return mapper.map(repository.save(testStatistics), TestStatisticsDto.class);
+        return responseToStatisticsMapper.map(repository.save(testStatistics), TestStatisticsDto.class);
     }
 
     @Override
