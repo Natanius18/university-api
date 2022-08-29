@@ -151,6 +151,7 @@ public class ApplicationConfig {
             @Override
             protected void configure() {
                 map().setTestName(source.getTest().getName());
+                map().setTeacherEmail(source.getTest().getTeacher().getEmail());
             }
         });
 

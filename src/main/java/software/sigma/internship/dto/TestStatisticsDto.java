@@ -11,6 +11,7 @@ import java.util.Date;
 public class TestStatisticsDto {
     private String id;
     private String testName;
+    private String teacherEmail;
     private int numberOfTry;
     private float result;
     private float averageResult;
