@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/configuration/ui").permitAll()
-                .antMatchers(HttpMethod.POST,"/v1/students").permitAll()
+                .antMatchers("/v1/**").permitAll()
                 .antMatchers(HttpMethod.PUT,"/v1/students").permitAll()
                 .antMatchers(HttpMethod.POST,"/v1/teachers").permitAll()
                 .antMatchers(HttpMethod.PUT,"/v1/teachers").permitAll()
