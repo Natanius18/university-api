@@ -1,0 +1,2 @@
+INSERT INTO person VALUES (default, 'Teacher', 'Admin', 'Admin', null, null, 'admin@admin.com', '$2a$12$xh/qcmZagLLnn0wtYNcTjOpMyCPPXul2gz1an1XNzh/KO/rv5eYfu', 'ACTIVE', 'ADMIN', null);
+INSERT INTO person VALUES (default, 'Student', 'Natan', 'Chachko', 3, null, 'natan.chachko@stud.onu.edu.ua', '$2a$12$9V4X9fkxIHaGJbGNkK3NqOd6ESim3WFJGJ8jS.HhyOF.lu7AhWmKG', 'ACTIVE', 'STUDENT', null);

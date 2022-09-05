@@ -28,10 +28,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .headers().frameOptions().disable()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/v1/auth/login").permitAll()
+                .antMatchers("/h2/**").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
@@ -39,7 +42,7 @@ public class SecurityConfig {
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/configuration/ui").permitAll()
-                .antMatchers("/v1/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/v1/students").permitAll()
                 .antMatchers(HttpMethod.PUT,"/v1/students").permitAll()
                 .antMatchers(HttpMethod.POST,"/v1/teachers").permitAll()
                 .antMatchers(HttpMethod.PUT,"/v1/teachers").permitAll()

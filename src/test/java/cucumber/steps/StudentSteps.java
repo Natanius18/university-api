@@ -2,50 +2,60 @@ package cucumber.steps;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import software.sigma.internship.UniversityApplication;
 import software.sigma.internship.dto.StudentDto;
-import software.sigma.internship.entity.Student;
 import software.sigma.internship.enums.Role;
 import software.sigma.internship.enums.Status;
-import software.sigma.internship.repo.StudentRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-@SpringBootTest
+@ContextConfiguration(classes = UniversityApplication.class)
 public class StudentSteps {
     private static final String URL = "http://localhost:8080/university/v1/students";
+    private static final String LOGIN_URL = "http://localhost:8080/university/v1/auth/login";
     private StudentDto createdStudentDto = new StudentDto();
-    private Student existingStudent;
-    private StudentDto foundStudent;
-
+    private final HttpHeaders reqHeaders = new HttpHeaders();
     private static final String FIRST_NAME = "First";
     private static final String LAST_NAME = "Last";
     private static final String EMAIL = "email@example.com";
     private static final String PASSWORD = "Password";
     private final RestTemplate restTemplate = new RestTemplate();
-    private final StudentRepository studentRepository;
     private Long idOfNotExistingStudent;
+
+    private final List<StudentDto> existingStudents = new ArrayList<>();
+    private final List<StudentDto> foundStudents = new ArrayList<>();
     private HttpClientErrorException expectedException;
 
-    public StudentSteps(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    @DataTableType
+    public StudentDto studentDtoEntry(Map<String, String> entry) {
+        return createStudentDto(
+                entry.get("firstName"),
+                entry.get("lastName"),
+                entry.get("email")
+        );
     }
 
     @When("new student is added")
@@ -60,41 +70,85 @@ public class StudentSteps {
 
     @Then("the student is present in the database")
     public void newAccountIsCreatedAndSavedInTheDatabase() {
-        Student foundStudent = studentRepository.findById(createdStudentDto.getId()).get();
+        authenticateUser("admin@admin.com", "admin");
+        StudentDto foundStudent = restTemplate.exchange(
+                URL + "/" + createdStudentDto.getId(), HttpMethod.GET, new HttpEntity<>(reqHeaders), StudentDto.class).getBody();
         assertEquals(createdStudentDto.getId(), foundStudent.getId());
         assertEquals(createdStudentDto.getFirstName(), foundStudent.getFirstName());
         assertEquals(createdStudentDto.getLastName(), foundStudent.getLastName());
         assertEquals(createdStudentDto.getEmail(), foundStudent.getEmail());
         assertEquals(createdStudentDto.getId(), foundStudent.getId());
         assertEquals(createdStudentDto.getCourse(), foundStudent.getCourse());
-        studentRepository.deleteById(createdStudentDto.getId());
+        restTemplate.exchange(
+                URL + "/" + createdStudentDto.getId(),
+                HttpMethod.DELETE,
+                new HttpEntity<>(reqHeaders),
+                StudentDto.class
+        );
+    }
+
+    @Given("the user is authenticated with email \"([^\"]*)\" and password \"([^\"]*)\"$")
+    public void authenticateUser(String email, String password) {
+
+        String requestJson = "{" +
+                "\"email\": \"" + email + "\"," +
+                "\"password\": \"" + password + "\"" +
+                "}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
+
+        ResponseEntity<Object> authRes = restTemplate.exchange(LOGIN_URL, HttpMethod.POST, entity, Object.class);
+
+        Map<String, String> map = (Map<String, String>) authRes.getBody();
+
+        reqHeaders.add("Authorization", map.get("token"));
     }
 
     @Given("there is a student in the database")
-    public void thereIsAStudentInTheDatabase() {
-        existingStudent = studentRepository.save(createStudent());
-        assertTrue(studentRepository.existsById(existingStudent.getId()));
+    public void thereIsAStudentInTheDatabase(List<StudentDto> students) {
+        authenticateUser("admin@admin.com", "admin");
+        students.forEach(student -> {
+            StudentDto existingStudent = restTemplate.postForObject(URL, student, StudentDto.class);
+            assertNotNull(restTemplate.exchange(
+                    URL + "/" + existingStudent.getId(),
+                    HttpMethod.GET,
+                    new HttpEntity<>(reqHeaders),
+                    StudentDto.class).getBody());
+            existingStudents.add(existingStudent);
+        });
     }
 
     @When("trying to retrieve an existing student")
     public void tryingToRetrieveAnExistingStudent() {
-        foundStudent = restTemplate.getForEntity(URL + "/" + existingStudent.getId(), StudentDto.class).getBody();
+        for (StudentDto student : existingStudents) {
+            StudentDto foundStudent = restTemplate.exchange(
+                    URL + "/" + student.getId(), HttpMethod.GET, new HttpEntity<>(reqHeaders), StudentDto.class).getBody();
+            foundStudents.add(foundStudent);
+        }
     }
 
     @Then("getting an existing student")
-    public void gettingAnExistingStudent() {
-        assertEquals(existingStudent.getId(), foundStudent.getId());
-        assertEquals(existingStudent.getCourse(), foundStudent.getCourse());
-        assertEquals(existingStudent.getEmail(), foundStudent.getEmail());
-        assertEquals(existingStudent.getFirstName(), foundStudent.getFirstName());
-        assertEquals(existingStudent.getLastName(), foundStudent.getLastName());
+    public void gettingAnExistingStudent(List<StudentDto> students) {
+        authenticateUser("admin@admin.com", "admin");
+        for (int i = 0; i < students.size(); i++) {
+            assertEquals(students.get(i).getEmail(), foundStudents.get(i).getEmail());
+            assertEquals(students.get(i).getFirstName(), foundStudents.get(i).getFirstName());
+            assertEquals(students.get(i).getLastName(), foundStudents.get(i).getLastName());
+            restTemplate.exchange(
+                    URL + "/" + foundStudents.get(i).getId(),
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(reqHeaders),
+                    void.class);
+        }
 
-        studentRepository.deleteById(existingStudent.getId());
     }
 
     @When("existing student is updated")
-
     public void existingStudentIsUpdated() throws JsonProcessingException {
+        StudentDto existingStudent = existingStudents.get(0);
+        existingStudent.setPassword("pwd");
         existingStudent.setCourse(3);
         existingStudent.setLastName("Changed");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -108,26 +162,59 @@ public class StudentSteps {
 
     @Then("updated student is saved in the database")
     public void updatedStudentIsSavedInTheDatabase() {
-        Student updatedStudent = studentRepository.findById(existingStudent.getId()).get();
+        authenticateUser("natan.chachko@stud.onu.edu.ua", "12345");
+        StudentDto existingStudent = existingStudents.get(0);
+        StudentDto updatedStudent = restTemplate.exchange(
+                URL + "/" + existingStudent.getId(),
+                HttpMethod.GET,
+                new HttpEntity<>(reqHeaders),
+                StudentDto.class
+        ).getBody();
         assertEquals(existingStudent.getId(), updatedStudent.getId());
         assertEquals(existingStudent.getCourse(), updatedStudent.getCourse());
         assertEquals(existingStudent.getEmail(), updatedStudent.getEmail());
         assertEquals(existingStudent.getFirstName(), updatedStudent.getFirstName());
         assertEquals(existingStudent.getLastName(), updatedStudent.getLastName());
 
-        studentRepository.deleteById(existingStudent.getId());
+        restTemplate.exchange(
+                URL + "/" + existingStudent.getId(),
+                HttpMethod.DELETE,
+                new HttpEntity<>(reqHeaders),
+                void.class
+        );
     }
 
     @Given("there is no student in the database with given id")
     public void thereIsNoStudentInTheDatabaseWithGivenId() {
-        idOfNotExistingStudent = studentRepository.save(createStudent()).getId();
-        studentRepository.deleteById(idOfNotExistingStudent);
-        assertFalse(studentRepository.existsById(idOfNotExistingStudent));
+        authenticateUser("admin@admin.com", "admin");
+        idOfNotExistingStudent = restTemplate.postForObject(URL, createStudentDto(FIRST_NAME, LAST_NAME, EMAIL), StudentDto.class).getId();
+        restTemplate.exchange(
+                URL + "/" + idOfNotExistingStudent,
+                HttpMethod.DELETE,
+                new HttpEntity<>(reqHeaders),
+                void.class);
+        Exception exception = assertThrows(HttpClientErrorException.class, () -> restTemplate.exchange(
+                URL + "/" + idOfNotExistingStudent,
+                HttpMethod.GET,
+                new HttpEntity<>(reqHeaders),
+                StudentDto.class)
+        );
+
+        String expectedMessage = "User id not found: " + idOfNotExistingStudent;
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+
+
+        assertThrows(HttpClientErrorException.class, () -> restTemplate.exchange(
+                URL + "/" + idOfNotExistingStudent,
+                HttpMethod.GET,
+                new HttpEntity<>(reqHeaders),
+                StudentDto.class));
     }
 
     @When("not existing student is updated")
     public void notExistingStudentIsUpdated() {
-        StudentDto studentDto = createStudentDto();
+        StudentDto studentDto = createStudentDto(FIRST_NAME, LAST_NAME, EMAIL);
         studentDto.setId(idOfNotExistingStudent);
 
         HttpEntity<StudentDto> updatedStudent = new HttpEntity<>(studentDto);
@@ -145,24 +232,12 @@ public class StudentSteps {
         assertTrue(Objects.requireNonNull(expectedException.getMessage()).contains("User id not found: " + idOfNotExistingStudent));
     }
 
-    private static Student createStudent() {
-        Student student = new Student();
-        student.setCourse(1);
-        student.setFirstName(FIRST_NAME);
-        student.setLastName(LAST_NAME);
-        student.setEmail(EMAIL);
-        student.setPassword(PASSWORD);
-        student.setStatus(Status.ACTIVE);
-        student.setRole(Role.STUDENT);
-        return student;
-    }
-
-    private static StudentDto createStudentDto() {
+    private static StudentDto createStudentDto(String firstName, String lastName, String email) {
         StudentDto student = new StudentDto();
         student.setCourse(1);
-        student.setFirstName(FIRST_NAME);
-        student.setLastName(LAST_NAME);
-        student.setEmail(EMAIL);
+        student.setFirstName(firstName);
+        student.setLastName(lastName);
+        student.setEmail(email);
         student.setPassword(PASSWORD);
         student.setStatus(Status.ACTIVE);
         student.setRole(Role.STUDENT);
