@@ -15,15 +15,12 @@ import software.sigma.internship.entity.Test;
 import software.sigma.internship.enums.Permission;
 import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.repo.TestRepository;
-import software.sigma.internship.service.QuestionService;
 import software.sigma.internship.service.TestService;
 import software.sigma.internship.validator.exception.TestNotFoundException;
 import software.sigma.internship.validator.exception.UserNotFoundException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 /**
  * Implementation of {@link TestService}.
@@ -38,7 +35,6 @@ public class TestServiceImpl implements TestService {
     private final ModelMapper allTestsMapper;
     private final ModelMapper testForTeacherMapper;
     private final ModelMapper testForStudentMapper;
-    private final QuestionService questionService;
 
     /**
      * @return list of all existing tests.
@@ -108,18 +104,9 @@ public class TestServiceImpl implements TestService {
     @Override
     @Transactional
     public TestDto save(TestDto testDto) {
-        Long testId = testDto.getId();
-        Optional<Test> existingTest = Optional.empty();
-        if (testId != null) {
-            existingTest = testRepository.findById(testId);
-            if (existingTest.isEmpty()) {
-                throw new TestNotFoundException(testId);
-            }
-        }
         Test entity = testForTeacherMapper.map(testDto, Test.class);
         List<Question> questions = mapQuestions(testDto, entity);
         entity.setQuestions(questions);
-        deleteQuestionsThatAreNoLongerBelongToTheTest(existingTest, questions);
         Long teacherId = testDto.getTeacher().getId();
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
         entity.setTeacher(teacher);
@@ -134,26 +121,6 @@ public class TestServiceImpl implements TestService {
     @Override
     public void deleteById(Long id) {
         testRepository.deleteById(id);
-    }
-
-    private void deleteQuestionsThatAreNoLongerBelongToTheTest(Optional<Test> existingTest, List<Question> newQuestions) {
-        if (existingTest.isPresent()) {
-            List<Long> idsOfNewQuestions = getIdsOfQuestions(newQuestions);
-            List<Long> idsOfOldQuestions = getIdsOfQuestions(existingTest.get().getQuestions());
-            questionService.deleteQuestionByIdIn(getIdsToDelete(idsOfNewQuestions, idsOfOldQuestions));
-        }
-    }
-
-    /**
-     * Parse ids of questions from the given questions.
-     * @param questions questions to parse ids.
-     * @return list of ids of the given questions.
-     */
-    private List<Long> getIdsOfQuestions(List<Question> questions) {
-        return questions
-                .stream()
-                .map(Question::getId)
-                .collect(Collectors.toList());
     }
 
     /**
@@ -189,20 +156,4 @@ public class TestServiceImpl implements TestService {
                 }).collect(Collectors.toList());
     }
 
-    /**
-     *
-     * @param idsOfNewQuestions ids of the questions in updated test.
-     * @param idsOfOldQuestions ids of the questions in old test.
-     * @return list of ids of questions that are no longer present in the updated test.
-     */
-    public List<Long> getIdsToDelete(List<Long> idsOfNewQuestions, List<Long> idsOfOldQuestions) {
-        List<Long> result = new ArrayList<>(idsOfNewQuestions);
-        result.addAll(idsOfOldQuestions);
-
-        List<Long> intersection = new ArrayList<>(idsOfNewQuestions);
-        intersection.retainAll(idsOfOldQuestions);
-
-        result.removeAll(intersection);
-        return result;
-    }
 }
