@@ -33,7 +33,7 @@ public class Question {
     private Test test;
     private CountStrategy type;
     private String text;
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 20)
     private List<Answer> answers;
