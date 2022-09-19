@@ -83,10 +83,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void preparePersonForSave(PersonDto personDto, Long id) {
         String email = personDto.getEmail();
-        if (id == null && personRepository.existsByEmail(email)) {
-            throw new UserExistsWithEmailException(email);
-        }
         if (id == null) {
+            if (personRepository.existsByEmail(email)) {
+                throw new UserExistsWithEmailException(email);
+            }
             sendConfirmationEmail(personDto, email);
         }
         setRoleAndStatus(personDto, id);

@@ -52,7 +52,8 @@ public class ResponseServiceImpl implements ResponseService {
 
     private List<ResponseDto> getResponseDtoList(List<Response> responses) {
         return responses.stream()
-                .map(response -> allResponsesMapper.map(response, ResponseDto.class)).collect(Collectors.toList());
+                .map(response -> allResponsesMapper.map(response, ResponseDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -69,14 +70,7 @@ public class ResponseServiceImpl implements ResponseService {
         testStatisticsService.save(responseToStatisticsMapper.map(response, TestStatisticsDto.class));
 
         Response newResponse = responseRepository.save(responseToStatisticsMapper.map(response, Response.class));
-        return mapToReturnResponseDto(newResponse);
-    }
-
-    private ResponseDto mapToReturnResponseDto(Response newResponse) {
-        ResponseDto responseDto = responseToStatisticsMapper.map(newResponse, ResponseDto.class);
-        responseDto.setTest(null);
-        responseDto.setAnswers(null);
-        return responseDto;
+        return responseToStatisticsMapper.map(newResponse, ResponseDto.class);
     }
 
     private List<AnswerDto> getAnswerDtoList(ResponseDto response) {
