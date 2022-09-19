@@ -158,8 +158,8 @@ public class ApplicationConfig {
         modelMapper.addMappings(new PropertyMap<Response, ResponseDto>() {
             @Override
             protected void configure() {
-                skip(destination.getTest().getQuestions());
-                skip(destination.getTest().getTeacher());
+                skip(destination.getTest());
+                skip(destination.getAnswers());
                 skip(destination.getStudent().getPassword());
                 skip(destination.getStudent().getStatus());
                 skip(destination.getStudent().getRole());
