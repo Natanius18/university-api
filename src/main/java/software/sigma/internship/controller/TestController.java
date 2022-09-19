@@ -30,7 +30,7 @@ public class TestController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Found the tests")
     })
-    @GetMapping(path = "/all")
+    @GetMapping
     public List<TestDto> fetchList() {
         return testService.findAll();
     }

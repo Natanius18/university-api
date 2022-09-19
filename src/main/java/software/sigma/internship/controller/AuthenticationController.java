@@ -27,25 +27,26 @@ import java.util.Map;
 @RequestMapping("/v1/auth")
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
+    private final AuthenticationManager authManager;
     private PersonRepository personRepository;
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDto request) {
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-            );
-            Person person = personRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
-            String token = jwtTokenProvider.createToken(request.getEmail(), person.getRole().name());
+            String email = request.getEmail();
+            Person person = personRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User with email " + email +" doesn't exist"));
+            authManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
+            String token = jwtTokenProvider.createToken(email, person.getRole().name());
             Map<Object, Object> response = new HashMap<>();
-            response.put("email", request.getEmail());
+            response.put("email", email);
             response.put("token", token);
             return ResponseEntity.ok(response);
+        } catch (UsernameNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (AuthenticationException e) {
-            return new ResponseEntity<>("Invalid email or password. Have you confirmed your email?", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Invalid password. Have you confirmed your email?", HttpStatus.FORBIDDEN);
         }
     }
 
