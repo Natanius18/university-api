@@ -1,12 +1,16 @@
 package software.sigma.internship.service;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import software.sigma.internship.UniversityApplication;
 import software.sigma.internship.dto.AnswerDto;
@@ -21,6 +25,7 @@ import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.service.impl.TestServiceImpl;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,6 +45,12 @@ class TestServiceImplTest {
 
     private final String FIRST_NAME = "Ivan";
     private final String LAST_NAME = "Ivanov";
+
+    @BeforeAll
+    public static void setSecurityContext() {
+        Set<SimpleGrantedAuthority> authorities = Role.TEACHER.getAuthorities();
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("teacher@gmail.com", "password", authorities));
+    }
 
     @AfterEach
     public void clearDataBase(){
@@ -61,7 +72,7 @@ class TestServiceImplTest {
 
         TestDto savedTest = testService.save(testDto);
         assertNotNull(savedTest);
-        TestDto foundTest = testService.findByIdForTeacher(savedTest.getId());
+        TestDto foundTest = testService.findById(savedTest.getId());
         assertEquals(savedTest, foundTest);
     }
 
@@ -79,7 +90,7 @@ class TestServiceImplTest {
         testDto.setQuestions(List.of(question1, question2));
 
         TestDto savedTest = testService.save(testDto);
-        TestDto foundTest = testService.findByIdForTeacher(savedTest.getId());
+        TestDto foundTest = testService.findById(savedTest.getId());
 
         foundTest.getQuestions().remove(0);
 
