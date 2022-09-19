@@ -65,36 +65,22 @@ public class TestServiceImpl implements TestService {
 
     /**
      * @param id id of the test we want to get.
-     * @return test by id with hidden field 'correct'.
-     */
-    public TestDto findByIdForStudent(Long id) {
-        Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        return testForStudentMapper.map(test, TestDto.class);
-    }
-
-    /**
-     * @param id id of the test we want to get.
-     * @return test by id with all fields shown for teacher.
-     */
-    public TestDto findByIdForTeacher(Long id) {
-        Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        return testForTeacherMapper.map(test, TestDto.class);
-    }
-
-    /**
-     * @param id id of the test we want to get.
      * @return test by id with all fields shown or hidden field 'correct' depending on authorities.
      */
     @Override
     public TestDto findById(Long id) {
+        Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
+        return userHasPermissionToSeeAllFields() ?
+                testForTeacherMapper.map(test, TestDto.class) :
+                testForStudentMapper.map(test, TestDto.class);
+    }
+
+    private boolean userHasPermissionToSeeAllFields() {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getAuthorities();
-        if (authorities.contains(Permission.READ_FULL.getAuthority())) {
-            return findByIdForTeacher(id);
-        }
-        return findByIdForStudent(id);
+        return authorities.contains(Permission.READ_FULL.getAuthority());
     }
 
     /**
