@@ -6,7 +6,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -159,11 +158,4 @@ public class TestServiceImpl implements TestService {
                     return entityAnswer;
                 }).collect(Collectors.toList());
     }
-
-
-    @Scheduled(cron = "0 0 0 ? * SUN")
-    @CacheEvict(cacheNames = {"tests", "testsByTeacher", "allTests"}, allEntries = true)
-    public void evictCaches() {
-    }
-
 }
