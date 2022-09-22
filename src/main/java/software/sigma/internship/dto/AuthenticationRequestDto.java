@@ -1,9 +1,17 @@
 package software.sigma.internship.dto;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class AuthenticationRequestDto {
     private String email;
     private String password;
+
+    @Override
+    public String toString() {
+        return "AuthenticationRequestDto{" +
+                "email='" + email + '\'' +
+                ", password='" + password.replaceAll(".", "*") + '\'' +
+                '}';
+    }
 }

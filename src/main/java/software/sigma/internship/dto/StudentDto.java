@@ -15,4 +15,17 @@ import software.sigma.internship.validator.ValidCourse;
 public class StudentDto extends PersonDto {
     @ValidCourse
     private Integer course;
+
+    @Override
+    public String toString() {
+        return "StudentDto{" +
+                "id=" + getId() +
+                ", firstName='" + getFirstName() + '\'' +
+                ", lastName='" + getLastName() + '\'' +
+                ", email='" + getEmail() + '\'' +
+                ", role=" + getRole() +
+                ", status=" + getStatus() +
+                ", course=" + course + '\'' +
+                '}';
+    }
 }
