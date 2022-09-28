@@ -5,6 +5,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.client.RestTemplate;
 import software.sigma.internship.dto.AnswerDto;
 import software.sigma.internship.dto.PersonDto;
@@ -29,6 +30,7 @@ import static software.sigma.internship.enums.CountStrategy.ONE_CORRECT_ANSWER;
 import static software.sigma.internship.enums.CountStrategy.SEVERAL_CORRECT_ANSWERS;
 
 @Configuration
+@EnableAspectJAutoProxy
 public class ApplicationConfig {
 
     @Bean

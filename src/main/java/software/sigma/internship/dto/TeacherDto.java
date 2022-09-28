@@ -15,4 +15,17 @@ import software.sigma.internship.entity.Teacher;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TeacherDto extends PersonDto {
     private Teacher.Position position;
+
+    @Override
+    public String toString() {
+        return "TeacherDto{" +
+                "id=" + getId() +
+                ", firstName='" + getFirstName() + '\'' +
+                ", lastName='" + getLastName() + '\'' +
+                ", email='" + getEmail() + '\'' +
+                ", role=" + getRole() +
+                ", status=" + getStatus() +
+                ", position=" + position + '\'' +
+                '}';
+    }
 }
