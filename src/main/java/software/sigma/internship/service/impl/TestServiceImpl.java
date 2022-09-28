@@ -1,7 +1,11 @@
 package software.sigma.internship.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,6 +32,7 @@ import java.util.stream.Collectors;
  * @author natanius
  */
 @Service
+@Slf4j
 @AllArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
@@ -40,7 +45,9 @@ public class TestServiceImpl implements TestService {
      * @return list of all existing tests.
      */
     @Override
+    @Cacheable("allTests")
     public List<TestDto> findAll() {
+        log.info("Retrieving all tests from database...");
         List<Test> tests = testRepository.findAll();
         return tests.stream()
                 .map(entity -> allTestsMapper.map(entity, TestDto.class))
@@ -52,7 +59,9 @@ public class TestServiceImpl implements TestService {
      * @return all tests from a specific teacher.
      */
     @Override
+    @Cacheable("testsByTeacher")
     public List<TestDto> findTestsByTeacher(Long teacherId) {
+        log.info("Retrieving tests of teacher with id " + teacherId + " from database...");
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
         List<Test> tests = teacher.getTests();
         return tests.stream()
@@ -61,6 +70,30 @@ public class TestServiceImpl implements TestService {
                     testDto.setTeacher(null);
                     return testDto;
                 }).collect(Collectors.toList());
+    }
+
+    /**
+     * @param testDto test to be saved or updated.
+     * @return saved or updated test.
+     */
+    @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "tests", key = "#testDto.id"),
+                    @CacheEvict(value = "testsByTeacher", key = "#testDto.teacher.id"),
+                    @CacheEvict(value = "allTests", allEntries = true)
+
+            })
+    @Transactional
+    public TestDto save(TestDto testDto) {
+        Test entity = testForTeacherMapper.map(testDto, Test.class);
+        List<Question> questions = mapQuestions(testDto, entity);
+        entity.setQuestions(questions);
+        Long teacherId = testDto.getTeacher().getId();
+        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
+        entity.setTeacher(teacher);
+        Test newTest = testRepository.save(entity);
+        return testForTeacherMapper.map(newTest, TestDto.class);
     }
 
     /**
@@ -84,27 +117,11 @@ public class TestServiceImpl implements TestService {
     }
 
     /**
-     * @param testDto test to be saved or updated.
-     * @return saved or updated test.
-     */
-    @Override
-    @Transactional
-    public TestDto save(TestDto testDto) {
-        Test entity = testForTeacherMapper.map(testDto, Test.class);
-        List<Question> questions = mapQuestions(testDto, entity);
-        entity.setQuestions(questions);
-        Long teacherId = testDto.getTeacher().getId();
-        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
-        entity.setTeacher(teacher);
-        Test newTest = testRepository.save(entity);
-        return testForTeacherMapper.map(newTest, TestDto.class);
-    }
-
-    /**
      * Deletes the whole test.
      * @param id id of the test we want to delete.
      */
     @Override
+    @CacheEvict(cacheNames = {"tests", "testsByTeacher", "allTests"}, allEntries = true)
     public void deleteById(Long id) {
         testRepository.deleteById(id);
     }
@@ -141,5 +158,4 @@ public class TestServiceImpl implements TestService {
                     return entityAnswer;
                 }).collect(Collectors.toList());
     }
-
 }
