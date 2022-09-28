@@ -24,13 +24,12 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.newA
 
 @Service
 @AllArgsConstructor
-public class ScheduledUtil {
-
+public class ScheduledTasks {
     private final MongoTemplate mongoTemplate;
     private final KafkaTemplate<String, Map<String, List<TestStatisticsDto>>> kafkaTemplate;
 
-    @Scheduled(cron = "0 0 18 ? * *")
-    private void sendStatistics() {
+    @Scheduled(cron = "${cron.send.statistics}")
+    public void sendStatistics() {
         Date yesterday = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
         MatchOperation operation = Aggregation.match(Criteria.where("Date").gt(yesterday));
         Aggregation aggregation = newAggregation(operation);
@@ -41,7 +40,7 @@ public class ScheduledUtil {
         kafkaTemplate.send("statistics", listMap);
     }
 
-    @Scheduled(cron = "0 0 0 ? * SUN")
+    @Scheduled(cron = "${cron.evict.caches}")
     @CacheEvict(cacheNames = {"tests", "testsByTeacher", "allTests"}, allEntries = true)
     public void evictCaches() {
     }
