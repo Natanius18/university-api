@@ -12,3 +12,12 @@ spring:
 jwt:
   header: Authorization
   expires: 604800
+
+endpoint:
+  student:
+    basic:
+      url: "http://localhost:8080/university/v1/students"
+
+  login:
+    basic:
+      url: "http://localhost:8080/university/v1/auth/login"
