@@ -45,11 +45,13 @@ class TestServiceImplTest {
 
     private final String FIRST_NAME = "Ivan";
     private final String LAST_NAME = "Ivanov";
+    private static final String TEACHER_EMAIL = "teacher@gmail.com";
+    private static final String PASSWORD = "password";
 
     @BeforeAll
     public static void setSecurityContext() {
         Set<SimpleGrantedAuthority> authorities = Role.TEACHER.getAuthorities();
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("teacher@gmail.com", "password", authorities));
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(TEACHER_EMAIL, PASSWORD, authorities));
     }
 
     @AfterEach
@@ -128,8 +130,8 @@ class TestServiceImplTest {
         teacher.setPosition(Teacher.Position.DOCENT);
         teacher.setFirstName(FIRST_NAME);
         teacher.setLastName(LAST_NAME);
-        teacher.setEmail("teacher@gmail.com");
-        teacher.setPassword("password");
+        teacher.setEmail(TEACHER_EMAIL);
+        teacher.setPassword(PASSWORD);
         teacher.setStatus(Status.ACTIVE);
         teacher.setRole(Role.TEACHER);
         return teacherRepository.save(teacher);

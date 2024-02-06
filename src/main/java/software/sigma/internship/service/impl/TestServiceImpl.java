@@ -1,6 +1,6 @@
 package software.sigma.internship.service.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final TeacherRepository teacherRepository;

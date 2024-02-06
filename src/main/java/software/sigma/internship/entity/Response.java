@@ -27,9 +27,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Response {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private int numberOfTry;
 
     @ManyToOne(cascade = CascadeType.MERGE)

@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @DiscriminatorValue("Teacher")
 public class Teacher extends Person {
+
     private Position position;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)

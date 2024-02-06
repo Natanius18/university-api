@@ -1,14 +1,14 @@
 package software.sigma.internship.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum Role {
     ADMIN(Set.of(Permission.APPROVE_PROFILE)),
     STUDENT(Set.of(Permission.READ)),

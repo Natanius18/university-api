@@ -1,6 +1,6 @@
 package software.sigma.internship.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +15,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(path = "/v1/confirm", produces = "application/json")
 public class ConfirmationController {
-    private final PersonService personService;
 
+    private final PersonService personService;
 
     @GetMapping("/verify")
     public ResponseEntity<Object> verifyUser(@RequestParam String code) {

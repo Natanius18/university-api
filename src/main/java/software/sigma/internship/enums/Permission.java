@@ -1,9 +1,9 @@
 package software.sigma.internship.enums;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum Permission {
     READ("students:read"),
     READ_FULL("teachers:read"),

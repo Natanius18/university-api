@@ -1,6 +1,6 @@
 package software.sigma.internship.service.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.StudentDto;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @author natanius
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;

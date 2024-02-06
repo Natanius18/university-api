@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
-import software.sigma.internship.mongo.filters.exceptions.WrongQueryParam;
+import software.sigma.internship.mongo.filters.exceptions.WrongQueryParamException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public final class FilterApplier {
                         .avg("result").as("averageResult"));
             }
             else {
-                throw new WrongQueryParam("Invalid query parameter for average field");
+                throw new WrongQueryParamException("Invalid query parameter for average field");
             }
         }
     }
@@ -66,7 +66,7 @@ public final class FilterApplier {
                 operations.add(Aggregation.skip(skip));
             }
         } catch (NumberFormatException pageParamExc) {
-            throw new WrongQueryParam("Page param must be greater than or equal to 0");
+            throw new WrongQueryParamException("Page param must be greater than or equal to 0");
         }
     }
 
@@ -81,7 +81,7 @@ public final class FilterApplier {
                 operations.add(Aggregation.limit(limit));
             }
         } catch (NumberFormatException pageParamExc) {
-            throw new WrongQueryParam("PageSize param must be greater than or equal to 0");
+            throw new WrongQueryParamException("PageSize param must be greater than or equal to 0");
         }
     }
 
@@ -97,7 +97,7 @@ public final class FilterApplier {
                 }
             }
         } catch (JSONException e) {
-            throw new WrongQueryParam("Your JSON format is wrong");
+            throw new WrongQueryParamException("Your JSON format is wrong");
         }
     }
 
@@ -119,7 +119,7 @@ public final class FilterApplier {
                 operations.add(Aggregation.sort(sortDir, sortBy));
             }
         } catch (IndexOutOfBoundsException subStringException) {
-            throw new WrongQueryParam();
+            throw new WrongQueryParamException();
         }
     }
 }

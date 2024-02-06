@@ -1,6 +1,6 @@
 package software.sigma.internship.service.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.AnswerDto;
@@ -26,8 +26,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ResponseServiceImpl implements ResponseService {
+
     private final ResponseRepository responseRepository;
     private final AnswerRepository answerRepository;
     private final StudentRepository studentRepository;

@@ -1,6 +1,6 @@
 package software.sigma.internship.test.passing;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.QuestionDto;
 import software.sigma.internship.dto.ResponseDto;
@@ -11,9 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ScoreCounter {
-    private Map<CountStrategy, CounterStrategy> counterStrategyMap;
+
+    private final Map<CountStrategy, CounterStrategy> counterStrategyMap;
 
     public float countResult(ResponseDto response) {
         float result = 0;

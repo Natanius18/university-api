@@ -1,6 +1,6 @@
 package software.sigma.internship.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/v1/auth")
 public class AuthenticationController {
 
     private final AuthenticationManager authManager;
-    private PersonRepository personRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final PersonRepository personRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDto request) {

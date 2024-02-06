@@ -2,7 +2,6 @@ package software.sigma.internship.config;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -34,7 +33,6 @@ import static software.sigma.internship.enums.CountStrategy.SEVERAL_CORRECT_ANSW
 public class ApplicationConfig {
 
     @Bean
-    @Qualifier("testForStudentMapper")
     public ModelMapper testForStudentMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Test, TestDto>() {
@@ -57,7 +55,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    @Qualifier("testForTeacherMapper")
     public ModelMapper testForTeacherMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Test, TestDto>() {
@@ -74,7 +71,6 @@ public class ApplicationConfig {
 
 
     @Bean
-    @Qualifier("allTestsMapper")
     public ModelMapper allTestsMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Test, TestDto>() {
@@ -91,7 +87,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    @Qualifier("studentMapper")
     public ModelMapper studentMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Student, StudentDto>() {
@@ -108,7 +103,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    @Qualifier("teacherMapper")
     public ModelMapper teacherMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Teacher, TeacherDto>() {
@@ -125,7 +119,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    @Qualifier("personMapper")
     public ModelMapper personMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Student, PersonDto>() {
@@ -146,7 +139,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    @Qualifier("responseToStatisticsMapper")
     public ModelMapper responseToStatisticsMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<ResponseDto, TestStatisticsDto>() {
@@ -172,7 +164,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    @Qualifier("allResponsesMapper")
     public ModelMapper allResponsesMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<ResponseDto, TestStatisticsDto>() {
@@ -204,7 +195,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public Map<CountStrategy, CounterStrategy> counterStrategyHashMap() {
+    public Map<CountStrategy, CounterStrategy> counterStrategyMap() {
         CounterStrategy oneCorrect = new OneCorrectAnswerStrategy();
         CounterStrategy severalCorrect = new SeveralCorrectAnswersStrategy();
         return Map.of(

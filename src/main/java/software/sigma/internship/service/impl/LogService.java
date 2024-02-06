@@ -1,6 +1,6 @@
 package software.sigma.internship.service.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Aspect
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LogService {
 
     private final KafkaTemplate<String, Map<String, Object>> kafkaTemplate;
@@ -46,8 +46,7 @@ public class LogService {
                 .stream(authentication.getPrincipal().toString().split(", "))
                 .filter(string -> string.startsWith("Enabled"))
                 .findFirst();
-        String enabled = enabledOptional.isEmpty() ? "" :
-                ", " + enabledOptional.get();
+        String enabled = enabledOptional.map(s -> ", " + s).orElse("");
         return authentication.getName() + ", Authorities: " + authentication.getAuthorities() + enabled;
     }
 }

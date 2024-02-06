@@ -1,6 +1,6 @@
 package software.sigma.internship.service.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -19,7 +19,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.newA
 import static software.sigma.internship.mongo.filters.core.FilterApplier.applyRestApiQueries;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TestStatisticsServiceImpl implements TestStatisticsService {
 
     private final TestStatisticsRepository repository;

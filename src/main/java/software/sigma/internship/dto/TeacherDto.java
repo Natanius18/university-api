@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import software.sigma.internship.entity.Teacher;
+import software.sigma.internship.entity.Teacher.Position;
 
 
 @Getter
@@ -14,7 +14,8 @@ import software.sigma.internship.entity.Teacher;
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TeacherDto extends PersonDto {
-    private Teacher.Position position;
+
+    private Position position;
 
     @Override
     public String toString() {

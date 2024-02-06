@@ -13,6 +13,7 @@ import software.sigma.internship.validator.ValidCourse;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StudentDto extends PersonDto {
+
     @ValidCourse
     private Integer course;
 

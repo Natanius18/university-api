@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import software.sigma.internship.mongo.filters.exceptions.WrongQueryParam;
+import software.sigma.internship.mongo.filters.exceptions.WrongQueryParamException;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -31,7 +31,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return getResponse(ex, status);
     }
 
-    @ExceptionHandler({WrongQueryParam.class, UserExistsWithEmailException.class})
+    @ExceptionHandler({WrongQueryParamException.class, UserExistsWithEmailException.class})
     protected ResponseEntity<Object> handleBadRequest(RuntimeException ex) {
         int status = HttpStatus.BAD_REQUEST.value();
         return getResponse(ex, status);

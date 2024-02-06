@@ -24,10 +24,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Test {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
@@ -36,4 +39,5 @@ public class Test {
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 10)
     private List<Question> questions;
+
 }

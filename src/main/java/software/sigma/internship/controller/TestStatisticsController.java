@@ -1,7 +1,7 @@
 package software.sigma.internship.controller;
 
 import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +17,10 @@ import static software.sigma.internship.mongo.filters.core.FilterCollector.colle
 
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(path = "/v1/statistics", produces = "application/json")
 public class TestStatisticsController {
+
     private final TestStatisticsService statisticsService;
 
     @GetMapping
