@@ -23,7 +23,8 @@ import software.sigma.internship.validator.exception.TestNotFoundException;
 import software.sigma.internship.validator.exception.UserNotFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +55,7 @@ public class ResponseServiceImpl implements ResponseService {
     private List<ResponseDto> getResponseDtoList(List<Response> responses) {
         return responses.stream()
                 .map(response -> allResponsesMapper.map(response, ResponseDto.class))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -83,7 +84,7 @@ public class ResponseServiceImpl implements ResponseService {
                             .orElseThrow(() -> new AnswerNotFoundException(answerDtoId));
                     return responseToStatisticsMapper.map(answer, AnswerDto.class);
                 })
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private int getNumberOfNewTry(ResponseDto response) {

@@ -18,11 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-/**
- * Implementation of {@link PersonService}.
- *
- * @author natanius
- */
+
 @Service
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
@@ -40,13 +36,6 @@ public class PersonServiceImpl implements PersonService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    /**
-     * Set a role to the person by email.
-     *
-     * @param email the email of the person.
-     * @param role  the role to be assigned to the person.
-     * @return person with the new role assigned.
-     */
     @Override
     public PersonDto approve(String email, Role role) {
         Person person = personRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
@@ -54,12 +43,6 @@ public class PersonServiceImpl implements PersonService {
         return personMapper.map(personRepository.save(person), PersonDto.class);
     }
 
-    /**
-     * Verify email of the new user.
-     *
-     * @param verificationCode code which was sent by email to the user.
-     * @return true if the code is valid, false otherwise.
-     */
     @Override
     public boolean verify(String verificationCode) {
         Person user = personRepository.findByVerificationCode(verificationCode).orElse(null);
@@ -74,12 +57,6 @@ public class PersonServiceImpl implements PersonService {
         }
     }
 
-    /**
-     * All necessary setup for the new user before save it to the database.
-     *
-     * @param personDto DTO of the user to be saved or updated.
-     * @param id        id of the user to be saved (if null) or updated.
-     */
     @Override
     public void preparePersonForSave(PersonDto personDto, Long id) {
         String email = personDto.getEmail();

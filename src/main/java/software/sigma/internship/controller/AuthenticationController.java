@@ -36,7 +36,7 @@ public class AuthenticationController {
         try {
             String email = request.getEmail();
             Person person = personRepository.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User with email " + email +" doesn't exist"));
+                    .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password"));
             authManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             String token = jwtTokenProvider.createToken(email, person.getRole().name());
             Map<Object, Object> response = new HashMap<>();

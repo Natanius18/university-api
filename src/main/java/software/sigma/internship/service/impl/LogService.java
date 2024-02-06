@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 @Aspect
@@ -30,7 +31,7 @@ public class LogService {
         List<String> params = Arrays
                 .stream(joinPoint.getArgs())
                 .map(arg -> (arg != null) ? arg.toString() : "empty")
-                .collect(Collectors.toList());
+                .collect(toList());
         Map<String, Object> map = new HashMap<>();
         map.put("principal", getPrincipal());
         map.put("method", joinPoint.getSignature().toString());

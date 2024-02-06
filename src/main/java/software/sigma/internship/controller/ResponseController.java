@@ -1,9 +1,5 @@
 package software.sigma.internship.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,23 +18,14 @@ public class ResponseController {
 
     private final ResponseService responseService;
 
-    @ApiOperation(value = "Get a response by id", response = ResponseDto.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Found the response by id"),
-            @ApiResponse(code = 404, message = "The response doesn't exist")
-    })
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('teachers:read')")
-    public ResponseDto fetch(@ApiParam(value = "id of the response we want to get")
-                             @PathVariable Long id) {
+    public ResponseDto fetch(@PathVariable Long id) {
         return responseService.findById(id);
     }
 
-    @ApiOperation(value = "Save a response", response = ResponseDto.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Response was successfully saved")})
     @PostMapping
-    public ResponseDto save(@ApiParam(value = "Object of the response to be saved")
-                            @RequestBody ResponseDto response) {
+    public ResponseDto save(@RequestBody ResponseDto response) {
         return responseService.save(response);
     }
 

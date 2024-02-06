@@ -25,12 +25,9 @@ import software.sigma.internship.validator.exception.UserNotFoundException;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-/**
- * Implementation of {@link TestService}.
- *
- * @author natanius
- */
+
+import static java.util.stream.Collectors.toList;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -40,10 +37,7 @@ public class TestServiceImpl implements TestService {
     private final ModelMapper allTestsMapper;
     private final ModelMapper testForTeacherMapper;
     private final ModelMapper testForStudentMapper;
-
-    /**
-     * @return list of all existing tests.
-     */
+    
     @Override
     @Cacheable("allTests")
     public List<TestDto> findAll() {
@@ -51,13 +45,9 @@ public class TestServiceImpl implements TestService {
         List<Test> tests = testRepository.findAll();
         return tests.stream()
                 .map(entity -> allTestsMapper.map(entity, TestDto.class))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
-    /**
-     * @param teacherId id of the teacher whose tests we want to get.
-     * @return all tests from a specific teacher.
-     */
     @Override
     @Cacheable("testsByTeacher")
     public List<TestDto> findTestsByTeacher(Long teacherId) {
@@ -69,20 +59,14 @@ public class TestServiceImpl implements TestService {
                     TestDto testDto = allTestsMapper.map(entity, TestDto.class);
                     testDto.setTeacher(null);
                     return testDto;
-                }).collect(Collectors.toList());
+                }).collect(toList());
     }
 
-    /**
-     * @param testDto test to be saved or updated.
-     * @return saved or updated test.
-     */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "tests", key = "#testDto.id"),
+    @Caching(evict = {
+        @CacheEvict(value = "tests", key = "#testDto.id", condition = "#testDto.id!=null"),
                     @CacheEvict(value = "testsByTeacher", key = "#testDto.teacher.id"),
                     @CacheEvict(value = "allTests", allEntries = true)
-
             })
     @Transactional
     public TestDto save(TestDto testDto) {
@@ -96,10 +80,6 @@ public class TestServiceImpl implements TestService {
         return testForTeacherMapper.map(newTest, TestDto.class);
     }
 
-    /**
-     * @param id id of the test we want to get.
-     * @return test by id with all fields shown or hidden field 'correct' depending on authorities.
-     */
     @Override
     public TestDto findById(Long id) {
         Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
@@ -116,22 +96,12 @@ public class TestServiceImpl implements TestService {
         return authorities.contains(Permission.READ_FULL.getAuthority());
     }
 
-    /**
-     * Deletes the whole test.
-     * @param id id of the test we want to delete.
-     */
     @Override
     @CacheEvict(cacheNames = {"tests", "testsByTeacher", "allTests"}, allEntries = true)
     public void deleteById(Long id) {
         testRepository.deleteById(id);
     }
 
-    /**
-     * Sets correct relations between test, questions and answers.
-     * @param testDto DTO of the test.
-     * @param entity entity of the test.
-     * @return list of mapped questions.
-     */
     private List<Question> mapQuestions(TestDto testDto, Test entity) {
         return testDto.getQuestions()
                 .stream()
@@ -141,21 +111,16 @@ public class TestServiceImpl implements TestService {
                     List<Answer> answers = mapAnswers(question, entityQuestion);
                     entityQuestion.setAnswers(answers);
                     return entityQuestion;
-                }).collect(Collectors.toList());
+                }).collect(toList());
     }
 
-    /**
-     * Sets correct relations between questions and answers.
-     * @param question DTO of the test.
-     * @param entityQuestion entity of the test.
-     * @return list of mapped answers.
-     */
+    
     private List<Answer> mapAnswers(QuestionDto question, Question entityQuestion) {
         return question.getAnswers().stream()
                 .map(answer -> {
                     Answer entityAnswer = testForTeacherMapper.map(answer, Answer.class);
                     entityAnswer.setQuestion(entityQuestion);
                     return entityAnswer;
-                }).collect(Collectors.toList());
+                }).collect(toList());
     }
 }

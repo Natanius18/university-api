@@ -1,6 +1,5 @@
 package software.sigma.internship.controller;
 
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,20 +24,7 @@ public class TestStatisticsController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('students:read', 'teachers:read')")
-    public List<TestStatisticsDto> find(@ApiParam(hidden = true)
-                                        @RequestParam Map<String, String> filters,
-                                        @ApiParam(value = "field to order by", example = "testName")
-                                        String sort,
-                                        @ApiParam(value = "field to set filter(s)", example = "{\"testName\":\"test 1\"}")
-                                        String q,
-                                        @ApiParam(value = "amount of records on the page", example = "2")
-                                        String pageSize,
-                                        @ApiParam(value = "number of the page", example = "2")
-                                        String page,
-                                        @ApiParam(value = "shows average result or average number of attempts", example = "result")
-                                        String average,
-                                        @ApiParam(value = "select fields to show", example = "testName,result")
-                                        String select) {
+    public List<TestStatisticsDto> find(@RequestParam Map<String, String> filters) {
         Map<String, String> restApiQueries = collectRestApiParams(filters);
         return statisticsService.findAll(restApiQueries);
     }
