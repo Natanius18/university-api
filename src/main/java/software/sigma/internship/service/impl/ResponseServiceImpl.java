@@ -7,9 +7,7 @@ import software.sigma.internship.dto.AnswerDto;
 import software.sigma.internship.dto.ResponseDto;
 import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.dto.TestStatisticsDto;
-import software.sigma.internship.entity.Answer;
 import software.sigma.internship.entity.Response;
-import software.sigma.internship.entity.Student;
 import software.sigma.internship.entity.Test;
 import software.sigma.internship.repo.AnswerRepository;
 import software.sigma.internship.repo.ResponseRepository;
@@ -47,15 +45,12 @@ public class ResponseServiceImpl implements ResponseService {
 
     @Override
     public List<ResponseDto> findByStudent(Long studentId) {
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new UserNotFoundException(studentId));
-        List<Response> responses = student.getResponses();
-        return getResponseDtoList(responses);
-    }
-
-    private List<ResponseDto> getResponseDtoList(List<Response> responses) {
-        return responses.stream()
-                .map(response -> allResponsesMapper.map(response, ResponseDto.class))
-                .collect(toList());
+        return studentRepository.findById(studentId)
+            .orElseThrow(() -> new UserNotFoundException(studentId))
+            .getResponses()
+            .stream()
+            .map(response -> allResponsesMapper.map(response, ResponseDto.class))
+            .collect(toList());
     }
 
     @Override
@@ -77,22 +72,21 @@ public class ResponseServiceImpl implements ResponseService {
 
     private List<AnswerDto> getAnswerDtoList(ResponseDto response) {
         return response.getAnswers()
-                .stream()
-                .map(answerDto -> {
-                    Long answerDtoId = answerDto.getId();
-                    Answer answer = answerRepository.findById(answerDtoId)
-                            .orElseThrow(() -> new AnswerNotFoundException(answerDtoId));
-                    return responseToStatisticsMapper.map(answer, AnswerDto.class);
-                })
-                .collect(toList());
+            .stream()
+            .map(answerDto -> {
+                Long answerDtoId = answerDto.getId();
+                return answerRepository.findById(answerDtoId)
+                    .map(answer -> responseToStatisticsMapper.map(answer, AnswerDto.class))
+                    .orElseThrow(() -> new AnswerNotFoundException(answerDtoId));
+                }).collect(toList());
     }
 
     private int getNumberOfNewTry(ResponseDto response) {
         return responseRepository
-                .getFirstByStudentIdAndTestOrderByNumberOfTryDesc(
-                        response.getStudent().getId(),
-                        responseToStatisticsMapper.map(response.getTest(), Test.class))
-                .orElse(new Response())
-                .getNumberOfTry() + 1;
+            .getFirstByStudentIdAndTestOrderByNumberOfTryDesc(
+                response.getStudent().getId(),
+                responseToStatisticsMapper.map(response.getTest(), Test.class))
+            .orElse(new Response())
+            .getNumberOfTry() + 1;
     }
 }

@@ -25,8 +25,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public List<TeacherDto> findAll() {
-        List<Teacher> teachers = teacherRepository.findAll();
-        return teachers
+        return teacherRepository.findAll()
                 .stream()
                 .map(teacher -> teacherMapper.map(teacher, TeacherDto.class))
                 .collect(toList());
@@ -34,8 +33,9 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public TeacherDto findById(Long id) {
-        Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        return teacherMapper.map(teacher, TeacherDto.class);
+        return teacherRepository.findById(id)
+            .map(teacher -> teacherMapper.map(teacher, TeacherDto.class))
+            .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Override

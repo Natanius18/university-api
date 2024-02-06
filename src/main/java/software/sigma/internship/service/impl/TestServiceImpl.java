@@ -37,29 +37,30 @@ public class TestServiceImpl implements TestService {
     private final ModelMapper allTestsMapper;
     private final ModelMapper testForTeacherMapper;
     private final ModelMapper testForStudentMapper;
-    
+
     @Override
     @Cacheable("allTests")
     public List<TestDto> findAll() {
         log.info("Retrieving all tests from database...");
-        List<Test> tests = testRepository.findAll();
-        return tests.stream()
-                .map(entity -> allTestsMapper.map(entity, TestDto.class))
-                .collect(toList());
+        return testRepository.findAll()
+            .stream()
+            .map(entity -> allTestsMapper.map(entity, TestDto.class))
+            .collect(toList());
     }
 
     @Override
     @Cacheable("testsByTeacher")
     public List<TestDto> findTestsByTeacher(Long teacherId) {
         log.info("Retrieving tests of teacher with id " + teacherId + " from database...");
-        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
-        List<Test> tests = teacher.getTests();
-        return tests.stream()
+        return teacherRepository.findById(teacherId)
+            .map(teacher -> teacher.getTests().stream()
                 .map(entity -> {
                     TestDto testDto = allTestsMapper.map(entity, TestDto.class);
                     testDto.setTeacher(null);
                     return testDto;
-                }).collect(toList());
+                }).collect(toList()))
+            .orElseThrow(() -> new UserNotFoundException(teacherId));
+
     }
 
     @Override
@@ -114,7 +115,7 @@ public class TestServiceImpl implements TestService {
                 }).collect(toList());
     }
 
-    
+
     private List<Answer> mapAnswers(QuestionDto question, Question entityQuestion) {
         return question.getAnswers().stream()
                 .map(answer -> {

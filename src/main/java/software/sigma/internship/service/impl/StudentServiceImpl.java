@@ -25,14 +25,18 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDto> findAll() {
-        List<Student> students = studentRepository.findAll();
-        return students.stream().map(student -> studentMapper.map(student, StudentDto.class)).collect(toList());
+        return studentRepository.findAll()
+            .stream()
+            .map(student -> studentMapper.map(student, StudentDto.class))
+            .collect(toList());
     }
 
     @Override
     public StudentDto findById(Long id) {
-        Student student = studentRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        return studentMapper.map(student, StudentDto.class);
+        return studentRepository.findById(id)
+            .map(student -> studentMapper.map(student, StudentDto.class))
+            .orElseThrow(() -> new UserNotFoundException(id));
+
     }
 
     @Override

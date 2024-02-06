@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,10 +33,12 @@ public class ScheduledTasks {
         Date yesterday = Date.from(now().minus(1, DAYS));
         MatchOperation operation = match(where("Date").gt(yesterday));
         Aggregation aggregation = newAggregation(operation);
-        AggregationResults<TestStatisticsDto> results = mongoTemplate.aggregate(aggregation, TestStatistics.class, TestStatisticsDto.class);
-        List<TestStatisticsDto> mappedResults = results.getMappedResults();
-        Map<String, List<TestStatisticsDto>> listMap = mappedResults.stream()
-                    .collect(groupingBy(TestStatisticsDto::getTeacherEmail));
+
+        var listMap = mongoTemplate.aggregate(aggregation, TestStatistics.class, TestStatisticsDto.class)
+            .getMappedResults()
+            .stream()
+            .collect(groupingBy(TestStatisticsDto::getTeacherEmail));
+
         kafkaTemplate.send("statistics", listMap);
     }
 
