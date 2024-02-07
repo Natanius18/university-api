@@ -52,7 +52,7 @@ public class AuthenticationController {
 
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        SecurityContextLogoutHandler handler = new SecurityContextLogoutHandler();
+        var handler = new SecurityContextLogoutHandler();
         handler.logout(request, response, null);
     }
 }

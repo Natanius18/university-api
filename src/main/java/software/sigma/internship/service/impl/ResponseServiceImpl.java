@@ -22,8 +22,6 @@ import software.sigma.internship.validator.exception.UserNotFoundException;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 @RequiredArgsConstructor
 public class ResponseServiceImpl implements ResponseService {
@@ -50,7 +48,7 @@ public class ResponseServiceImpl implements ResponseService {
             .getResponses()
             .stream()
             .map(response -> allResponsesMapper.map(response, ResponseDto.class))
-            .collect(toList());
+            .toList();
     }
 
     @Override
@@ -78,7 +76,7 @@ public class ResponseServiceImpl implements ResponseService {
                 return answerRepository.findById(answerDtoId)
                     .map(answer -> responseToStatisticsMapper.map(answer, AnswerDto.class))
                     .orElseThrow(() -> new AnswerNotFoundException(answerDtoId));
-                }).collect(toList());
+                }).toList();
     }
 
     private int getNumberOfNewTry(ResponseDto response) {

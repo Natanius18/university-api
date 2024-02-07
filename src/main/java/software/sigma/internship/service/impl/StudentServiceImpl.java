@@ -12,8 +12,6 @@ import software.sigma.internship.validator.exception.UserNotFoundException;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
@@ -28,7 +26,7 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAll()
             .stream()
             .map(student -> studentMapper.map(student, StudentDto.class))
-            .collect(toList());
+            .toList();
     }
 
     @Override

@@ -25,7 +25,7 @@ public class TestStatisticsController {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('students:read', 'teachers:read')")
     public List<TestStatisticsDto> find(@RequestParam Map<String, String> filters) {
-        Map<String, String> restApiQueries = collectRestApiParams(filters);
+        var restApiQueries = collectRestApiParams(filters);
         return statisticsService.findAll(restApiQueries);
     }
 }

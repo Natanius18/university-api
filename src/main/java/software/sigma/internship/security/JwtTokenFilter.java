@@ -2,7 +2,6 @@ package software.sigma.internship.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import software.sigma.internship.validator.exception.JwtAuthenticationException;
@@ -14,6 +13,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static org.springframework.security.core.context.SecurityContextHolder.clearContext;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 @Component
 @RequiredArgsConstructor
@@ -29,11 +31,11 @@ public class JwtTokenFilter extends GenericFilterBean {
             if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 if (authentication != null) {
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    getContext().setAuthentication(authentication);
                 }
             }
         } catch (JwtAuthenticationException e) {
-            SecurityContextHolder.clearContext();
+            clearContext();
             ((HttpServletResponse) response).sendError(e.getStatus().value());
             throw new JwtAuthenticationException("JWT token is expired or invalid");
         }

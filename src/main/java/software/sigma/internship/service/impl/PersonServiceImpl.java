@@ -1,5 +1,6 @@
 package software.sigma.internship.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +19,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import static software.sigma.internship.enums.Role.USER;
+import static software.sigma.internship.enums.Status.ACTIVE;
+import static software.sigma.internship.enums.Status.INACTIVE;
+
 
 @Service
+@RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
     private final ModelMapper personMapper;
@@ -27,14 +33,6 @@ public class PersonServiceImpl implements PersonService {
     private final Random random = new Random();
 
     private final KafkaTemplate<String, Map<String, String>> kafkaTemplate;
-
-    public PersonServiceImpl(PersonRepository personRepository, ModelMapper personMapper,
-                             BCryptPasswordEncoder encoder, KafkaTemplate<String, Map<String, String>> kafkaTemplate) {
-        this.personRepository = personRepository;
-        this.personMapper = personMapper;
-        this.encoder = encoder;
-        this.kafkaTemplate = kafkaTemplate;
-    }
 
     @Override
     public PersonDto approve(String email, Role role) {
@@ -47,11 +45,11 @@ public class PersonServiceImpl implements PersonService {
     public boolean verify(String verificationCode) {
         Person user = personRepository.findByVerificationCode(verificationCode).orElse(null);
 
-        if (user == null || user.getStatus().equals(Status.ACTIVE)) {
+        if (user == null || user.getStatus().equals(ACTIVE)) {
             return false;
         } else {
             user.setVerificationCode(null);
-            user.setStatus(Status.ACTIVE);
+            user.setStatus(ACTIVE);
             personRepository.save(user);
             return true;
         }
@@ -71,8 +69,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private void setRoleAndStatus(PersonDto personDto, Long id) {
-        Role role = Role.USER;
-        Status status = Status.INACTIVE;
+        Role role = USER;
+        Status status = INACTIVE;
         if (id != null) {
             Optional<Person> existingPerson = personRepository.findById(id);
             if (existingPerson.isPresent()) {

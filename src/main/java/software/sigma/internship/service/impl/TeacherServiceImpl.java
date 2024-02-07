@@ -13,8 +13,6 @@ import software.sigma.internship.validator.exception.UserNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 @RequiredArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
@@ -28,7 +26,7 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepository.findAll()
                 .stream()
                 .map(teacher -> teacherMapper.map(teacher, TeacherDto.class))
-                .collect(toList());
+                .toList();
     }
 
     @Override

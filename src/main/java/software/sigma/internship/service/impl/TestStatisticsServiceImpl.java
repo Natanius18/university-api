@@ -3,8 +3,6 @@ package software.sigma.internship.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.TestStatisticsDto;
 import software.sigma.internship.entity.TestStatistics;
@@ -36,8 +34,8 @@ public class TestStatisticsServiceImpl implements TestStatisticsService {
 
     @Override
     public List<TestStatisticsDto> findAll(Map<String, String> restApiQueries) {
-        Aggregation aggregation = newAggregation(applyRestApiQueries(restApiQueries));
-        AggregationResults<TestStatisticsDto> results = mongoTemplate.aggregate(aggregation, TestStatistics.class, TestStatisticsDto.class);
-        return results.getMappedResults();
+        var aggregation = newAggregation(applyRestApiQueries(restApiQueries));
+        return mongoTemplate.aggregate(aggregation, TestStatistics.class, TestStatisticsDto.class)
+            .getMappedResults();
     }
 }
