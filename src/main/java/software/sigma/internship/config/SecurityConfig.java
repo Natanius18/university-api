@@ -1,6 +1,6 @@
 package software.sigma.internship.config;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,7 +17,7 @@ import software.sigma.internship.security.JwtConfigurer;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private static final int ENCODER_STRENGTH = 12;
@@ -27,27 +27,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/v1/auth/login").permitAll()
-                .antMatchers("/swagger-ui.html").permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/images/**").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/v2/api-docs").permitAll()
-                .antMatchers("/configuration/ui").permitAll()
-                .antMatchers(HttpMethod.POST,"/v1/students").permitAll()
-                .antMatchers(HttpMethod.PUT,"/v1/students").permitAll()
-                .antMatchers(HttpMethod.POST,"/v1/teachers").permitAll()
-                .antMatchers(HttpMethod.PUT,"/v1/teachers").permitAll()
-                .antMatchers(HttpMethod.GET,"/v1/confirm/verify").permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .apply(jwtConfigurer);
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .antMatchers("/v1/auth/login").permitAll()
+            .antMatchers("/swagger-ui.html").permitAll()
+            .antMatchers("/swagger-ui/**").permitAll()
+            .antMatchers("/swagger-resources/**").permitAll()
+            .antMatchers("/images/**").permitAll()
+            .antMatchers("/webjars/**").permitAll()
+            .antMatchers("/v2/api-docs").permitAll()
+            .antMatchers("/configuration/ui").permitAll()
+            .antMatchers(HttpMethod.POST, "/v1/students").permitAll()
+            .antMatchers(HttpMethod.PUT, "/v1/students").permitAll()
+            .antMatchers(HttpMethod.POST, "/v1/teachers").permitAll()
+            .antMatchers(HttpMethod.PUT, "/v1/teachers").permitAll()
+            .antMatchers(HttpMethod.GET, "/v1/confirm/verify").permitAll()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .apply(jwtConfigurer);
         return http.build();
     }
 

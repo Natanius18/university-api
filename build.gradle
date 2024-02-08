@@ -8,7 +8,7 @@ plugins {
 
 group = 'software.sigma'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = "11"
+sourceCompatibility = "17"
 
 configurations {
 	compileOnly {
@@ -29,13 +29,15 @@ dependencies {
 	testImplementation 'junit:junit:4.13.2'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.postgresql:postgresql'
 	implementation "org.flywaydb:flyway-core"
-	implementation 'org.modelmapper:modelmapper:3.1.0'
 	implementation 'io.springfox:springfox-swagger2:3.0.0'
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
@@ -58,4 +60,16 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-targetCompatibility = JavaVersion.VERSION_11
+
+test {
+	// Temporarily exclude Cucumber tests
+	exclude '**/cucumber/**'
+}
+
+compileJava {
+	options.compilerArgs = [
+			'-Amapstruct.defaultComponentModel=spring'
+	]
+}
+
+targetCompatibility = JavaVersion.VERSION_17

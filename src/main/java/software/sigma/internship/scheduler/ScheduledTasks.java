@@ -1,47 +1,51 @@
 package software.sigma.internship.scheduler;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.TestStatisticsDto;
 import software.sigma.internship.entity.TestStatistics;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import static java.time.Instant.now;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.stream.Collectors.groupingBy;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
-@AllArgsConstructor
+@Slf4j
+@RequiredArgsConstructor
 public class ScheduledTasks {
+
     private final MongoTemplate mongoTemplate;
     private final KafkaTemplate<String, Map<String, List<TestStatisticsDto>>> kafkaTemplate;
 
     @Scheduled(cron = "${cron.send.statistics}")
     public void sendStatistics() {
-        Date yesterday = Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
-        MatchOperation operation = Aggregation.match(Criteria.where("Date").gt(yesterday));
-        Aggregation aggregation = newAggregation(operation);
-        AggregationResults<TestStatisticsDto> results = mongoTemplate.aggregate(aggregation, TestStatistics.class, TestStatisticsDto.class);
-        List<TestStatisticsDto> mappedResults = results.getMappedResults();
-        Map<String, List<TestStatisticsDto>> listMap =
-                mappedResults.stream().collect(Collectors.groupingBy(TestStatisticsDto::getTeacherEmail));
+        var yesterday = Date.from(now().minus(1, DAYS));
+        var operation = match(where("Date").gt(yesterday));
+        var aggregation = newAggregation(operation);
+
+        var listMap = mongoTemplate.aggregate(aggregation, TestStatistics.class, TestStatisticsDto.class)
+            .getMappedResults()
+            .stream()
+            .collect(groupingBy(TestStatisticsDto::getTeacherEmail));
+
         kafkaTemplate.send("statistics", listMap);
     }
 
     @Scheduled(cron = "${cron.evict.caches}")
     @CacheEvict(cacheNames = {"tests", "testsByTeacher", "allTests"}, allEntries = true)
     public void evictCaches() {
+        log.info("Evicting caches...");
     }
 }

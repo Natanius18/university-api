@@ -1,18 +1,19 @@
 package software.sigma.internship.security;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import software.sigma.internship.entity.Person;
-import software.sigma.internship.enums.Status;
 
 import java.util.Collection;
 import java.util.List;
 
+import static software.sigma.internship.enums.Status.ACTIVE;
+
 @Data
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityUser implements UserDetails {
 
     private final String userName;
@@ -36,7 +37,7 @@ public class SecurityUser implements UserDetails {
         return userName;
     }
 
-    private boolean isActive(){
+    private boolean isActive() {
         return isActive;
     }
 
@@ -61,13 +62,15 @@ public class SecurityUser implements UserDetails {
     }
 
     public static UserDetails fromPerson(Person person) {
+        var statusIsActive = person.getStatus().equals(ACTIVE);
         return new User(
-                person.getEmail(), person.getPassword(),
-                person.getStatus().equals(Status.ACTIVE),
-                person.getStatus().equals(Status.ACTIVE),
-                person.getStatus().equals(Status.ACTIVE),
-                person.getStatus().equals(Status.ACTIVE),
-                person.getRole().getAuthorities()
+            person.getEmail(),
+            person.getPassword(),
+            statusIsActive,
+            statusIsActive,
+            statusIsActive,
+            statusIsActive,
+            person.getRole().getAuthorities()
         );
     }
 }

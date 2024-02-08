@@ -4,13 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import software.sigma.internship.validator.exception.JwtAuthenticationException;
@@ -19,12 +16,15 @@ import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
+import static io.jsonwebtoken.SignatureAlgorithm.HS256;
+import static io.jsonwebtoken.security.Keys.secretKeyFor;
+
 @Component
 public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
 
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final SecretKey secretKey = secretKeyFor(HS256);
 
     @Value("${jwt.header}")
     private String authorizationHeader;
@@ -37,10 +37,10 @@ public class JwtTokenProvider {
     }
 
     public String createToken(String username, String role) {
-        Claims claims = Jwts.claims().setSubject(username);
+        var claims = Jwts.claims().setSubject(username);
         claims.put("role", role);
-        Date now = new Date();
-        Date expires = new Date(now.getTime() + validityInSeconds * 1000);
+        var now = new Date();
+        var expires = new Date(now.getTime() + validityInSeconds * 1000);
 
         return Jwts.builder()
                 .addClaims(claims)
@@ -60,7 +60,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
+        var userDetails = userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

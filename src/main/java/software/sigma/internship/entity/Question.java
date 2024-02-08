@@ -25,14 +25,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Question {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "test_id")
     private Test test;
+
     private CountStrategy type;
+
     private String text;
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 20)

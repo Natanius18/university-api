@@ -22,14 +22,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Answer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "question_id")
     private Question question;
+
     @Column(name = "is_correct")
     private Boolean correct;
+
     private String option;
 
     @ManyToMany(mappedBy = "answers", cascade = CascadeType.ALL)

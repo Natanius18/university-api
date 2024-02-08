@@ -13,6 +13,12 @@ jwt:
   header: Authorization
   expires: 604800
 
+cron:
+  send:
+    statistics: "0 0 18 ? * *"
+  evict:
+    caches: "0 0 0 ? * SUN"
+
 endpoint:
   student:
     basic:

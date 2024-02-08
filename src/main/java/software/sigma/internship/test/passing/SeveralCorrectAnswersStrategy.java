@@ -7,10 +7,11 @@ import software.sigma.internship.service.CounterStrategy;
 import java.util.List;
 
 public class SeveralCorrectAnswersStrategy implements CounterStrategy {
+
     @Override
     public float count(QuestionDto questionDto, List<AnswerDto> response) {
-        float score = 0;
-        List<AnswerDto> rightAnswers = questionDto.getAnswers();
+        var score = 0f;
+        var rightAnswers = questionDto.getAnswers();
         for (AnswerDto answer : rightAnswers) {
             if (answer.getCorrect() == null) {
                 throw new IllegalArgumentException("Field 'correct' cannot be null");

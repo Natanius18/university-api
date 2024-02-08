@@ -1,13 +1,11 @@
 package software.sigma.internship.service.impl;
 
-import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.TestStatisticsDto;
 import software.sigma.internship.entity.TestStatistics;
+import software.sigma.internship.mapper.TestStatisticsMapper;
 import software.sigma.internship.repo.TestStatisticsRepository;
 import software.sigma.internship.service.TestStatisticsService;
 
@@ -19,25 +17,25 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.newA
 import static software.sigma.internship.mongo.filters.core.FilterApplier.applyRestApiQueries;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TestStatisticsServiceImpl implements TestStatisticsService {
 
     private final TestStatisticsRepository repository;
-    private final ModelMapper responseToStatisticsMapper;
+    private final TestStatisticsMapper testStatisticsMapper;
     private final MongoTemplate mongoTemplate;
 
 
     @Override
     public TestStatisticsDto save(TestStatisticsDto testStatisticsDto) {
-        TestStatistics testStatistics = responseToStatisticsMapper.map(testStatisticsDto, TestStatistics.class);
+        var testStatistics = testStatisticsMapper.map(testStatisticsDto);
         testStatistics.setDate(new Date());
-        return responseToStatisticsMapper.map(repository.save(testStatistics), TestStatisticsDto.class);
+        return testStatisticsMapper.map(repository.save(testStatistics));
     }
 
     @Override
     public List<TestStatisticsDto> findAll(Map<String, String> restApiQueries) {
-        Aggregation aggregation = newAggregation(applyRestApiQueries(restApiQueries));
-        AggregationResults<TestStatisticsDto> results = mongoTemplate.aggregate(aggregation, TestStatistics.class, TestStatisticsDto.class);
-        return results.getMappedResults();
+        var aggregation = newAggregation(applyRestApiQueries(restApiQueries));
+        return mongoTemplate.aggregate(aggregation, TestStatistics.class, TestStatisticsDto.class)
+            .getMappedResults();
     }
 }

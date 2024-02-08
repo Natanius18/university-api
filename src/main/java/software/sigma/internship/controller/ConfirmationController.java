@@ -1,8 +1,7 @@
 package software.sigma.internship.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,27 +11,28 @@ import software.sigma.internship.service.PersonService;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.Map;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(path = "/v1/confirm", produces = "application/json")
 public class ConfirmationController {
-    private final PersonService personService;
 
+    private final PersonService personService;
 
     @GetMapping("/verify")
     public ResponseEntity<Object> verifyUser(@RequestParam String code) {
-        int status;
-        String message;
+        var status = BAD_REQUEST.value();
+        var message = "Invalid request";
+
         if (personService.verify(code)) {
-            status = HttpStatus.OK.value();
+            status = OK.value();
             message = "Successfully verified user";
-        } else {
-            status = HttpStatus.BAD_REQUEST.value();
-            message = "Invalid request";
         }
-        Map<String, Object> body = new LinkedHashMap<>();
+
+        var body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", status);
         body.put("message", message);

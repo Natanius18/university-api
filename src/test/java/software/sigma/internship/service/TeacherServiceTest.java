@@ -5,9 +5,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
 import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.entity.Teacher;
+import software.sigma.internship.mapper.TeacherMapper;
 import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.service.impl.TeacherServiceImpl;
 import software.sigma.internship.validator.exception.UserNotFoundException;
@@ -16,6 +16,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static software.sigma.internship.entity.Teacher.Position.DOCENT;
+import static software.sigma.internship.entity.Teacher.Position.PROFESSOR;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeacherServiceTest {
@@ -23,7 +25,7 @@ public class TeacherServiceTest {
     private TeacherRepository teacherRepository;
 
     @Mock
-    private ModelMapper teacherMapper;
+    private TeacherMapper teacherMapper;
 
     @Mock
     private PersonService personService;
@@ -38,15 +40,15 @@ public class TeacherServiceTest {
 
     @Test
     public void findByIdShouldTeacherObject() {
-        Teacher existingTeacherEntity = createTeacher(1L, Teacher.Position.DOCENT, FIRST_NAME1, LAST_NAME1);
-        TeacherDto dtoOfExistingTeacher = createTeacherDto(1L, Teacher.Position.DOCENT, FIRST_NAME1, LAST_NAME1);
+        var existingTeacherEntity = createTeacher(1L, DOCENT, FIRST_NAME1, LAST_NAME1);
+        var dtoOfExistingTeacher = createTeacherDto(1L, DOCENT, FIRST_NAME1, LAST_NAME1);
 
         when(teacherRepository.findById(1L)).thenReturn(Optional.of(existingTeacherEntity));
-        when(teacherMapper.map(existingTeacherEntity, TeacherDto.class)).thenReturn(dtoOfExistingTeacher);
+        when(teacherMapper.map(existingTeacherEntity)).thenReturn(dtoOfExistingTeacher);
 
-        TeacherDto savedTeacher = teacherService.findById(existingTeacherEntity.getId());
+        var savedTeacher = teacherService.findById(existingTeacherEntity.getId());
 
-        assertThat(savedTeacher).isEqualTo(teacherMapper.map(existingTeacherEntity, TeacherDto.class));
+        assertThat(savedTeacher).isEqualTo(teacherMapper.map(existingTeacherEntity));
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -56,38 +58,38 @@ public class TeacherServiceTest {
 
     @Test
     public void saveNewTeacherShouldReturnThatTeacherWithNewId() {
-        TeacherDto dtoOfNewTeacherToSave = createTeacherDto(null, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
-        Teacher entityOfNewTeacherToSave = createTeacher(null, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
-        Teacher newSavedTeacherEntity = createTeacher(2L, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
-        TeacherDto newSavedTeacherDto = createTeacherDto(2L, Teacher.Position.PROFESSOR, FIRST_NAME2, LAST_NAME2);
+        var dtoOfNewTeacherToSave = createTeacherDto(null, PROFESSOR, FIRST_NAME2, LAST_NAME2);
+        var entityOfNewTeacherToSave = createTeacher(null, PROFESSOR, FIRST_NAME2, LAST_NAME2);
+        var newSavedTeacherEntity = createTeacher(2L, PROFESSOR, FIRST_NAME2, LAST_NAME2);
+        var newSavedTeacherDto = createTeacherDto(2L, PROFESSOR, FIRST_NAME2, LAST_NAME2);
 
-        when(teacherMapper.map(dtoOfNewTeacherToSave, Teacher.class)).thenReturn(entityOfNewTeacherToSave);
+        when(teacherMapper.map(dtoOfNewTeacherToSave)).thenReturn(entityOfNewTeacherToSave);
         when(teacherRepository.save(entityOfNewTeacherToSave)).thenReturn(newSavedTeacherEntity);
-        when(teacherMapper.map(newSavedTeacherEntity, TeacherDto.class)).thenReturn(newSavedTeacherDto);
+        when(teacherMapper.map(newSavedTeacherEntity)).thenReturn(newSavedTeacherDto);
 
-        TeacherDto returned = teacherService.save(dtoOfNewTeacherToSave);
+        var returned = teacherService.save(dtoOfNewTeacherToSave);
 
         assertThat(entityOfNewTeacherToSave.getId()).isNull();
         assertThat(returned.getId()).isEqualTo(2L);
-        assertThat(returned).isEqualTo(teacherMapper.map(newSavedTeacherEntity, TeacherDto.class));
+        assertThat(returned).isEqualTo(teacherMapper.map(newSavedTeacherEntity));
     }
     
     @Test
     public void updateExistingTeacherShouldReturnUpdatedTeacher() {
-        TeacherDto teacherToUpdateDto = createTeacherDto(2L, Teacher.Position.DOCENT, FIRST_NAME2, LAST_NAME2);
-        Teacher entityOfTeacherToUpdate = createTeacher(2L, Teacher.Position.DOCENT, FIRST_NAME2, LAST_NAME2);
+        var teacherToUpdateDto = createTeacherDto(2L, DOCENT, FIRST_NAME2, LAST_NAME2);
+        var entityOfTeacherToUpdate = createTeacher(2L, DOCENT, FIRST_NAME2, LAST_NAME2);
 
         when(teacherRepository.existsById(2L)).thenReturn(true);
-        when(teacherMapper.map(teacherToUpdateDto, Teacher.class)).thenReturn(entityOfTeacherToUpdate);
+        when(teacherMapper.map(teacherToUpdateDto)).thenReturn(entityOfTeacherToUpdate);
         when(teacherRepository.save(entityOfTeacherToUpdate)).thenReturn(entityOfTeacherToUpdate);
-        when(teacherMapper.map(entityOfTeacherToUpdate, TeacherDto.class)).thenReturn(teacherToUpdateDto);
+        when(teacherMapper.map(entityOfTeacherToUpdate)).thenReturn(teacherToUpdateDto);
 
         assertThat(teacherService.save(teacherToUpdateDto)).isEqualTo(teacherToUpdateDto);
     }
 
     @Test(expected = UserNotFoundException.class)
     public void updateNonExistentTeacherShouldThrowException() {
-        TeacherDto teacherToUpdateDto = createTeacherDto(2L, Teacher.Position.DOCENT, FIRST_NAME2, LAST_NAME2);
+        var teacherToUpdateDto = createTeacherDto(2L, DOCENT, FIRST_NAME2, LAST_NAME2);
 
         when(teacherRepository.existsById(2L)).thenReturn(false);
 
@@ -95,7 +97,7 @@ public class TeacherServiceTest {
     }
 
     private Teacher createTeacher(Long id, Teacher.Position position, String firstName, String lastName) {
-        Teacher teacher = new Teacher();
+        var teacher = new Teacher();
         teacher.setPosition(position);
         teacher.setId(id);
         teacher.setFirstName(firstName);
@@ -104,7 +106,7 @@ public class TeacherServiceTest {
     }
 
     private TeacherDto createTeacherDto(Long id, Teacher.Position position, String firstName, String lastName) {
-        TeacherDto teacher = new TeacherDto();
+        var teacher = new TeacherDto();
         teacher.setPosition(position);
         teacher.setId(id);
         teacher.setFirstName(firstName);
