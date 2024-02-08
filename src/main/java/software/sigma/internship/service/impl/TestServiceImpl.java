@@ -8,8 +8,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.sigma.internship.dto.TestDto;
-import software.sigma.internship.entity.Teacher;
-import software.sigma.internship.entity.Test;
 import software.sigma.internship.mapper.TestMapper;
 import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.repo.TestRepository;
@@ -48,7 +46,7 @@ public class TestServiceImpl implements TestService {
         return teacherRepository.findById(teacherId)
             .map(teacher -> teacher.getTests().stream()
                 .map(entity -> {
-                    TestDto testDto = testMapper.mapWithoutQuestions(entity);
+                    var testDto = testMapper.mapWithoutQuestions(entity);
                     testDto.setTeacher(null);
                     return testDto;
                 }).toList())
@@ -64,17 +62,17 @@ public class TestServiceImpl implements TestService {
             })
     @Transactional
     public TestDto save(TestDto testDto) {
-        Test entity = testMapper.map(testDto);
-        Long teacherId = testDto.getTeacher().getId();
-        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
+        var entity = testMapper.map(testDto);
+        var teacherId = testDto.getTeacher().getId();
+        var teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new UserNotFoundException(teacherId));
         entity.setTeacher(teacher);
-        Test newTest = testRepository.save(entity);
+        var newTest = testRepository.save(entity);
         return testMapper.mapForTeacher(newTest);
     }
 
     @Override
     public TestDto findById(Long id) {
-        Test test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
+        var test = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
         return userHasPermissionToSeeAllFields() ?
             testMapper.mapForTeacher(test) :
             testMapper.mapForStudent(test);

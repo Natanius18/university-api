@@ -3,7 +3,6 @@ package software.sigma.internship.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.TeacherDto;
-import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.mapper.TeacherMapper;
 import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.service.PersonService;
@@ -38,10 +37,10 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public TeacherDto save(@Valid TeacherDto teacherDto) {
-        Long id = teacherDto.getId();
+        var id = teacherDto.getId();
         if (id == null || teacherRepository.existsById(id)) {
             personService.preparePersonForSave(teacherDto, id);
-            Teacher teacher = teacherRepository.save(teacherMapper.map(teacherDto));
+            var teacher = teacherRepository.save(teacherMapper.map(teacherDto));
             return teacherMapper.map(teacher);
         }
         throw new UserNotFoundException(id);

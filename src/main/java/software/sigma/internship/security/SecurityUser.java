@@ -62,7 +62,7 @@ public class SecurityUser implements UserDetails {
     }
 
     public static UserDetails fromPerson(Person person) {
-        boolean statusIsActive = person.getStatus().equals(ACTIVE);
+        var statusIsActive = person.getStatus().equals(ACTIVE);
         return new User(
             person.getEmail(),
             person.getPassword(),

@@ -6,10 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import software.sigma.internship.dto.QuestionDto;
-import software.sigma.internship.entity.Answer;
 import software.sigma.internship.entity.Question;
-
-import java.util.List;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -25,7 +22,7 @@ public interface QuestionMapper {
 
     @AfterMapping
     default void setInverseReferences(@MappingTarget Question question) {
-        List<Answer> answers = question.getAnswers();
+        var answers = question.getAnswers();
         if (!isEmpty(answers)) {
             answers.forEach(answer -> answer.setQuestion(question));
         }

@@ -50,7 +50,7 @@ public final class FilterApplier {
 
     private static void applyGroupOperation(List<AggregationOperation> operations, Map<String, String> restApiQueries) {
         if (restApiQueries.get(AVERAGE.getCode()) != null) {
-            String averageField = restApiQueries.get(AVERAGE.getCode());
+            var averageField = restApiQueries.get(AVERAGE.getCode());
             if (averageField.equals("numberOfTry") || averageField.equals("result")) {
                 operations.add(group("testName")
                         .avg("numberOfTry").as("averageNumberOfTry")
@@ -65,7 +65,7 @@ public final class FilterApplier {
     private static void applyPageQueryParam(List<AggregationOperation> operations, Map<String, String> restApiQueries) {
         try {
             if (restApiQueries.get(PAGE.getCode()) != null) {
-                long skip = parseLong(restApiQueries.get(PAGE.getCode()));
+                var skip = parseLong(restApiQueries.get(PAGE.getCode()));
                 if (skip < 0) {
                     throw new NumberFormatException();
                 }
@@ -79,7 +79,7 @@ public final class FilterApplier {
     private static void applyPageSizeQueryParam(List<AggregationOperation> operations, Map<String, String> restApiQueries) {
         try {
             if (restApiQueries.get(PAGE_SIZE.getCode()) != null) {
-                int limit = parseInt(restApiQueries.get(PAGE_SIZE.getCode()));
+                var limit = parseInt(restApiQueries.get(PAGE_SIZE.getCode()));
                 if (limit < 0) {
                     throw new NumberFormatException();
                 }
@@ -95,9 +95,9 @@ public final class FilterApplier {
             if (restApiQueries.get(SEARCH.getCode()) != null) {
                 var jsonCriteria = new JSONObject(restApiQueries.get(SEARCH.getCode()));
                 var keys = jsonCriteria.names();
-                for (int i = 0; i < keys.length(); ++i) {
-                    String field = keys.getString(i);
-                    String value = jsonCriteria.getString(field);
+                for (var i = 0; i < keys.length(); ++i) {
+                    var field = keys.getString(i);
+                    var value = jsonCriteria.getString(field);
                     operations.add(match(where(field).is(value)));
                 }
             }

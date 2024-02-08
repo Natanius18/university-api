@@ -11,7 +11,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -61,18 +60,18 @@ public class StudentSteps {
 
     @When("new student is added")
     public void newStudentIsRegistered() throws IOException {
-        String requestJson = new String(Files.readAllBytes(Paths.get("src/test/resources/student.json")));
-        HttpHeaders headers = new HttpHeaders();
+        var requestJson = new String(Files.readAllBytes(Paths.get("src/test/resources/student.json")));
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
+        var entity = new HttpEntity<>(requestJson, headers);
         createdStudentDto = restTemplate.postForObject(URL, entity, StudentDto.class);
     }
 
     @Then("the student is present in the database")
     public void newAccountIsCreatedAndSavedInTheDatabase() {
         authenticateUser("admin@admin.com", "admin");
-        StudentDto foundStudent = restTemplate.exchange(
+        var foundStudent = restTemplate.exchange(
                 URL + "/" + createdStudentDto.getId(), HttpMethod.GET, new HttpEntity<>(reqHeaders), StudentDto.class).getBody();
         assertEquals(createdStudentDto.getId(), foundStudent.getId());
         assertEquals(createdStudentDto.getFirstName(), foundStudent.getFirstName());
@@ -91,18 +90,18 @@ public class StudentSteps {
     @Given("the user is authenticated with email \"([^\"]*)\" and password \"([^\"]*)\"$")
     public void authenticateUser(String email, String password) {
 
-        String requestJson = "{" +
+        var requestJson = "{" +
                 "\"email\": \"" + email + "\"," +
                 "\"password\": \"" + password + "\"" +
                 "}";
-        HttpHeaders headers = new HttpHeaders();
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
+        var entity = new HttpEntity<>(requestJson, headers);
 
-        ResponseEntity<Object> authRes = restTemplate.exchange(LOGIN_URL, HttpMethod.POST, entity, Object.class);
+        var authRes = restTemplate.exchange(LOGIN_URL, HttpMethod.POST, entity, Object.class);
 
-        Map<String, String> map = (Map<String, String>) authRes.getBody();
+        var map = (Map<String, String>) authRes.getBody();
 
         reqHeaders.add("Authorization", map.get("token"));
     }
@@ -111,7 +110,7 @@ public class StudentSteps {
     public void thereIsAStudentInTheDatabase(List<StudentDto> students) {
         authenticateUser("admin@admin.com", "admin");
         students.forEach(student -> {
-            StudentDto existingStudent = restTemplate.postForObject(URL, student, StudentDto.class);
+            var existingStudent = restTemplate.postForObject(URL, student, StudentDto.class);
             assertNotNull(restTemplate.exchange(
                     URL + "/" + existingStudent.getId(),
                     HttpMethod.GET,
@@ -124,7 +123,7 @@ public class StudentSteps {
     @When("trying to retrieve an existing student")
     public void tryingToRetrieveAnExistingStudent() {
         for (StudentDto student : existingStudents) {
-            StudentDto foundStudent = restTemplate.exchange(
+            var foundStudent = restTemplate.exchange(
                     URL + "/" + student.getId(), HttpMethod.GET, new HttpEntity<>(reqHeaders), StudentDto.class).getBody();
             foundStudents.add(foundStudent);
         }
@@ -133,7 +132,7 @@ public class StudentSteps {
     @Then("getting an existing student")
     public void gettingAnExistingStudent(List<StudentDto> students) {
         authenticateUser("admin@admin.com", "admin");
-        for (int i = 0; i < students.size(); i++) {
+        for (var i = 0; i < students.size(); i++) {
             assertEquals(students.get(i).getEmail(), foundStudents.get(i).getEmail());
             assertEquals(students.get(i).getFirstName(), foundStudents.get(i).getFirstName());
             assertEquals(students.get(i).getLastName(), foundStudents.get(i).getLastName());
@@ -148,13 +147,13 @@ public class StudentSteps {
 
     @When("existing student is updated")
     public void existingStudentIsUpdated() throws JsonProcessingException {
-        StudentDto existingStudent = existingStudents.get(0);
+        var existingStudent = existingStudents.get(0);
         existingStudent.setPassword("pwd");
         existingStudent.setCourse(3);
         existingStudent.setLastName("Changed");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestJson = objectMapper.writeValueAsString(existingStudent);
-        HttpHeaders headers = new HttpHeaders();
+        var objectMapper = new ObjectMapper();
+        var requestJson = objectMapper.writeValueAsString(existingStudent);
+        var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
@@ -164,8 +163,8 @@ public class StudentSteps {
     @Then("updated student is saved in the database")
     public void updatedStudentIsSavedInTheDatabase() {
         authenticateUser("natan.chachko@stud.onu.edu.ua", "12345");
-        StudentDto existingStudent = existingStudents.get(0);
-        StudentDto updatedStudent = restTemplate.exchange(
+        var existingStudent = existingStudents.get(0);
+        var updatedStudent = restTemplate.exchange(
                 URL + "/" + existingStudent.getId(),
                 HttpMethod.GET,
                 new HttpEntity<>(reqHeaders),
@@ -188,15 +187,15 @@ public class StudentSteps {
     @Given("there is no student in the database with given id")
     public void thereIsNoStudentInTheDatabaseWithGivenId() {
         authenticateUser("admin@admin.com", "admin");
-        Exception exception = assertThrows(HttpClientErrorException.class, () -> restTemplate.exchange(
+        var exception = assertThrows(HttpClientErrorException.class, () -> restTemplate.exchange(
                 URL + "/9999",
                 HttpMethod.GET,
                 new HttpEntity<>(reqHeaders),
                 StudentDto.class)
         );
 
-        String expectedMessage = "User id not found: 9999";
-        String actualMessage = exception.getMessage();
+        var expectedMessage = "User id not found: 9999";
+        var actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
 
 
@@ -209,10 +208,10 @@ public class StudentSteps {
 
     @When("not existing student is updated")
     public void notExistingStudentIsUpdated() {
-        StudentDto studentDto = createStudentDto(FIRST_NAME, LAST_NAME, EMAIL);
+        var studentDto = createStudentDto(FIRST_NAME, LAST_NAME, EMAIL);
         studentDto.setId(9999L);
 
-        HttpEntity<StudentDto> updatedStudent = new HttpEntity<>(studentDto);
+        var updatedStudent = new HttpEntity<>(studentDto);
 
         try {
             restTemplate.exchange(URL, HttpMethod.PUT, updatedStudent, StudentDto.class);
@@ -228,7 +227,7 @@ public class StudentSteps {
     }
 
     private static StudentDto createStudentDto(String firstName, String lastName, String email) {
-        StudentDto student = new StudentDto();
+        var student = new StudentDto();
         student.setCourse(1);
         student.setFirstName(firstName);
         student.setLastName(lastName);

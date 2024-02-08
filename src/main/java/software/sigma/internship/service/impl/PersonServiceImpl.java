@@ -6,9 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.PersonDto;
-import software.sigma.internship.entity.Person;
 import software.sigma.internship.enums.Role;
-import software.sigma.internship.enums.Status;
 import software.sigma.internship.mapper.PersonDtoMapper;
 import software.sigma.internship.repo.PersonRepository;
 import software.sigma.internship.service.PersonService;
@@ -16,7 +14,6 @@ import software.sigma.internship.validator.exception.UserExistsWithEmailExceptio
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 
 import static software.sigma.internship.enums.Role.USER;
@@ -36,14 +33,14 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonDto approve(String email, Role role) {
-        Person person = personRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        var person = personRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         person.setRole(role);
         return personDtoMapper.map(personRepository.save(person));
     }
 
     @Override
     public boolean verify(String verificationCode) {
-        Person user = personRepository.findByVerificationCode(verificationCode).orElse(null);
+        var user = personRepository.findByVerificationCode(verificationCode).orElse(null);
 
         if (user == null || user.getStatus().equals(ACTIVE)) {
             return false;
@@ -57,7 +54,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void preparePersonForSave(PersonDto personDto, Long id) {
-        String email = personDto.getEmail();
+        var email = personDto.getEmail();
         if (id == null) {
             if (personRepository.existsByEmail(email)) {
                 throw new UserExistsWithEmailException(email);
@@ -69,10 +66,10 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private void setRoleAndStatus(PersonDto personDto, Long id) {
-        Role role = USER;
-        Status status = INACTIVE;
+        var role = USER;
+        var status = INACTIVE;
         if (id != null) {
-            Optional<Person> existingPerson = personRepository.findById(id);
+            var existingPerson = personRepository.findById(id);
             if (existingPerson.isPresent()) {
                 role = existingPerson.get().getRole();
                 status = existingPerson.get().getStatus();
@@ -83,7 +80,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private void sendConfirmationEmail(PersonDto personDto, String email) {
-        String verificationCode = String.valueOf(random.nextInt(90_000) + 10_000);
+        var verificationCode = String.valueOf(random.nextInt(90_000) + 10_000);
         Map<String, String> map = new HashMap<>();
         map.put("secretPass", verificationCode);
         map.put("name", personDto.getFirstName() + " " + personDto.getLastName());

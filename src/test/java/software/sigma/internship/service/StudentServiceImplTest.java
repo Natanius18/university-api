@@ -53,12 +53,12 @@ class StudentServiceImplTest {
     @ParameterizedTest(name = "Return student with id {0}")
     @ValueSource(longs = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
     void findById_shouldReturnStudentWithId(Long id) {
-        Student student = createStudent(id);
-        StudentDto studentDto = createStudentDto(id);
+        var student = createStudent(id);
+        var studentDto = createStudentDto(id);
         when(studentRepository.findById(id)).thenReturn(Optional.of(student));
         when(studentMapper.map(student)).thenReturn(studentDto);
 
-        StudentDto found = studentService.findById(id);
+        var found = studentService.findById(id);
 
         assertEquals(studentDto, found);
     }
@@ -72,37 +72,37 @@ class StudentServiceImplTest {
 
     @Test
     void save_shouldReturnStudentWithNewId() {
-        Student student = createStudent(null);
-        Student savedStudent = createStudent(1L);
-        StudentDto studentDto = createStudentDto(null);
-        StudentDto savedStudentDto = createStudentDto(1L);
+        var student = createStudent(null);
+        var savedStudent = createStudent(1L);
+        var studentDto = createStudentDto(null);
+        var savedStudentDto = createStudentDto(1L);
         when(studentRepository.save(student)).thenReturn(savedStudent);
         when(studentMapper.map(studentDto)).thenReturn(student);
         when(studentMapper.map(savedStudent)).thenReturn(savedStudentDto);
 
-        StudentDto newStudent = studentService.save(studentDto);
+        var newStudent = studentService.save(studentDto);
 
         assertEquals(savedStudentDto, newStudent);
     }
 
     @Test
     void save_shouldUpdateExistingStudent() {
-        Student updatedStudent = createStudent(1L);
-        StudentDto updatedStudentDto = createStudentDto(1L);
+        var updatedStudent = createStudent(1L);
+        var updatedStudentDto = createStudentDto(1L);
         when(studentRepository.save(updatedStudent)).thenReturn(updatedStudent);
         when(studentRepository.existsById(1L)).thenReturn(true);
         when(studentMapper.map(updatedStudentDto)).thenReturn(updatedStudent);
         when(studentMapper.map(updatedStudent)).thenReturn(updatedStudentDto);
 
 
-        StudentDto returnedStudent = studentService.save(updatedStudentDto);
+        var returnedStudent = studentService.save(updatedStudentDto);
 
         assertEquals(updatedStudentDto, returnedStudent);
     }
 
     @Test
     void save_whenTryToUpdateNotExistingStudent_shouldThrowException() {
-        StudentDto updatedStudentDto = createStudentDto(1L);
+        var updatedStudentDto = createStudentDto(1L);
         when(studentRepository.existsById(1L)).thenReturn(false);
 
         assertThrows(UserNotFoundException.class, () -> studentService.save(updatedStudentDto));
@@ -113,11 +113,11 @@ class StudentServiceImplTest {
     void findAll_shouldReturnListOfAllStudents(List<StudentDto> expectedResult, List<Student> students) {
         when(studentRepository.findAll()).thenReturn(students);
 
-        for (int i = 0; i < students.size(); i++) {
+        for (var i = 0; i < students.size(); i++) {
             when(studentMapper.map(students.get(i))).thenReturn(expectedResult.get(i));
         }
 
-        List<StudentDto> allStudents = studentService.findAll();
+        var allStudents = studentService.findAll();
 
         assertEquals(expectedResult, allStudents);
     }
@@ -131,7 +131,7 @@ class StudentServiceImplTest {
 
 
     private static Student createStudent(Long id) {
-        Student student = new Student();
+        var student = new Student();
         student.setCourse(1);
         student.setId(id);
         student.setFirstName(FIRST_NAME);
@@ -144,7 +144,7 @@ class StudentServiceImplTest {
     }
 
     private static StudentDto createStudentDto(Long id) {
-        StudentDto student = new StudentDto();
+        var student = new StudentDto();
         student.setId(id);
         student.setCourse(1);
         student.setFirstName(FIRST_NAME);
@@ -161,13 +161,13 @@ class StudentServiceImplTest {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            Student student1 = createStudent(1L);
-            Student student2 = createStudent(2L);
-            Student student3 = createStudent(3L);
+            var student1 = createStudent(1L);
+            var student2 = createStudent(2L);
+            var student3 = createStudent(3L);
 
-            StudentDto studentDto1 = createStudentDto(1L);
-            StudentDto studentDto2 = createStudentDto(2L);
-            StudentDto studentDto3 = createStudentDto(3L);
+            var studentDto1 = createStudentDto(1L);
+            var studentDto2 = createStudentDto(2L);
+            var studentDto3 = createStudentDto(3L);
             return Stream.of(
                     Arguments.of(List.of(studentDto1, studentDto2, studentDto3), List.of(student1, student2, student3)),
                     Arguments.of(List.of(studentDto1, studentDto2), List.of(student1, student2)),

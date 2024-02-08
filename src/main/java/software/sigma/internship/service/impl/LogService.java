@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
@@ -26,7 +25,7 @@ public class LogService {
 
     @Before(value = "within(software.sigma.internship.controller.*))")
     private void sendInfoToLogService(JoinPoint joinPoint) {
-        List<String> params = stream(joinPoint.getArgs())
+        var params = stream(joinPoint.getArgs())
             .map(arg -> ofNullable(arg).map(Object::toString).orElse("empty"))
             .toList();
         Map<String, Object> map = new HashMap<>();

@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import software.sigma.internship.entity.Person;
 import software.sigma.internship.repo.PersonRepository;
 
 @Service
@@ -16,7 +15,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Person person = personRepository.findByEmail(email)
+        var person = personRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
         return SecurityUser.fromPerson(person);
     }

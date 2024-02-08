@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.AnswerDto;
 import software.sigma.internship.dto.ResponseDto;
 import software.sigma.internship.entity.Response;
-import software.sigma.internship.entity.Test;
 import software.sigma.internship.mapper.AnswerMapper;
 import software.sigma.internship.mapper.ResponseMapper;
 import software.sigma.internship.mapper.TestMapper;
@@ -38,7 +37,7 @@ public class ResponseServiceImpl implements ResponseService {
 
     @Override
     public ResponseDto findById(Long id) {
-        Response response = responseRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
+        var response = responseRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
         return responseMapper.mapToResponseDto(response);
     }
 
@@ -54,8 +53,8 @@ public class ResponseServiceImpl implements ResponseService {
 
     @Override
     public ResponseDto save(ResponseDto responseDto) {
-        Long testId = responseDto.getTest().getId();
-        Test test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        var testId = responseDto.getTest().getId();
+        var test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
         responseDto.setTest(testMapper.mapForTeacher(test));
 
         responseDto.setNumberOfTry(getNumberOfNewTry(responseDto));
@@ -65,7 +64,7 @@ public class ResponseServiceImpl implements ResponseService {
 
         testStatisticsService.save(responseMapper.mapToTestStatisticsDto(responseDto));
 
-        Response newResponse = responseRepository.save(responseMapper.mapToResponse(responseDto));
+        var newResponse = responseRepository.save(responseMapper.mapToResponse(responseDto));
         return responseMapper.mapToResponseDto(newResponse);
     }
 
@@ -73,7 +72,7 @@ public class ResponseServiceImpl implements ResponseService {
         return response.getAnswers()
             .stream()
             .map(answerDto -> {
-                Long answerDtoId = answerDto.getId();
+                var answerDtoId = answerDto.getId();
                 return answerRepository.findById(answerDtoId)
                     .map(answerMapper::map)
                     .orElseThrow(() -> new AnswerNotFoundException(answerDtoId));

@@ -20,8 +20,8 @@ public class ApplicationConfig {
 
     @Bean
     public Map<CountStrategy, CounterStrategy> counterStrategyMap() {
-        CounterStrategy oneCorrect = new OneCorrectAnswerStrategy();
-        CounterStrategy severalCorrect = new SeveralCorrectAnswersStrategy();
+        var oneCorrect = new OneCorrectAnswerStrategy();
+        var severalCorrect = new SeveralCorrectAnswersStrategy();
         return Map.of(
                 ONE_CORRECT_ANSWER, oneCorrect,
                 SEVERAL_CORRECT_ANSWERS, severalCorrect

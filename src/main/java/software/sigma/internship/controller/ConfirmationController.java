@@ -11,7 +11,6 @@ import software.sigma.internship.service.PersonService;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
@@ -25,15 +24,15 @@ public class ConfirmationController {
 
     @GetMapping("/verify")
     public ResponseEntity<Object> verifyUser(@RequestParam String code) {
-        int status = BAD_REQUEST.value();
-        String message = "Invalid request";
+        var status = BAD_REQUEST.value();
+        var message = "Invalid request";
 
         if (personService.verify(code)) {
             status = OK.value();
             message = "Successfully verified user";
         }
 
-        Map<String, Object> body = new LinkedHashMap<>();
+        var body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", status);
         body.put("message", message);

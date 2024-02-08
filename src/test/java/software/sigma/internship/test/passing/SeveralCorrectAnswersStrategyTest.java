@@ -44,7 +44,7 @@ public class SeveralCorrectAnswersStrategyTest {
         answer5.setId(5L);
         answer5.setCorrect(false);
 
-        List<AnswerDto> rightAnswers = List.of(answer1, answer2, answer3, answer4);
+        var rightAnswers = List.of(answer1, answer2, answer3, answer4);
         questionDto.setAnswers(rightAnswers);
     }
 

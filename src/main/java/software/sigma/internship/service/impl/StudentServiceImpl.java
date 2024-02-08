@@ -3,7 +3,6 @@ package software.sigma.internship.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.StudentDto;
-import software.sigma.internship.entity.Student;
 import software.sigma.internship.mapper.StudentMapper;
 import software.sigma.internship.repo.StudentRepository;
 import software.sigma.internship.service.PersonService;
@@ -39,10 +38,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDto save(StudentDto studentDto) {
-        Long id = studentDto.getId();
+        var id = studentDto.getId();
         if (id == null || studentRepository.existsById(id)) {
             personService.preparePersonForSave(studentDto, id);
-            Student student = studentRepository.save(studentMapper.map(studentDto));
+            var student = studentRepository.save(studentMapper.map(studentDto));
             return studentMapper.map(student);
         }
         throw new UserNotFoundException(id);

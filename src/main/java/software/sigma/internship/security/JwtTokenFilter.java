@@ -1,7 +1,6 @@
 package software.sigma.internship.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import software.sigma.internship.validator.exception.JwtAuthenticationException;
@@ -25,11 +24,11 @@ public class JwtTokenFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+        var token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
 
         try {
             if (token != null && jwtTokenProvider.validateToken(token)) {
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                var authentication = jwtTokenProvider.getAuthentication(token);
                 if (authentication != null) {
                     getContext().setAuthentication(authentication);
                 }

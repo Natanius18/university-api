@@ -27,27 +27,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/v1/auth/login").permitAll()
-                .antMatchers("/swagger-ui.html").permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/images/**").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/v2/api-docs").permitAll()
-                .antMatchers("/configuration/ui").permitAll()
-                .antMatchers(HttpMethod.POST,"/v1/students").permitAll()
-                .antMatchers(HttpMethod.PUT,"/v1/students").permitAll()
-                .antMatchers(HttpMethod.POST,"/v1/teachers").permitAll()
-                .antMatchers(HttpMethod.PUT,"/v1/teachers").permitAll()
-                .antMatchers(HttpMethod.GET,"/v1/confirm/verify").permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .apply(jwtConfigurer);
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .antMatchers("/v1/auth/login").permitAll()
+            .antMatchers("/swagger-ui.html").permitAll()
+            .antMatchers("/swagger-ui/**").permitAll()
+            .antMatchers("/swagger-resources/**").permitAll()
+            .antMatchers("/images/**").permitAll()
+            .antMatchers("/webjars/**").permitAll()
+            .antMatchers("/v2/api-docs").permitAll()
+            .antMatchers("/configuration/ui").permitAll()
+            .antMatchers(HttpMethod.POST, "/v1/students").permitAll()
+            .antMatchers(HttpMethod.PUT, "/v1/students").permitAll()
+            .antMatchers(HttpMethod.POST, "/v1/teachers").permitAll()
+            .antMatchers(HttpMethod.PUT, "/v1/teachers").permitAll()
+            .antMatchers(HttpMethod.GET, "/v1/confirm/verify").permitAll()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .apply(jwtConfigurer);
         return http.build();
     }
 
