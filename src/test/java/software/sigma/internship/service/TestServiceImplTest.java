@@ -4,13 +4,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import software.sigma.internship.UniversityApplication;
 import software.sigma.internship.dto.AnswerDto;
@@ -19,16 +15,17 @@ import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.dto.TestDto;
 import software.sigma.internship.entity.Teacher;
 import software.sigma.internship.enums.CountStrategy;
-import software.sigma.internship.enums.Role;
 import software.sigma.internship.enums.Status;
+import software.sigma.internship.mapper.TeacherMapper;
 import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.service.impl.TestServiceImpl;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
+import static software.sigma.internship.enums.Role.TEACHER;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = UniversityApplication.class)
@@ -40,8 +37,7 @@ class TestServiceImplTest {
     private TeacherRepository teacherRepository;
 
     @Autowired
-    @Qualifier("teacherMapper")
-    private ModelMapper mapper;
+    private TeacherMapper teacherMapper;
 
     private final String FIRST_NAME = "Ivan";
     private final String LAST_NAME = "Ivanov";
@@ -50,8 +46,8 @@ class TestServiceImplTest {
 
     @BeforeAll
     public static void setSecurityContext() {
-        Set<SimpleGrantedAuthority> authorities = Role.TEACHER.getAuthorities();
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(TEACHER_EMAIL, PASSWORD, authorities));
+        var authorities = TEACHER.getAuthorities();
+        getContext().setAuthentication(new UsernamePasswordAuthenticationToken(TEACHER_EMAIL, PASSWORD, authorities));
     }
 
     @AfterEach
@@ -62,7 +58,7 @@ class TestServiceImplTest {
     @Test
     void save_whenSaveAndRetrieve_thenReturnDtoWithNewId(){
         Teacher teacher = createAndSaveTeacher();
-        TeacherDto teacherDto = mapper.map(teacher, TeacherDto.class);
+        TeacherDto teacherDto = teacherMapper.map(teacher);
 
         QuestionDto question1 = getQuestionDto("Question 1");
         QuestionDto question2 = getQuestionDto("Question 2");
@@ -81,7 +77,7 @@ class TestServiceImplTest {
     @Test
     void save_whenUpdateAndRetrieve_thenReturnUpdatedTestWithSameId(){
         Teacher teacher = createAndSaveTeacher();
-        TeacherDto teacherDto = mapper.map(teacher, TeacherDto.class);
+        TeacherDto teacherDto = teacherMapper.map(teacher);
 
         QuestionDto question1 = getQuestionDto("Question 1");
         QuestionDto question2 = getQuestionDto("Question 2");
@@ -133,7 +129,7 @@ class TestServiceImplTest {
         teacher.setEmail(TEACHER_EMAIL);
         teacher.setPassword(PASSWORD);
         teacher.setStatus(Status.ACTIVE);
-        teacher.setRole(Role.TEACHER);
+        teacher.setRole(TEACHER);
         return teacherRepository.save(teacher);
     }
 }

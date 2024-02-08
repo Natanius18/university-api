@@ -1,14 +1,14 @@
 package software.sigma.internship.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.AnswerDto;
 import software.sigma.internship.dto.ResponseDto;
-import software.sigma.internship.dto.TestDto;
-import software.sigma.internship.dto.TestStatisticsDto;
 import software.sigma.internship.entity.Response;
 import software.sigma.internship.entity.Test;
+import software.sigma.internship.mapper.AnswerMapper;
+import software.sigma.internship.mapper.ResponseMapper;
+import software.sigma.internship.mapper.TestMapper;
 import software.sigma.internship.repo.AnswerRepository;
 import software.sigma.internship.repo.ResponseRepository;
 import software.sigma.internship.repo.StudentRepository;
@@ -31,14 +31,15 @@ public class ResponseServiceImpl implements ResponseService {
     private final StudentRepository studentRepository;
     private final TestStatisticsService testStatisticsService;
     private final TestRepository testRepository;
-    private final ModelMapper responseToStatisticsMapper;
-    private final ModelMapper allResponsesMapper;
+    private final ResponseMapper responseMapper;
+    private final TestMapper testMapper;
+    private final AnswerMapper answerMapper;
     private final ScoreCounter scoreCounter;
 
     @Override
     public ResponseDto findById(Long id) {
         Response response = responseRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        return responseToStatisticsMapper.map(response, ResponseDto.class);
+        return responseMapper.mapToResponseDto(response);
     }
 
     @Override
@@ -47,25 +48,25 @@ public class ResponseServiceImpl implements ResponseService {
             .orElseThrow(() -> new UserNotFoundException(studentId))
             .getResponses()
             .stream()
-            .map(response -> allResponsesMapper.map(response, ResponseDto.class))
+            .map(responseMapper::mapForList)
             .toList();
     }
 
     @Override
-    public ResponseDto save(ResponseDto response) {
-        Long testId = response.getTest().getId();
+    public ResponseDto save(ResponseDto responseDto) {
+        Long testId = responseDto.getTest().getId();
         Test test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
-        response.setTest(responseToStatisticsMapper.map(test, TestDto.class));
+        responseDto.setTest(testMapper.mapForTeacher(test));
 
-        response.setNumberOfTry(getNumberOfNewTry(response));
-        response.setAnswers(getAnswerDtoList(response));
+        responseDto.setNumberOfTry(getNumberOfNewTry(responseDto));
+        responseDto.setAnswers(getAnswerDtoList(responseDto));
 
-        response.setResult(scoreCounter.countResult(response));
+        responseDto.setResult(scoreCounter.countResult(responseDto));
 
-        testStatisticsService.save(responseToStatisticsMapper.map(response, TestStatisticsDto.class));
+        testStatisticsService.save(responseMapper.mapToTestStatisticsDto(responseDto));
 
-        Response newResponse = responseRepository.save(responseToStatisticsMapper.map(response, Response.class));
-        return responseToStatisticsMapper.map(newResponse, ResponseDto.class);
+        Response newResponse = responseRepository.save(responseMapper.mapToResponse(responseDto));
+        return responseMapper.mapToResponseDto(newResponse);
     }
 
     private List<AnswerDto> getAnswerDtoList(ResponseDto response) {
@@ -74,16 +75,15 @@ public class ResponseServiceImpl implements ResponseService {
             .map(answerDto -> {
                 Long answerDtoId = answerDto.getId();
                 return answerRepository.findById(answerDtoId)
-                    .map(answer -> responseToStatisticsMapper.map(answer, AnswerDto.class))
+                    .map(answerMapper::map)
                     .orElseThrow(() -> new AnswerNotFoundException(answerDtoId));
                 }).toList();
     }
 
     private int getNumberOfNewTry(ResponseDto response) {
-        return responseRepository
-            .getFirstByStudentIdAndTestOrderByNumberOfTryDesc(
+        return responseRepository.getFirstByStudentIdAndTestOrderByNumberOfTryDesc(
                 response.getStudent().getId(),
-                responseToStatisticsMapper.map(response.getTest(), Test.class))
+                testMapper.map(response.getTest()))
             .orElse(new Response())
             .getNumberOfTry() + 1;
     }

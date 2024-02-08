@@ -7,6 +7,7 @@ import software.sigma.internship.service.CounterStrategy;
 import java.util.List;
 
 public class SeveralCorrectAnswersStrategy implements CounterStrategy {
+
     @Override
     public float count(QuestionDto questionDto, List<AnswerDto> response) {
         float score = 0;

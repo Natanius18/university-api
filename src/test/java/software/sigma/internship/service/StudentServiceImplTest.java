@@ -10,13 +10,10 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 import software.sigma.internship.dto.StudentDto;
 import software.sigma.internship.entity.Student;
-import software.sigma.internship.enums.Role;
-import software.sigma.internship.enums.Status;
+import software.sigma.internship.mapper.StudentMapper;
 import software.sigma.internship.repo.StudentRepository;
 import software.sigma.internship.service.impl.StudentServiceImpl;
 import software.sigma.internship.validator.exception.UserNotFoundException;
@@ -30,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static software.sigma.internship.enums.Role.STUDENT;
+import static software.sigma.internship.enums.Status.ACTIVE;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceImplTest {
@@ -42,8 +41,8 @@ class StudentServiceImplTest {
     @Mock
     private StudentRepository studentRepository;
 
-    @Spy
-    private ModelMapper studentMapper;
+    @Mock
+    private StudentMapper studentMapper;
 
     @Mock
     private PersonService personService;
@@ -57,6 +56,7 @@ class StudentServiceImplTest {
         Student student = createStudent(id);
         StudentDto studentDto = createStudentDto(id);
         when(studentRepository.findById(id)).thenReturn(Optional.of(student));
+        when(studentMapper.map(student)).thenReturn(studentDto);
 
         StudentDto found = studentService.findById(id);
 
@@ -77,7 +77,8 @@ class StudentServiceImplTest {
         StudentDto studentDto = createStudentDto(null);
         StudentDto savedStudentDto = createStudentDto(1L);
         when(studentRepository.save(student)).thenReturn(savedStudent);
-        when(studentMapper.map(studentDto, Student.class)).thenReturn(student);
+        when(studentMapper.map(studentDto)).thenReturn(student);
+        when(studentMapper.map(savedStudent)).thenReturn(savedStudentDto);
 
         StudentDto newStudent = studentService.save(studentDto);
 
@@ -90,7 +91,9 @@ class StudentServiceImplTest {
         StudentDto updatedStudentDto = createStudentDto(1L);
         when(studentRepository.save(updatedStudent)).thenReturn(updatedStudent);
         when(studentRepository.existsById(1L)).thenReturn(true);
-        when(studentMapper.map(updatedStudentDto, Student.class)).thenReturn(updatedStudent);
+        when(studentMapper.map(updatedStudentDto)).thenReturn(updatedStudent);
+        when(studentMapper.map(updatedStudent)).thenReturn(updatedStudentDto);
+
 
         StudentDto returnedStudent = studentService.save(updatedStudentDto);
 
@@ -109,6 +112,10 @@ class StudentServiceImplTest {
     @ArgumentsSource(AllStudentsArgumentsProvider.class)
     void findAll_shouldReturnListOfAllStudents(List<StudentDto> expectedResult, List<Student> students) {
         when(studentRepository.findAll()).thenReturn(students);
+
+        for (int i = 0; i < students.size(); i++) {
+            when(studentMapper.map(students.get(i))).thenReturn(expectedResult.get(i));
+        }
 
         List<StudentDto> allStudents = studentService.findAll();
 
@@ -131,8 +138,8 @@ class StudentServiceImplTest {
         student.setLastName(LAST_NAME);
         student.setEmail(EMAIL);
         student.setPassword(PASSWORD);
-        student.setStatus(Status.ACTIVE);
-        student.setRole(Role.STUDENT);
+        student.setStatus(ACTIVE);
+        student.setRole(STUDENT);
         return student;
     }
 
@@ -144,8 +151,8 @@ class StudentServiceImplTest {
         student.setLastName(LAST_NAME);
         student.setEmail(EMAIL);
         student.setPassword(PASSWORD);
-        student.setStatus(Status.ACTIVE);
-        student.setRole(Role.STUDENT);
+        student.setStatus(ACTIVE);
+        student.setRole(STUDENT);
         return student;
     }
 

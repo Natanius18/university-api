@@ -1,7 +1,6 @@
 package software.sigma.internship.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,6 +9,7 @@ import software.sigma.internship.dto.PersonDto;
 import software.sigma.internship.entity.Person;
 import software.sigma.internship.enums.Role;
 import software.sigma.internship.enums.Status;
+import software.sigma.internship.mapper.PersonDtoMapper;
 import software.sigma.internship.repo.PersonRepository;
 import software.sigma.internship.service.PersonService;
 import software.sigma.internship.validator.exception.UserExistsWithEmailException;
@@ -28,7 +28,7 @@ import static software.sigma.internship.enums.Status.INACTIVE;
 @RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
-    private final ModelMapper personMapper;
+    private final PersonDtoMapper personDtoMapper;
     private final BCryptPasswordEncoder encoder;
     private final Random random = new Random();
 
@@ -38,7 +38,7 @@ public class PersonServiceImpl implements PersonService {
     public PersonDto approve(String email, Role role) {
         Person person = personRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         person.setRole(role);
-        return personMapper.map(personRepository.save(person), PersonDto.class);
+        return personDtoMapper.map(personRepository.save(person));
     }
 
     @Override

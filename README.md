@@ -94,7 +94,7 @@ You can also apply different filters to see only the required information.
 6. Run the project.
 7. For testing this API you can use Postman or visit [Swagger UI page](http://localhost:8080/university/swagger-ui/index.html).
 8. For authorization, you must add a new header, where Authorization is a key,
-   and you should pass a JVT token, which you will receive after registration 
+   and you should pass a JWT, which you will receive after registration 
    (using method [POST](http://localhost:8080/university/swagger-ui/index.html#/student-controller/saveUsingPOST_1))
    and [logging in](http://localhost:8080/university/swagger-ui/index.html#/authentication-controller/authenticateUsingPOST).
 

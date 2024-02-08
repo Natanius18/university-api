@@ -1,10 +1,10 @@
 package software.sigma.internship.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.TeacherDto;
 import software.sigma.internship.entity.Teacher;
+import software.sigma.internship.mapper.TeacherMapper;
 import software.sigma.internship.repo.TeacherRepository;
 import software.sigma.internship.service.PersonService;
 import software.sigma.internship.service.TeacherService;
@@ -18,21 +18,21 @@ import java.util.List;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
-    private final ModelMapper teacherMapper;
+    private final TeacherMapper teacherMapper;
     private final PersonService personService;
 
     @Override
     public List<TeacherDto> findAll() {
         return teacherRepository.findAll()
                 .stream()
-                .map(teacher -> teacherMapper.map(teacher, TeacherDto.class))
+                .map(teacherMapper::map)
                 .toList();
     }
 
     @Override
     public TeacherDto findById(Long id) {
         return teacherRepository.findById(id)
-            .map(teacher -> teacherMapper.map(teacher, TeacherDto.class))
+            .map(teacherMapper::map)
             .orElseThrow(() -> new UserNotFoundException(id));
     }
 
@@ -41,8 +41,8 @@ public class TeacherServiceImpl implements TeacherService {
         Long id = teacherDto.getId();
         if (id == null || teacherRepository.existsById(id)) {
             personService.preparePersonForSave(teacherDto, id);
-            Teacher teacher = teacherRepository.save(teacherMapper.map(teacherDto, Teacher.class));
-            return teacherMapper.map(teacher, TeacherDto.class);
+            Teacher teacher = teacherRepository.save(teacherMapper.map(teacherDto));
+            return teacherMapper.map(teacher);
         }
         throw new UserNotFoundException(id);
     }

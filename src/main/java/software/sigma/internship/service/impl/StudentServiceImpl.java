@@ -1,10 +1,10 @@
 package software.sigma.internship.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.StudentDto;
 import software.sigma.internship.entity.Student;
+import software.sigma.internship.mapper.StudentMapper;
 import software.sigma.internship.repo.StudentRepository;
 import software.sigma.internship.service.PersonService;
 import software.sigma.internship.service.StudentService;
@@ -17,7 +17,7 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
-    private final ModelMapper studentMapper;
+    private final StudentMapper studentMapper;
     private final PersonService personService;
 
 
@@ -25,14 +25,14 @@ public class StudentServiceImpl implements StudentService {
     public List<StudentDto> findAll() {
         return studentRepository.findAll()
             .stream()
-            .map(student -> studentMapper.map(student, StudentDto.class))
+            .map(studentMapper::map)
             .toList();
     }
 
     @Override
     public StudentDto findById(Long id) {
         return studentRepository.findById(id)
-            .map(student -> studentMapper.map(student, StudentDto.class))
+            .map(studentMapper::map)
             .orElseThrow(() -> new UserNotFoundException(id));
 
     }
@@ -42,8 +42,8 @@ public class StudentServiceImpl implements StudentService {
         Long id = studentDto.getId();
         if (id == null || studentRepository.existsById(id)) {
             personService.preparePersonForSave(studentDto, id);
-            Student student = studentRepository.save(studentMapper.map(studentDto, Student.class));
-            return studentMapper.map(student, StudentDto.class);
+            Student student = studentRepository.save(studentMapper.map(studentDto));
+            return studentMapper.map(student);
         }
         throw new UserNotFoundException(id);
     }

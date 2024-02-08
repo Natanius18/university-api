@@ -1,11 +1,11 @@
 package software.sigma.internship.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import software.sigma.internship.dto.TestStatisticsDto;
 import software.sigma.internship.entity.TestStatistics;
+import software.sigma.internship.mapper.TestStatisticsMapper;
 import software.sigma.internship.repo.TestStatisticsRepository;
 import software.sigma.internship.service.TestStatisticsService;
 
@@ -21,15 +21,15 @@ import static software.sigma.internship.mongo.filters.core.FilterApplier.applyRe
 public class TestStatisticsServiceImpl implements TestStatisticsService {
 
     private final TestStatisticsRepository repository;
-    private final ModelMapper responseToStatisticsMapper;
+    private final TestStatisticsMapper testStatisticsMapper;
     private final MongoTemplate mongoTemplate;
 
 
     @Override
     public TestStatisticsDto save(TestStatisticsDto testStatisticsDto) {
-        TestStatistics testStatistics = responseToStatisticsMapper.map(testStatisticsDto, TestStatistics.class);
+        var testStatistics = testStatisticsMapper.map(testStatisticsDto);
         testStatistics.setDate(new Date());
-        return responseToStatisticsMapper.map(repository.save(testStatistics), TestStatisticsDto.class);
+        return testStatisticsMapper.map(repository.save(testStatistics));
     }
 
     @Override
