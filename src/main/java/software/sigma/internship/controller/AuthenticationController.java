@@ -21,6 +21,7 @@ import java.util.HashMap;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class AuthenticationController {
             var response = new HashMap<>();
             response.put("email", email);
             response.put("token", token);
-            return ResponseEntity.ok(response);
+            return ok(response);
         } catch (UsernameNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
         } catch (AuthenticationException e) {
