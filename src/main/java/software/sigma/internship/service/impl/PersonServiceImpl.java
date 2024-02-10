@@ -54,8 +54,8 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void preparePersonForSave(PersonDto personDto, Long id) {
-        var email = personDto.getEmail();
         if (id == null) {
+            var email = personDto.getEmail();
             if (personRepository.existsByEmail(email)) {
                 throw new UserExistsWithEmailException(email);
             }

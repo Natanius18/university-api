@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import software.sigma.internship.dto.ResponseDto;
 import software.sigma.internship.service.ResponseService;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ public class ResponseController {
     }
 
     @PostMapping
+    @ResponseStatus(CREATED)
     public ResponseDto save(@RequestBody ResponseDto response) {
         return responseService.save(response);
     }
